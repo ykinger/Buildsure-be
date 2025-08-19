@@ -1,0 +1,53 @@
+{
+    {
+        "type": "MCQ-SingleAnswer",
+        "questionData": {
+            "query": "What is the capital of France?",
+            "options": [
+                "Berlin",
+                "Madrid",
+                "Paris",
+                "Rome"
+            ],
+            "Reference": "3.1.2"
+        },
+        "correlationId": "3764758b-2c3d-4e5f-8a9b-0c1d2e3f4g5h"
+    }
+
+{
+        "type": "MCQ-MultipleAnswer",
+        "questionData": {
+            "query": "What is the capital of France?",
+            "options": [
+                "Berlin",
+                "Madrid",
+                "Paris",
+                "Rome"
+            ],
+            "Reference": "3.1.2"
+        },
+        "correlationId": "3764758b-2c3d-4e5f-8a9b-0c1d2e3f4g5h"
+    }
+
+{
+        "type": "Numeric",
+        "questionData": {
+            "query": "What is the capital of France?",
+            "validRange": {
+                "min": 1,
+                "max": 100
+            },
+            "Reference": "3.1.2"
+        },
+        "correlationId": "3764758b-2c3d-4e5f-8a9b-0c1d2e3f4g5h"
+    }
+
+{
+        "type": "Text",
+        "questionData": {
+            "query": "What is the capital of France?",
+            "Reference": "3.1.2"
+        },
+        "correlationId": "3764758b-2c3d-4e5f-8a9b-0c1d2e3f4g5h"
+    }
+}
