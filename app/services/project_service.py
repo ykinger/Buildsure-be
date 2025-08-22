@@ -19,3 +19,7 @@ class ProjectService:
         db.session.add(project)
         db.session.commit()
         return project
+
+    @staticmethod
+    def get_projects_by_org(org_id: str):
+        return Project.query.filter_by(organization_id=org_id).all()

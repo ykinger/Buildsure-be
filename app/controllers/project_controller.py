@@ -7,6 +7,7 @@ from app.services.project_service import ProjectService
 
 project_bp = Blueprint('project_bp', __name__)
 
+
 @project_bp.route('/api/v1/organizations/<org_id>/projects', methods=['POST'])
 def create_project(org_id):
     payload = request.get_json()
@@ -19,5 +20,27 @@ def create_project(org_id):
         'description': project.description,
         'dueDate': str(project.due_date),
         'organizationId': project.organization_id,
-        'status': project.status
+        'status': project.status,
+        'createdAt': project.created_at.isoformat() if project.created_at else None,
+        'updatedAt': project.updated_at.isoformat() if project.updated_at else None,
+        'createdBy': project.created_by
     }), 201
+
+
+@project_bp.route('/api/v1/organizations/<org_id>/projects', methods=['GET'])
+def get_projects(org_id):
+    projects = ProjectService.get_projects_by_org(org_id)
+    result = []
+    for project in projects:
+        result.append({
+            'id': project.id,
+            'name': project.name,
+            'description': project.description,
+            'organizationId': project.organization_id,
+            'status': project.status,
+            'createdAt': project.created_at.isoformat() if project.created_at else None,
+            'updatedAt': project.updated_at.isoformat() if project.updated_at else None,
+            'createdBy': project.created_by,
+            'dueDate': str(project.due_date) if project.due_date else None
+        })
+    return jsonify(result), 200
