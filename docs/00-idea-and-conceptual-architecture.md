@@ -1,12 +1,25 @@
 # 📘 Adaptive AI Wizard for Form Completion — Conceptual Documentation
 
 ## Problem Definition
-We need an application that:  
-- Guides users through a **sequential form** (the “form questions”).  
-- Uses an **AI agent** to adaptively break these form questions into simpler **clarifying questions**.  
-- Maintains correctness by ensuring final answers always map to **predefined form questions**.  
-- Provides contextual explanations by referencing external knowledge bases (Ontario Building Code).  
-- Produces a **structured output** (answers to all form questions) that can later be rendered into a final PDF form.  
+The intended users of this application are **architects and design professionals** who must ensure that their construction projects comply with the **Ontario Building Code (OBC)**.  
+
+As part of the compliance process, architects are required to complete a standardized **form** that classifies the building’s major occupancy and other characteristics. This form is based on definitions, rules, and criteria set out in the OBC.  
+
+The **problems with the current process** are:  
+- Filling out the form is **time-consuming**.  
+- Ensuring **accuracy** is difficult because the OBC is large and complex (Volumes 1 and 2 are ~15MB each, spanning thousands of pages).  
+- Architects often need to **reference multiple sections and definitions** across the OBC to justify their answers.  
+
+The **opportunity for AI** is clear:  
+- The form and the OBC are both **textual and reference-driven**, making them amenable to AI assistance.  
+- An AI agent can **ask clarifying questions** in simple language, while ensuring that final answers always map to the official **form questions**.  
+- The AI can reference the OBC to provide **definitions and justifications**, increasing trust and accuracy.  
+
+The ultimate goal is to:  
+1. Make the process of filling the form **faster and less burdensome** for architects.  
+2. Improve **accuracy and compliance** by grounding answers in the OBC.  
+3. Generate a completed form that can be **reviewed, justified, and submitted** as part of the regulatory process.  
+
 
 ---
 
@@ -21,6 +34,26 @@ We need an application that:
   - Not predefined — emerge dynamically during conversation.  
   - Purpose: to collect enough detail to confidently resolve the current form question.  
   - Never stored as final outputs — only serve as intermediate reasoning steps.  
+
+---
+
+## Knowledge Base
+The system relies on two main sources of knowledge:
+
+1. **Predefined Form (Decision Tree)**  
+   - The structure of the form is known in advance.  
+   - It consists of a sequential list of **form questions** that must all be answered.  
+   - Each question has an expected type of answer (multiple choice or numerical).  
+   - This ensures determinism and correctness: the AI cannot invent new “form questions,” it can only resolve them.  
+
+2. **Ontario Building Code (Volumes 1 & 2)**  
+   - Two large PDF documents (~15MB each).  
+   - Serve as the **reference knowledge base** for definitions, rules, and clarifications.  
+   - Queried on-demand by the AI to:  
+     - Explain technical terms in simpler language.  
+     - Provide justifications for why a certain form answer is correct.  
+     - Help interpret ambiguous user answers.  
+   - These PDFs are **supporting knowledge**, not the driver of the flow: the predefined form defines what must be answered, the Building Code provides context.  
 
 ---
 
