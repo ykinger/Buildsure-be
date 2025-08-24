@@ -1,0 +1,549 @@
+openapi: 3.0.0
+info:
+  title: BuildSure API
+  description: Adaptive AI Wizard for Ontario Building Code Form Completion
+  version: 1.0.0
+  contact:
+    name: BuildSure Team
+    email: support@buildsure.com
+  license:
+    name: Proprietary
+    url: https://buildsure.com/terms
+
+servers:
+  - url: https://api.buildsure.com/v1
+    description: Production server
+  - url: https://staging-api.buildsure.com/v1
+    description: Staging server
+  - url: http://localhost:8000/v1
+    description: Local development server
+
+tags:
+  - name: projects
+    description: Operations related to form completion projects
+
+paths:
+  /projects:
+    post:
+      tags:
+        - projects
+      summary: Create a new project
+      description: Creates a new form completion project for a building or compliance case.
+      operationId: createProject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProjectRequest'
+      responses:
+        '201':
+          description: Project created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /projects/{project_id}/answer:
+    post:
+      tags:
+        - projects
+      summary: Submit answer for a project
+      description: Submits a user's answer to the current question and returns the next step.
+      operationId: submitAnswer
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          description: UUID of the project
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnswerRequest'
+      responses:
+        '200':
+          description: Success response with next step
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/FormQuestionResponse'
+                  - $ref: '#/components/schemas/ClarifyingQuestionResponse'
+                  - $ref: '#/components/schemas/CompletedFormResponse'
+                  - $ref: '#/components/schemas/AdvanceWithClarificationResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /projects/{project_id}:
+    get:
+      tags:
+        - projects
+      summary: Get project status
+      description: Retrieves the current state of a project.
+      operationId: getProject
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          description: UUID of the project
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Project status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectStatusResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /projects/{project_id}/form:
+    get:
+      tags:
+        - projects
+      summary: Get completed form
+      description: Retrieves the completed form data for a project.
+      operationId: getCompletedForm
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          description: UUID of the project
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Completed form retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompletedFormResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Project not found or form not completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /projects/{project_id}/reset:
+    post:
+      tags:
+        - projects
+      summary: Reset project
+      description: Resets a project to its initial state or to a specific question.
+      operationId: resetProject
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          description: UUID of the project
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetRequest'
+      responses:
+        '200':
+          description: Project reset successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResetResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    CreateProjectRequest:
+      type: object
+      required:
+        - project_name
+      properties:
+        project_name:
+          type: string
+          description: Name of the project
+          example: "Toronto Office Building Compliance"
+        form_type:
+          type: string
+          description: Type of form to complete
+          default: "obc_compliance"
+          example: "obc_compliance"
+        metadata:
+          type: object
+          properties:
+            building_address:
+              type: string
+              example: "123 Main St, Toronto, ON"
+            client_name:
+              type: string
+              example: "ABC Architects"
+
+    ProjectResponse:
+      type: object
+      properties:
+        project_id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        project_name:
+          type: string
+          example: "Toronto Office Building Compliance"
+        status:
+          type: string
+          enum: [in_progress]
+          example: "in_progress"
+        current_question:
+          $ref: '#/components/schemas/Question'
+        created_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+
+    AnswerRequest:
+      type: object
+      required:
+        - question_id
+        - answer
+      properties:
+        question_id:
+          type: string
+          description: ID of the question being answered
+          example: "q1"
+        answer:
+          oneOf:
+            - type: string
+            - type: number
+          description: User's response to the question
+          example: "residential"
+
+    Question:
+      type: object
+      properties:
+        question_id:
+          type: string
+          example: "q1"
+        text:
+          type: string
+          example: "What is the building's major occupancy?"
+        type:
+          type: string
+          enum: [multiple_choice, number]
+          example: "multiple_choice"
+        options:
+          type: array
+          items:
+            type: string
+          nullable: true
+          example: ["residential", "commercial", "industrial"]
+
+    FormQuestionResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [form_question]
+          example: "form_question"
+        question:
+          $ref: '#/components/schemas/Question'
+
+    ClarifyingQuestionResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [clarifying_question]
+          example: "clarifying_question"
+        question:
+          type: string
+          example: "Could you clarify what type of residential occupancy this is?"
+        context:
+          type: string
+          nullable: true
+          example: "The Ontario Building Code distinguishes between different residential types..."
+
+    CompletedFormResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [completed_form]
+          example: "completed_form"
+        form_data:
+          $ref: '#/components/schemas/FormData'
+
+    AdvanceWithClarificationResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [advance_with_clarification]
+          example: "advance_with_clarification"
+        current_question_resolved:
+          type: boolean
+          example: true
+        next_question:
+          $ref: '#/components/schemas/ClarifyingQuestionResponse'
+
+    FormData:
+      type: object
+      properties:
+        project_id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+        completed_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T11:30:00Z"
+
+    Answer:
+      type: object
+      properties:
+        question_id:
+          type: string
+          example: "q1"
+        question_text:
+          type: string
+          example: "What is the building's major occupancy?"
+        answer:
+          oneOf:
+            - type: string
+            - type: number
+          example: "residential"
+        justification:
+          type: string
+          example: "Based on OBC Section 3.1.2.1, the building is classified as residential due to..."
+        references:
+          type: array
+          items:
+            type: string
+          example: ["OBC 3.1.2.1", "OBC 3.1.2.2"]
+        timestamp:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:35:00Z"
+
+    ProjectStatusResponse:
+      type: object
+      properties:
+        project_id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        project_name:
+          type: string
+          example: "Toronto Office Building Compliance"
+        status:
+          type: string
+          enum: [in_progress, completed]
+          example: "in_progress"
+        current_question:
+          $ref: '#/components/schemas/Question'
+        answered_questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnsweredQuestion'
+        progress:
+          $ref: '#/components/schemas/Progress'
+        created_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:35:00Z"
+
+    AnsweredQuestion:
+      type: object
+      properties:
+        question_id:
+          type: string
+          example: "q1"
+        question_text:
+          type: string
+          example: "What is the building's major occupancy?"
+        answer:
+          oneOf:
+            - type: string
+            - type: number
+          example: "residential"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:35:00Z"
+
+    Progress:
+      type: object
+      properties:
+        completed:
+          type: integer
+          example: 2
+        total:
+          type: integer
+          example: 15
+        percentage:
+          type: number
+          format: float
+          example: 13.33
+
+    ResetRequest:
+      type: object
+      properties:
+        target_question_id:
+          type: string
+          description: Question ID to reset to (optional, defaults to start)
+          example: "q3"
+
+    ResetResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Project reset successfully"
+        current_question:
+          $ref: '#/components/schemas/Question'
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "invalid_request"
+        message:
+          type: string
+          example: "Description of the error"
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "validation_error"
+        message:
+          type: string
+          example: "Answer validation failed"
+        details:
+          type: object
+          properties:
+            field:
+              type: string
+              example: "answer"
+            issue:
+              type: string
+              example: "Expected number, got string"
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []

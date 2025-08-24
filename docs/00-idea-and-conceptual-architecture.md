@@ -24,6 +24,11 @@ The ultimate goal is to:
 ---
 
 ## Terminology
+- **Project**  
+  - A form completion instance for a specific building or compliance case.  
+  - Contains all form questions, answers, and state information.  
+  - Distinguished from traditional application sessions for authentication.  
+
 - **Form Questions**  
   - The official, predefined questions in the form.  
   - Fixed, sequential, known in advance.  
@@ -63,7 +68,7 @@ The system relies on two main sources of knowledge:
   - Stateless: UI only renders whatever backend tells it.  
 
 - **Backend API (Python)**  
-  - Manages **sessions** (current form question, past answers).  
+  - Manages **projects** (current form question, past answers).  
   - Maintains **decision tree of form questions**.  
   - Packages **context** to send to AI.  
   - Validates AI outputs against form structure.  
@@ -85,7 +90,7 @@ The system relies on two main sources of knowledge:
 
 ## Context Management
 Each AI call is provided a **context package**, built by backend:  
-- Finalized **form questions and answers** so far (session history).  
+- Finalized **form questions and answers** so far (project history).  
 - **Current form question** under resolution.  
 - **Latest user answer** (to form or clarifying question).  
 - **Relevant knowledge base excerpts** (optional, retrieved if needed).  
@@ -96,14 +101,14 @@ Each AI call is provided a **context package**, built by backend:
 
 1. **UI** shows current form question.  
 2. **User** answers (choice/number).  
-3. **UI → Backend**: sends answer (session-aware).  
+3. **UI → Backend**: sends answer (project-aware).  
 4. **Backend** builds context (history + current answer + optional KB references).  
 5. **Backend → AI**: sends context with instruction.  
 6. **AI → Backend** decides:  
    - **Case 6.1:** Enough info → return answer to current form question → Backend finalizes and advances.  
    - **Case 6.2:** Not enough info → return clarifying question → Backend stores context and UI renders it.  
    - **Case 6.3:** Can finalize current form question **and** proposes clarifying question for the next → Backend finalizes, advances, forwards clarifying Q.  
-   - **Case 6.4:** All form questions resolved → Backend marks session complete and generates final form.  
+   - **Case 6.4:** All form questions resolved → Backend marks project complete and generates final form.  
 
 ---
 
@@ -118,8 +123,8 @@ sequenceDiagram
     participant KB as Ontario Building Code (Knowledge Base)
 
     U->>UI: Provides answer (choice/number)
-    UI->>API: Send answer + session_id
-    API->>API: Update session state (form Q/A history, current question)
+    UI->>API: Send answer + project_id
+    API->>API: Update project state (form Q/A history, current question)
     API->>KB: (Optional) Retrieve definitions/excerpts
     API->>AI: Send context {history, current form question, latest answer, KB refs}
     AI-->>API: Response (form answer OR clarifying question)
