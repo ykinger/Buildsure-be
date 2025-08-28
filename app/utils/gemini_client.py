@@ -377,7 +377,7 @@ class GeminiChat:
         self._initialize_chat()
 
 
-def create_gemini_client(config: Optional[GeminiConfig] = None) -> GeminiClient:
+def create_gemini_client(config: Optional[GeminiConfig] = None) -> Optional[GeminiClient]:
     """
     Factory function to create a Gemini client with configuration.
     
@@ -385,15 +385,13 @@ def create_gemini_client(config: Optional[GeminiConfig] = None) -> GeminiClient:
         config: Optional GeminiConfig, will use environment variables if not provided
         
     Returns:
-        Configured GeminiClient instance
-        
-    Raises:
-        ValueError: If required configuration is missing
+        Configured GeminiClient instance if API key is available, None otherwise
     """
     if config is None:
         api_key = os.environ.get('GEMINI_API_KEY')
         if not api_key:
-            raise ValueError("GEMINI_API_KEY environment variable is required")
+            logger.info("Gemini API key not found - Gemini functionality will be disabled")
+            return None
         
         config = GeminiConfig(
             api_key=api_key,

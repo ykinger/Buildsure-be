@@ -30,6 +30,15 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
     SQLALCHEMY_ECHO: bool = False
     
+    # Database Connection Pool Configuration
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        'pool_size': 2,           # 2 persistent connections
+        'max_overflow': 5,        # Up to 5 additional connections when needed
+        'pool_timeout': 30,       # 30 seconds to wait for connection
+        'pool_recycle': 3600,     # Recreate connections every hour
+        'pool_pre_ping': True     # Test connections before use
+    }
+    
     # Google Gemini AI Configuration
     GEMINI_API_KEY: str = os.environ.get('GEMINI_API_KEY', '')
     GEMINI_MODEL: str = os.environ.get('GEMINI_MODEL', 'gemini-pro')
