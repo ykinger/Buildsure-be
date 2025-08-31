@@ -2,22 +2,27 @@
 Project Service
 Business logic for project creation and management.
 """
-from typing import List, Dict
+from typing import List, Dict, Optional, Any
 from sqlalchemy.orm import Session
 from app.models.project import Project, ProjectCreate, ProjectResponse
 from app.repositories.project_repository import ProjectRepository
+import logging
+
+logger = logging.getLogger(__name__)
 
 class ProjectService:
     """Service class for project business logic."""
     
-    def __init__(self, project_repository: ProjectRepository):
+    def __init__(self, project_repository: ProjectRepository, ai_service: Optional[object] = None):
         """
-        Initialize ProjectService with a project repository.
+        Initialize ProjectService with a project repository and optional AI service.
         
         Args:
             project_repository: ProjectRepository instance for data access
+            ai_service: Optional AIService instance for AI functionality
         """
         self.project_repository = project_repository
+        self.ai_service = ai_service
     
     def create_project(self, org_id: str, payload: Dict) -> Project:
         """
@@ -53,3 +58,57 @@ class ProjectService:
             List of Project ORM objects
         """
         return self.project_repository.get_projects_by_organization(org_id)
+
+    def start_project_analysis(self, org_id: str, project_id: str) -> Dict[str, Any]:
+        """
+        Start AI analysis for a project.
+        
+        Args:
+            org_id: Organization ID
+            project_id: Project ID
+            
+        Returns:
+            Dictionary with AI analysis response (question or decision)
+        """
+        try:
+            if not self.ai_service:
+                logger.warning("AI service not available - returning fallback response")
+                # Return fallback response when AI service is unavailable
+                import datetime
+                return {
+                    "id": "fallback-response",
+                    "type": "decision",
+                    "decision": {
+                        "text": "AI analysis service is currently unavailable. Please try again later.",
+                        "confidence": 0.0,
+                        "follow_up_required": False
+                    },
+                    "metadata": {
+                        "session_id": "fallback-session",
+                        "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+                        "next_step": "complete"
+                    }
+                }
+            
+            # Call AI service for project analysis
+            return self.ai_service.start_project_analysis(org_id, project_id)
+            
+        except Exception as e:
+            logger.error(f"Error starting project analysis: {e}")
+            # Return error response
+            import datetime
+            return {
+                "id": "error-response",
+                "type": "decision",
+                "decision": {
+                    "text": "An error occurred while starting project analysis. Please try again.",
+                    "confidence": 0.0,
+                    "follow_up_required": False
+                },
+                "metadata": {
+                    "session_id": "error-session",
+                    "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+                    "next_step": "complete",
+                    "error": str(e)
+                }
+            }

@@ -52,3 +52,32 @@ def get_projects(org_id):
             'dueDate': str(project.due_date) if project.due_date else None
         })
     return jsonify(result), 200
+
+
+@project_bp.route('/api/v1/organizations/<org_id>/projects/<project_id>/start', methods=['POST'])
+def start_project_analysis(org_id, project_id):
+    """
+    Start AI analysis for a project.
+    
+    Args:
+        org_id: Organization ID
+        project_id: Project ID
+        
+    Returns:
+        JSON response with AI analysis (question or decision)
+    """
+    try:
+        # Use pre-initialized service from app context
+        project_service = current_app.extensions['project_service']
+        
+        # Start project analysis
+        analysis_result = project_service.start_project_analysis(org_id, project_id)
+        
+        return jsonify(analysis_result), 200
+        
+    except Exception as e:
+        current_app.logger.error(f"Error starting project analysis: {e}")
+        return jsonify({
+            "error": "Failed to start project analysis",
+            "details": str(e)
+        }), 500

@@ -40,14 +40,17 @@ def create_app(config_name: Optional[str] = None) -> Flask:
     with app.app_context():
         from app.repositories.project_repository import ProjectRepository
         from app.services.project_service import ProjectService
+        from app.services.ai_service import AIService
         
         # Create repository and service instances
         project_repository = ProjectRepository(db.session)
-        project_service = ProjectService(project_repository)
+        ai_service = AIService()
+        project_service = ProjectService(project_repository, ai_service)
         
         # Store in app context for dependency injection
         app.extensions['project_repository'] = project_repository
         app.extensions['project_service'] = project_service
+        app.extensions['ai_service'] = ai_service
     
     # Register blueprints
     from app.controllers.health_controller import health_bp
