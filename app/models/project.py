@@ -1,8 +1,10 @@
 """
 Project Model
-Defines the database model for projects.
+Defines the database model and Pydantic schemas for projects.
 """
 import uuid
+from datetime import date, datetime
+from pydantic import BaseModel, ConfigDict
 from app import db
 
 class Project(db.Model):
@@ -17,3 +19,21 @@ class Project(db.Model):
     created_by = db.Column(db.String(36), nullable=True)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
+
+class ProjectBase(BaseModel):
+    name: str
+    description: str | None = None
+    due_date: date | None = None
+    organization_id: str
+    status: str = 'not_started'
+
+class ProjectCreate(ProjectBase):
+    pass
+
+class ProjectResponse(ProjectBase):
+    id: str
+    created_by: str | None
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
