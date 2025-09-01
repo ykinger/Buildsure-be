@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Start BuildSure API",
+			"type": "shell",
+			"command": "/Users/yogi/Documents/GitHub/BuildSure/Buildsure-be/.venv/bin/python",
+			"args": [
+				"run.py"
+			],
+			"group": "build",
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}
