@@ -59,6 +59,30 @@ class ProjectService:
         """
         return self.project_repository.get_projects_by_organization(org_id)
 
+    def get_project(self, org_id: str, project_id: str) -> Project:
+        """
+        Get a single project by organization ID and project ID.
+        
+        Args:
+            org_id: Organization ID
+            project_id: Project ID
+            
+        Returns:
+            Project ORM object
+            
+        Raises:
+            ValueError: If project is not found or doesn't belong to the organization
+        """
+        project = self.project_repository.get_project_by_id(project_id)
+        
+        if not project:
+            raise ValueError(f"Project with ID {project_id} not found")
+            
+        if project.organization_id != org_id:
+            raise ValueError(f"Project {project_id} does not belong to organization {org_id}")
+            
+        return project
+
     def start_project_analysis(self, org_id: str, project_id: str) -> Dict[str, Any]:
         """
         Start AI analysis for a project.
