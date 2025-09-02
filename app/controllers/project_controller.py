@@ -2,21 +2,24 @@
 Project Controller
 Handles API endpoints for project operations.
 """
-from flask import Blueprint, request, jsonify, current_app
+from typing import Dict, Any, List
+from flask import Blueprint, request, jsonify, current_app, Response
+from app.models.project import Project
+from app.services.project_service import ProjectService
 
 project_bp = Blueprint('project_bp', __name__)
 
 
 @project_bp.route('/api/v1/organizations/<org_id>/projects', methods=['POST'])
-def create_project(org_id):
-    payload = request.get_json()
+def create_project(org_id: str) -> Response:
+    payload: Dict[str, Any] = request.get_json()
     if not payload or not payload.get('name'):
         return jsonify({'error': 'Missing required field: name'}), 400
     
     # Use pre-initialized service from app context
-    project_service = current_app.extensions['project_service']
+    project_service: ProjectService = current_app.extensions['project_service']
     
-    project = project_service.create_project(org_id, payload)
+    project: Project = project_service.create_project(org_id, payload)
     
     return jsonify({
         'id': project.id,
@@ -32,13 +35,13 @@ def create_project(org_id):
 
 
 @project_bp.route('/api/v1/organizations/<org_id>/projects', methods=['GET'])
-def get_projects(org_id):
+def get_projects(org_id: str) -> Response:
     # Use pre-initialized service from app context
-    project_service = current_app.extensions['project_service']
+    project_service: ProjectService = current_app.extensions['project_service']
     
-    projects = project_service.get_projects_by_org(org_id)
+    projects: List[Project] = project_service.get_projects_by_org(org_id)
     
-    result = []
+    result: List[Dict[str, Any]] = []
     for project in projects:
         result.append({
             'id': project.id,
@@ -55,7 +58,7 @@ def get_projects(org_id):
 
 
 @project_bp.route('/api/v1/organizations/<org_id>/projects/<project_id>', methods=['GET'])
-def get_project(org_id, project_id):
+def get_project(org_id: str, project_id: str) -> Response:
     """
     Get details of a single project.
     
@@ -68,10 +71,10 @@ def get_project(org_id, project_id):
     """
     try:
         # Use pre-initialized service from app context
-        project_service = current_app.extensions['project_service']
+        project_service: ProjectService = current_app.extensions['project_service']
         
         # Get the project
-        project = project_service.get_project(org_id, project_id)
+        project: Project = project_service.get_project(org_id, project_id)
         
         return jsonify({
             'id': project.id,
@@ -100,7 +103,7 @@ def get_project(org_id, project_id):
 
 
 @project_bp.route('/api/v1/organizations/<org_id>/projects/<project_id>/start', methods=['POST'])
-def start_project_analysis(org_id, project_id):
+def start_project_analysis(org_id: str, project_id: str) -> Response:
     """
     Start AI analysis for a project.
     
@@ -113,10 +116,10 @@ def start_project_analysis(org_id, project_id):
     """
     try:
         # Use pre-initialized service from app context
-        project_service = current_app.extensions['project_service']
+        project_service: ProjectService = current_app.extensions['project_service']
         
         # Start project analysis
-        analysis_result = project_service.start_project_analysis(org_id, project_id)
+        analysis_result: Dict[str, Any] = project_service.start_project_analysis(org_id, project_id)
         
         return jsonify(analysis_result), 200
         

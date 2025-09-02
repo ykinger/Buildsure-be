@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 class ProjectService:
     """Service class for project business logic."""
     
-    def __init__(self, project_repository: ProjectRepository, ai_service: Optional[object] = None):
+    def __init__(self, project_repository: ProjectRepository, ai_service: Optional[Any] = None) -> None:
         """
         Initialize ProjectService with a project repository and optional AI service.
         
@@ -21,16 +21,16 @@ class ProjectService:
             project_repository: ProjectRepository instance for data access
             ai_service: Optional AIService instance for AI functionality
         """
-        self.project_repository = project_repository
-        self.ai_service = ai_service
+        self.project_repository: ProjectRepository = project_repository
+        self.ai_service: Optional[Any] = ai_service
     
-    def create_project(self, org_id: str, payload: Dict) -> Project:
+    def create_project(self, org_id: str, payload: Dict[str, Any]) -> Project:
         """
         Create a new project using repository pattern.
         
         Args:
             org_id: Organization ID
-            payload: Project data dictionary
+            payload: Project data dictionary with string keys
             
         Returns:
             Created Project ORM object

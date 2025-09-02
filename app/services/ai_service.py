@@ -14,27 +14,27 @@ logger = logging.getLogger(__name__)
 class MockGeminiClient:
     """Mock Gemini client for when the real client is not available."""
     
-    def generate_text(self, prompt):
+    def generate_text(self, prompt: str) -> 'MockGeminiResponse':
         return MockGeminiResponse(False, None, "Gemini client not configured", None)
     
-    def start_chat(self):
+    def start_chat(self) -> 'MockChatSession':
         return MockChatSession()
     
-    def health_check(self):
+    def health_check(self) -> bool:
         return False
 
 class MockGeminiResponse:
-    def __init__(self, success, content, error_message, usage_metadata):
+    def __init__(self, success: bool, content: Optional[Any], error_message: Optional[str], usage_metadata: Optional[Any]):
         self.success = success
         self.content = content
         self.error_message = error_message
         self.usage_metadata = usage_metadata
 
 class MockChatSession:
-    def send_message(self, message):
+    def send_message(self, message: str) -> MockGeminiResponse:
         return MockGeminiResponse(False, None, "Chat not available", None)
     
-    def get_history(self):
+    def get_history(self) -> List[Any]:
         return []
 
 class AIService:

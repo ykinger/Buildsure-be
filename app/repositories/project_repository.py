@@ -2,7 +2,7 @@
 Project Repository
 Data access layer for project operations using Pydantic models.
 """
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from app import db
 from app.models.project import Project, ProjectCreate, ProjectResponse
 from sqlalchemy.orm import Session
@@ -10,8 +10,8 @@ from sqlalchemy.orm import Session
 class ProjectRepository:
     """Repository class for project database operations."""
     
-    def __init__(self, session: Session):
-        self.session = session
+    def __init__(self, session: Session) -> None:
+        self.session: Session = session
     
     def create_project(self, project_data: ProjectCreate) -> Project:
         """
