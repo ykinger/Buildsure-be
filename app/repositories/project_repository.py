@@ -28,7 +28,8 @@ class ProjectRepository:
             description=project_data.description,
             due_date=project_data.due_date,
             organization_id=project_data.organization_id,
-            status=project_data.status
+            status=project_data.status,
+            curr_task=project_data.curr_task
         )
         
         self.session.add(project)

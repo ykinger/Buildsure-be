@@ -28,6 +28,7 @@ def create_project(org_id: str) -> Response:
         'dueDate': str(project.due_date) if project.due_date else None,
         'organizationId': project.organization_id,
         'status': project.status,
+        'currTask': project.curr_task,
         'createdAt': project.created_at.isoformat() if project.created_at else None,
         'updatedAt': project.updated_at.isoformat() if project.updated_at else None,
         'createdBy': project.created_by
@@ -49,6 +50,7 @@ def get_projects(org_id: str) -> Response:
             'description': project.description,
             'organizationId': project.organization_id,
             'status': project.status,
+            'currTask': project.curr_task,
             'createdAt': project.created_at.isoformat() if project.created_at else None,
             'updatedAt': project.updated_at.isoformat() if project.updated_at else None,
             'createdBy': project.created_by,
@@ -83,6 +85,7 @@ def get_project(org_id: str, project_id: str) -> Response:
             'dueDate': str(project.due_date) if project.due_date else None,
             'organizationId': project.organization_id,
             'status': project.status,
+            'currTask': project.curr_task,
             'createdAt': project.created_at.isoformat() if project.created_at else None,
             'updatedAt': project.updated_at.isoformat() if project.updated_at else None,
             'createdBy': project.created_by

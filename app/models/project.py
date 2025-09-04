@@ -16,6 +16,7 @@ class Project(db.Model):
     due_date = db.Column(db.Date, nullable=True)
     organization_id = db.Column(db.String(36), nullable=False)
     status = db.Column(db.String(32), nullable=False, default='not_started')
+    curr_task = db.Column(db.String(255), nullable=True)
     created_by = db.Column(db.String(36), nullable=True)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
@@ -26,6 +27,7 @@ class ProjectBase(BaseModel):
     due_date: date | None = None
     organization_id: str
     status: str = 'not_started'
+    curr_task: str | None = None
 
 class ProjectCreate(ProjectBase):
     pass

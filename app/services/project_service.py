@@ -41,7 +41,8 @@ class ProjectService:
             description=payload.get('description'),
             due_date=payload.get('dueDate'),
             organization_id=org_id,
-            status=payload.get('status', 'not_started')
+            status=payload.get('status', 'not_started'),
+            curr_task=payload.get('currTask', 'code_matrix')
         )
         
         # Use repository for database operations
