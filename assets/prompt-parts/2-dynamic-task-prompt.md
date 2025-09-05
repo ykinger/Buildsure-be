@@ -3,24 +3,17 @@
 This section contains the history of this specific form completion project. It includes all past questions that have been finalized and a record of the clarifying questions you have asked so far for the current form question.  
 Finalized Form Questions and Answers:
 
-<REPLACEME with previously answered form questions and the user's validated answers>
-Use following as an example only:
+{form_questions_and_answers_str}
 
-1. Question <number of form question>: <title of form question>
-   Answer: <AI's answer ot this question from previous turns>
-2. Question <number of form question>: <title of form question>
-   Answer: <AI's answer ot this question from previous turns>
 **Clarifying Questions and User Responses (for the current form question):**
 
-REPLACEME WITH ORDERED LIST, remove the example below and only use it to replicate same structure using actual values:
-1. Question: <Previous clarifying question you asked>  
-   Answer: <User's answer from previous turn>  
-2. Question: ...
-   Answer: ...## **Current Task**
+{clarifying_questions_and_answers_str}
 
-Your current objective is to find the definitive answer to **Form Question <REPLACEME Number and Title>** from the "Form Questions Reference" list above.
+## **Current Task**
+
+Your current objective is to find the definitive answer to **Form Question {current_question_number}** from the "Form Questions Reference" list above.
 Latest User Answer:  
-<REPLACEME WITH the latest user's structured answer to the last clarifying question, OR, with a sentence clearly telling AI that so far there has not been any questions asked>
+{latest_user_answer}
 
 ### **Instructions and Decision Flow**
 
