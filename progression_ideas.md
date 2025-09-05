@@ -12,8 +12,43 @@ we go to table code_matrix_status get the section we are working on and also get
 
 the structure of response for this query endpoint will look like this
 
+
+# TBD
+1. UI loads
+2. UI calls `/api/v1/organizations/<org_id>/project/<project_id>/code-matrix/query`
+3. The controller for that endpoint does what it needs to retrieve:
+  a. Project state -> which section are we working on right now?
+  b. List of form questions answered so far [AI has answered these]
+  c. List of clarifying questions asked and answered so far [AI asked these, user answered]
+4. Controller calls AI service to get next "thing"
+  a. Next thing could be a clarifying question -> used to work on current form section
+  b. Next thing could be an answer decided by AI, that needs to go to UI for "user verification"  
+
+
+
+
+```json
 {
-  "id": "unique-session-id-12345",
+  "type": "question",
+  "question": {
+    "text": "What type of building are you constructing?",
+    "type": "multiple_choice_single" | "multiple_choice_multiple" | "numerical" | "text",
+    "options": [
+      {"id": "1", "text": "Residential"},
+      {"id": "2", "text": "Commercial"},
+      {"id": "3", "text": "Industrial"}
+    ],
+    "validation": {
+      "min": 0,
+      "max": 100,
+      "pattern": "^[A-Za-z0-9 ]+$"
+    }
+  }
+}
+```
+
+```json
+{
   "type": "question" | "decision",
   "question": {
     "text": "What type of building are you constructing?",
@@ -31,11 +66,10 @@ the structure of response for this query endpoint will look like this
   },
   "decision": {
     "text": "Based on your inputs, we recommend using steel framing for this project.",
-    "confidence": 0.85,
-    "follow_up_required": true
-  },
+    "confidence": 0.85
+  }
 }
-
+```
 
 
 

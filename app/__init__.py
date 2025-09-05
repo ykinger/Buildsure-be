@@ -6,6 +6,11 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
+import google.generativeai as genai
+import sys
+import os
+from app.utils.prompt_builder import PromptBuilder 
+
 # Initialize extensions
 db = SQLAlchemy()
 
@@ -44,7 +49,13 @@ def create_app(config_name: Optional[str] = None) -> Flask:
         
         # Create repository and service instances
         project_repository = ProjectRepository(db.session)
-        ai_service = AIService()
+
+        # Create Gemini client
+        
+        genai.configure(api_key=get_config('GEMINI_API_KEY'))
+        gemini_model_client = genai.GenerativeModel(get_config('GEMINI_MODEL'))
+
+        ai_service = AIService(gemini_model_client, prompt_builder=PromptBuilder(template_dir= os.getcwd() + '../assets/'))
         project_service = ProjectService(project_repository, ai_service)
         
         # Store in app context for dependency injection

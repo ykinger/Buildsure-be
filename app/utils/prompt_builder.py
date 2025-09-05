@@ -1,8 +1,3 @@
-class PromptBuilder:
-    """
-    A class for building prompts from a template, conversation history, and current task details.
-    """
-
 import glob
 import os
 

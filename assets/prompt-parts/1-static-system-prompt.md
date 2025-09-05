@@ -4178,17 +4178,59 @@ You must return your response as a single JSON object. Do not include any additi
 
 ### **If asking a clarifying question:**
 
-```json
-{
-  "response_type": "clarifying_question",
-  "clarifying_question": "<Your new, concise question for the user>",
-  "input_type": "<'multiple_choice' or 'numeric'>",
-  "choices": [
-    "<Option 1>",
-    "<Option 2>",
-    "<Option 3>"
-  ],
-  "unit": "<e.g., 'm', 'mm^1' - Only for numeric input>",
-  "clarifying_question_context": "<Brief context for why this question is being asked, relating it back to the form question>"
-}
-```
+## if asking a multiple choice question, depending on how many answers are allowed to be selected:
+
+1. When multiple answeres are allowed
+    ```json
+    {
+      "response_type": "clarifying_question",
+      "clarifying_question": "<Your new, concise question      for the user>",
+      "input_type": "multiple_choice_multiple_options",
+      "choices": [
+        "<Option 1>",
+        "<Option 2>",
+        "<Option 3>"
+      ],
+      "clarifying_question_context": "<Brief context for      why this question is being asked, relating it back      to the form question>"
+    }
+    ```
+2. When single answere is allowed
+    ```json
+    {
+      "response_type": "clarifying_question",
+      "clarifying_question": "<Your new, concise question     for the user>",
+      "input_type": "multiple_choice_single_option",
+      "choices": [
+        "<Option 1>",
+        "<Option 2>",
+        "<Option 3>"
+      ],
+      "clarifying_question_context": "<Brief context for     why this question is being asked, relating it back     to the form question>"
+    }
+    ```
+3. When a numeric answer is allowed, you need to provide a unit and validation rules (min/max range):
+    ```json
+    {
+      "response_type": "clarifying_question",
+      "clarifying_question": "<Your new, concise question     for the user>",
+      "input_type": "numeric",
+      "unit": "<e.g., 'm', 'mm^1' - Only for numeric     input>",
+      "validation": {
+        "min": "<'minimum allowed value as answer'>",
+        "max": "<'maximum allowed value as answer>"
+      },
+      "clarifying_question_context": "<Brief context for     why this question is being asked, relating it back     to the form question>"
+    }
+    ```
+
+4. When asking a question that can have a free form text answer:
+**Imprtant note**: You must avoid asking free form text questions, unless absolutely required.
+    ```json
+    {
+      "response_type": "clarifying_question",
+      "clarifying_question": "<Your new, concise question     for the user>",
+      "input_type": "text",
+      "unit": "<e.g., 'm', 'mm^1' - Only for numeric     input>",
+      "clarifying_question_context": "<Brief context for     why this question is being asked, relating it back     to the form question>"
+    }
+    ```

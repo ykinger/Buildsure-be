@@ -8,5 +8,5 @@ marshmallow==3.20.1
 flask-marshmallow==0.15.0
 marshmallow-sqlalchemy==0.29.0
 typing-extensions==4.8.0
-google-generativeai==0.3.2
+google-generativeai==0.8.5
 requests==2.31.0

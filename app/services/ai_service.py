@@ -7,6 +7,8 @@ It includes text generation, analysis, and conversation management.
 from typing import Dict, List, Optional, Any
 import logging
 from dataclasses import asdict
+from app.utils.prompt_builder import PromptBuilder
+from json import loads
 
 logger = logging.getLogger(__name__)
 
@@ -46,30 +48,23 @@ class AIService:
     and intelligent assistance.
     """
     
-    def __init__(self, gemini_client: Optional[Any] = None):
+    def __init__(self, gemini_client: Any, prompt_builder: PromptBuilder):
         """
         Initialize the AI service.
         
         Args:
             gemini_client: Optional pre-configured GeminiClient (mock for now)
+            prompt_builder: PromptBuilder
         """
-        try:
-            # Try to import the real Gemini client
-            from app.utils.gemini_client import (
-                GeminiClient, 
-                GeminiConfig, 
-                GeminiResponse, 
-                create_gemini_client
-            )
-            self.client = gemini_client or create_gemini_client()
-        except ImportError:
-            # Use mock client if real one is not available
-            logger.warning("Gemini client not available - using mock implementation")
-            self.client = MockGeminiClient()
-        
-        self._chat_sessions: Dict[str, Any] = {}
+        self.client = gemini_client or MockGeminiClient()
+        self.prompt_builder = prompt_builder
+
     
-    def start_project_analysis(self, org_id: str, project_id: str) -> Dict[str, Any]:
+    def query(self, 
+        current_question_number: str,
+        form_questions_and_answers: list[dict],
+        clarifying_questions_and_answers: list[dict]
+        ) -> Dict[str, Any]:
         """
         Start AI analysis for a project - mock implementation for now
         
@@ -81,81 +76,19 @@ class AIService:
             Dictionary with AI analysis response (question or decision)
         """
         try:
-            # Mock implementation that returns different scenarios
-            import random
-            import datetime
-            
-            scenarios = [
-                # Scenario 1: Multiple choice single answer
-                {
-                    "id": f"question-{random.randint(1000, 9999)}",
-                    "type": "question",
-                    "question": {
-                        "text": "What is the primary construction material for this project?",
-                        "type": "multiple_choice_single",
-                        "options": [
-                            {"id": "1", "text": "Concrete"},
-                            {"id": "2", "text": "Steel"},
-                            {"id": "3", "text": "Wood"},
-                            {"id": "4", "text": "Masonry"}
-                        ]
-                    },
-                    "metadata": {
-                        "session_id": f"session-{random.randint(10000, 99999)}",
-                        "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
-                        "next_step": "awaiting_user_response"
-                    }
-                },
-                # Scenario 2: Decision with follow-up
-                {
-                    "id": f"decision-{random.randint(1000, 9999)}",
-                    "type": "decision",
-                    "decision": {
-                        "text": "Based on initial analysis, this appears to be a residential project with moderate complexity.",
-                        "confidence": 0.78,
-                        "follow_up_required": True
-                    },
-                    "metadata": {
-                        "session_id": f"session-{random.randint(10000, 99999)}",
-                        "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
-                        "next_step": "awaiting_user_confirmation"
-                    }
-                },
-                # Scenario 3: Numerical input question
-                {
-                    "id": f"question-{random.randint(1000, 9999)}",
-                    "type": "question",
-                    "question": {
-                        "text": "What is the estimated square footage of the building?",
-                        "type": "numerical",
-                        "validation": {
-                            "min": 100,
-                            "max": 10000
-                        }
-                    },
-                    "metadata": {
-                        "session_id": f"session-{random.randint(10000, 99999)}",
-                        "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
-                        "next_step": "awaiting_user_response"
-                    }
-                },
-                # Scenario 4: Text input question
-                {
-                    "id": f"question-{random.randint(1000, 9999)}",
-                    "type": "question",
-                    "question": {
-                        "text": "Please describe any special requirements or constraints for this project:",
-                        "type": "text"
-                    },
-                    "metadata": {
-                        "session_id": f"session-{random.randint(10000, 99999)}",
-                        "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
-                        "next_step": "awaiting_user_response"
-                    }
-                }
-            ]
-            
-            return random.choice(scenarios)
+            ai_response = self.client.generate_content(self.prompt_builder.render(
+                current_question_number=current_question_number,
+                form_questions_and_answers=form_questions_and_answers,
+                clarifying_questions_and_answers=clarifying_questions_and_answers
+                ))
+            # remove ```json and ``` if present
+            ai_response = ai_response.content.replace("```json", "").replace("```", "").strip()
+            # TODO:
+            #   1. [x] Trim excessive text (JSON code block markdown, etc)
+            #   2. [ ] Make sure returned value matches expected JSON structure
+            #   3. [ ] Throw exception if not
+            #   4. Turn response into actual object/dict
+            return loads(ai_response)
             
         except Exception as e:
             logger.error(f"Error in mock project analysis: {e}")
