@@ -137,3 +137,70 @@ class ProjectService:
                     "error": str(e)
                 }
             }
+
+    def query_code_matrix(self, org_id: str, project_id: str) -> Dict[str, Any]:
+        """
+        Query AI service with code matrix data.
+        
+        Args:
+            org_id: Organization ID
+            project_id: Project ID
+            
+        Returns:
+            Dictionary with AI response
+            
+        Raises:
+            ValueError: If code matrix status is not found
+        """
+        try:
+            # Get code matrix status from repository
+            code_matrix_status = self.project_repository.get_code_matrix_status(org_id, project_id)
+            
+            if not code_matrix_status:
+                raise ValueError(f"Code matrix status not found for organization {org_id} and project {project_id}")
+            
+            if not self.ai_service:
+                logger.warning("AI service not available - returning fallback response")
+                # Return fallback response when AI service is unavailable
+                import datetime
+                return {
+                    "id": "fallback-response",
+                    "type": "decision",
+                    "decision": {
+                        "text": "AI analysis service is currently unavailable. Please try again later.",
+                        "confidence": 0.0,
+                        "follow_up_required": False
+                    },
+                    "metadata": {
+                        "session_id": "fallback-session",
+                        "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+                        "next_step": "complete"
+                    }
+                }
+            
+            # Call AI service query with code matrix data
+            return self.ai_service.query(
+                current_question_number=code_matrix_status.curr_section or "",
+                form_questions_and_answers=code_matrix_status.code_matrix_questions or [],
+                clarifying_questions_and_answers=code_matrix_status.clarifying_questions or []
+            )
+            
+        except Exception as e:
+            logger.error(f"Error querying code matrix: {e}")
+            # Return error response
+            import datetime
+            return {
+                "id": "error-response",
+                "type": "decision",
+                "decision": {
+                    "text": "An error occurred while querying code matrix. Please try again.",
+                    "confidence": 0.0,
+                    "follow_up_required": False
+                },
+                "metadata": {
+                    "session_id": "error-session",
+                    "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+                    "next_step": "complete",
+                    "error": str(e)
+                }
+            }

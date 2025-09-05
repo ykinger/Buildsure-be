@@ -18,8 +18,8 @@ class PromptBuilder:
     def render(
         self,
         current_question_number: str,
-        form_questions_and_answers: list[dict],
-        clarifying_questions_and_answers: list[dict],
+        form_questions_and_answers: list[str],
+        clarifying_questions_and_answers: list[str],
     ) -> str:
         """
         Renders the prompt template with the provided data.
@@ -61,19 +61,21 @@ class PromptBuilder:
 
         form_questions_and_answers_str = "\n".join(
             [
-                f"{i+1}. Question: {q_and_a['question_title']}\n   Answer: {q_and_a['answer']}"
+                # f"{i+1}. Question: {q_and_a['question_title']}\n   Answer: {q_and_a['answer']}"
+                f"{i+1}{q_and_a}"
                 for i, q_and_a in enumerate(form_questions_and_answers)
             ]
         ) if form_questions_and_answers else "No finalized form questions and answers yet."
 
         clarifying_questions_and_answers_str = "\n".join(
             [
-                f"{i+1}. Question: {q_and_a['question']}\n   Answer: {q_and_a['answer']}"
+                # f"{i+1}. Question: {q_and_a['question']}\n   Answer: {q_and_a['answer']}"
+                f"{i+1}{q_and_a}"
                 for i, q_and_a in enumerate(clarifying_questions_and_answers)
             ]
         ) if len(clarifying_questions_and_answers)>0 else "No clarifying questions asked so far."
 
-        latest_user_answer = clarifying_questions_and_answers[-1]["answer"] if clarifying_questions_and_answers else "No clarifying questions asked so far."
+        latest_user_answer = clarifying_questions_and_answers[-1] if clarifying_questions_and_answers else "No clarifying questions asked so far."
         rendered_template = template.format(
             current_question_number=str(current_question_number),
             form_questions_and_answers_str=form_questions_and_answers_str,

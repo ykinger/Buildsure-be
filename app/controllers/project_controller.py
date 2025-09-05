@@ -132,3 +132,38 @@ def start_project_analysis(org_id: str, project_id: str) -> Response:
             "error": "Failed to start project analysis",
             "details": str(e)
         }), 500
+
+
+@project_bp.route('/api/v1/organizations/<org_id>/projects/<project_id>/code-matrix/query', methods=['POST'])
+def query_code_matrix(org_id: str, project_id: str) -> Response:
+    """
+    Query AI service with code matrix data.
+    
+    Args:
+        org_id: Organization ID
+        project_id: Project ID
+        
+    Returns:
+        JSON response with AI analysis result
+    """
+    try:
+        # Use pre-initialized service from app context
+        project_service: ProjectService = current_app.extensions['project_service']
+        
+        # Query code matrix
+        query_result: Dict[str, Any] = project_service.query_code_matrix(org_id, project_id)
+        
+        return jsonify(query_result), 200
+        
+    except ValueError as e:
+        current_app.logger.warning(f"Code matrix status not found: {e}")
+        return jsonify({
+            "error": "Code matrix status not found",
+            "details": str(e)
+        }), 404
+    except Exception as e:
+        current_app.logger.error(f"Error querying code matrix: {e}")
+        return jsonify({
+            "error": "Failed to query code matrix",
+            "details": str(e)
+        }), 500

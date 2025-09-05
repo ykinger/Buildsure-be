@@ -62,8 +62,8 @@ class AIService:
     
     def query(self, 
         current_question_number: str,
-        form_questions_and_answers: list[dict],
-        clarifying_questions_and_answers: list[dict]
+        form_questions_and_answers: list[str],
+        clarifying_questions_and_answers: list[str]
         ) -> Dict[str, Any]:
         """
         Start AI analysis for a project - mock implementation for now
