@@ -54,3 +54,6 @@ logs/
 .coverage
 .pytest_cache/
 htmlcov/
+
+# IDE
+*.code-workspace
