@@ -51,9 +51,8 @@ def create_app(config_name: Optional[str] = None) -> Flask:
         project_repository = ProjectRepository(db.session)
 
         # Create Gemini client
-        
-        genai.configure(api_key=get_config('GEMINI_API_KEY'))
-        gemini_model_client = genai.GenerativeModel(get_config('GEMINI_MODEL'))
+        genai.configure(api_key=app.config.get('GEMINI_API_KEY'))
+        gemini_model_client = genai.GenerativeModel(app.config.get('GEMINI_MODEL'))
 
         ai_service = AIService(gemini_model_client, prompt_builder=PromptBuilder(template_dir= os.getcwd() + '../assets/'))
         project_service = ProjectService(project_repository, ai_service)
