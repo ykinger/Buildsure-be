@@ -44,11 +44,13 @@ def create_app(config_name: Optional[str] = None) -> Flask:
     # Initialize services and repositories
     with app.app_context():
         from app.repositories.project_repository import ProjectRepository
+        from app.repositories.code_matrix_repository import CodeMatrixRepository
         from app.services.project_service import ProjectService
         from app.services.ai_service import AIService
         
-        # Create repository and service instances
+        # Create repository instances
         project_repository = ProjectRepository(db.session)
+        code_matrix_repository = CodeMatrixRepository(db.session)
 
         # Create Gemini client
         genai.configure(api_key=app.config.get('GEMINI_API_KEY'))
@@ -57,10 +59,11 @@ def create_app(config_name: Optional[str] = None) -> Flask:
         template_dir = os.path.join(os.getcwd(), 'assets/prompt-parts/')
 
         ai_service = AIService(gemini_model_client, prompt_builder=PromptBuilder(template_dir=template_dir))
-        project_service = ProjectService(project_repository, ai_service)
+        project_service = ProjectService(project_repository, code_matrix_repository, ai_service)
         
         # Store in app context for dependency injection
         app.extensions['project_repository'] = project_repository
+        app.extensions['code_matrix_repository'] = code_matrix_repository
         app.extensions['project_service'] = project_service
         app.extensions['ai_service'] = ai_service
     

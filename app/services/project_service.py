@@ -6,6 +6,7 @@ from typing import List, Dict, Optional, Any
 from sqlalchemy.orm import Session
 from app.models.project import Project, ProjectCreate, ProjectResponse
 from app.repositories.project_repository import ProjectRepository
+from app.repositories.code_matrix_repository import CodeMatrixRepository
 import logging
 
 logger = logging.getLogger(__name__)
@@ -13,15 +14,17 @@ logger = logging.getLogger(__name__)
 class ProjectService:
     """Service class for project business logic."""
     
-    def __init__(self, project_repository: ProjectRepository, ai_service: Optional[Any] = None) -> None:
+    def __init__(self, project_repository: ProjectRepository, code_matrix_repository: CodeMatrixRepository, ai_service: Optional[Any] = None) -> None:
         """
-        Initialize ProjectService with a project repository and optional AI service.
+        Initialize ProjectService with repositories and optional AI service.
         
         Args:
-            project_repository: ProjectRepository instance for data access
+            project_repository: ProjectRepository instance for project data access
+            code_matrix_repository: CodeMatrixRepository instance for code matrix data access
             ai_service: Optional AIService instance for AI functionality
         """
         self.project_repository: ProjectRepository = project_repository
+        self.code_matrix_repository: CodeMatrixRepository = code_matrix_repository
         self.ai_service: Optional[Any] = ai_service
     
     def create_project(self, org_id: str, payload: Dict[str, Any]) -> Project:
@@ -151,7 +154,7 @@ class ProjectService:
         """
         try:
             # Get code matrix status from repository
-            code_matrix_status = self.project_repository.get_code_matrix_status(org_id, project_id)
+            code_matrix_status = self.code_matrix_repository.get_code_matrix_status(org_id, project_id)
             
             # Use empty values if no code matrix status is found
             current_section = ""

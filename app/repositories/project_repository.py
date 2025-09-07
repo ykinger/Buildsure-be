@@ -5,7 +5,6 @@ Data access layer for project operations using Pydantic models.
 from typing import List, Optional, Dict, Any
 from app import db
 from app.models.project import Project, ProjectCreate, ProjectResponse
-from app.models.code_matrix_status import CodeMatrixStatus
 from sqlalchemy.orm import Session
 
 class ProjectRepository:
@@ -105,19 +104,3 @@ class ProjectRepository:
             self.session.commit()
             return True
         return False
-
-    def get_code_matrix_status(self, org_id: str, project_id: str) -> Optional[CodeMatrixStatus]:
-        """
-        Get code matrix status for a specific organization and project.
-        
-        Args:
-            org_id: The organization ID
-            project_id: The project ID
-            
-        Returns:
-            CodeMatrixStatus ORM object if found, None otherwise
-        """
-        return self.session.query(CodeMatrixStatus).filter(
-            CodeMatrixStatus.org_id == org_id,
-            CodeMatrixStatus.project_id == project_id
-        ).first()

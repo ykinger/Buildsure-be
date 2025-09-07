@@ -88,7 +88,7 @@ class AIService:
                 clarifying_questions_and_answers=clarifying_questions_and_answers
                 ))
             # remove ```json and ``` if present
-            ai_response = ai_response.content.replace("```json", "").replace("```", "").strip()
+            ai_response = ai_response.text.replace("```json", "").replace("```", "").strip()
             # TODO:
             #   1. [x] Trim excessive text (JSON code block markdown, etc)
             #   2. [ ] Make sure returned value matches expected JSON structure
