@@ -4,8 +4,9 @@ AI Service Module
 This module provides AI-powered functionality using Google Gemini.
 It includes text generation, analysis, and conversation management.
 """
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Union
 import logging
+import datetime
 from dataclasses import asdict
 from app.utils.prompt_builder import PromptBuilder
 from json import loads
@@ -19,6 +20,10 @@ class MockGeminiClient:
     def generate_text(self, prompt: str) -> 'MockGeminiResponse':
         return MockGeminiResponse(False, None, "Gemini client not configured", None)
     
+    def generate_content(self, prompt: str) -> 'MockGeminiResponse':
+        """Mock implementation of generate_content method."""
+        return MockGeminiResponse(False, '{"type": "mock", "content": "Mock response"}', None, None)
+    
     def start_chat(self) -> 'MockChatSession':
         return MockChatSession()
     
@@ -26,17 +31,17 @@ class MockGeminiClient:
         return False
 
 class MockGeminiResponse:
-    def __init__(self, success: bool, content: Optional[Any], error_message: Optional[str], usage_metadata: Optional[Any]):
+    def __init__(self, success: bool, content: Optional[str], error_message: Optional[str], usage_metadata: Optional[Dict[str, Any]]):
         self.success = success
         self.content = content
         self.error_message = error_message
         self.usage_metadata = usage_metadata
 
 class MockChatSession:
-    def send_message(self, message: str) -> MockGeminiResponse:
+    def send_message(self, message: str) -> 'MockGeminiResponse':
         return MockGeminiResponse(False, None, "Chat not available", None)
     
-    def get_history(self) -> List[Any]:
+    def get_history(self) -> List[Dict[str, Any]]:
         return []
 
 class AIService:
@@ -62,15 +67,16 @@ class AIService:
     
     def query(self, 
         current_question_number: str,
-        form_questions_and_answers: list[str],
-        clarifying_questions_and_answers: list[str]
+        form_questions_and_answers: List[str],
+        clarifying_questions_and_answers: List[str]
         ) -> Dict[str, Any]:
         """
         Start AI analysis for a project - mock implementation for now
         
         Args:
-            org_id: Organization ID
-            project_id: Project ID
+            current_question_number: The current question number
+            form_questions_and_answers: List of form questions and answers
+            clarifying_questions_and_answers: List of clarifying questions and answers
             
         Returns:
             Dictionary with AI analysis response (question or decision)

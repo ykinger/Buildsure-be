@@ -155,12 +155,6 @@ def query_code_matrix(org_id: str, project_id: str) -> Response:
         
         return jsonify(query_result), 200
         
-    except ValueError as e:
-        current_app.logger.warning(f"Code matrix status not found: {e}")
-        return jsonify({
-            "error": "Code matrix status not found",
-            "details": str(e)
-        }), 404
     except Exception as e:
         current_app.logger.error(f"Error querying code matrix: {e}")
         return jsonify({

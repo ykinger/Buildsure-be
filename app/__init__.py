@@ -54,7 +54,9 @@ def create_app(config_name: Optional[str] = None) -> Flask:
         genai.configure(api_key=app.config.get('GEMINI_API_KEY'))
         gemini_model_client = genai.GenerativeModel(app.config.get('GEMINI_MODEL'))
 
-        ai_service = AIService(gemini_model_client, prompt_builder=PromptBuilder(template_dir= os.getcwd() + '../assets/'))
+        template_dir = os.path.join(os.getcwd(), 'assets/prompt-parts/')
+
+        ai_service = AIService(gemini_model_client, prompt_builder=PromptBuilder(template_dir=template_dir))
         project_service = ProjectService(project_repository, ai_service)
         
         # Store in app context for dependency injection
