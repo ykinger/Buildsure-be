@@ -147,11 +147,12 @@ def query_code_matrix(org_id: str, project_id: str) -> Response:
         JSON response with AI analysis result
     """
     try:
-        # Use pre-initialized service from app context
-        project_service: ProjectService = current_app.extensions['project_service']
+        # Use pre-initialized AI service from app context
+        ai_service = current_app.extensions['ai_service']
+        code_matrix_repository = current_app.extensions['code_matrix_repository']
         
-        # Query code matrix
-        query_result: Dict[str, Any] = project_service.query_code_matrix(org_id, project_id)
+        # Query code matrix directly through AI service
+        query_result: Dict[str, Any] = ai_service.query_code_matrix(org_id, project_id, code_matrix_repository)
         
         return jsonify(query_result), 200
         

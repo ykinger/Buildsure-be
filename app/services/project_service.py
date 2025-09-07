@@ -153,19 +153,6 @@ class ProjectService:
             Dictionary with AI response
         """
         try:
-            # Get code matrix status from repository
-            code_matrix_status = self.code_matrix_repository.get_code_matrix_status(org_id, project_id)
-            
-            # Use empty values if no code matrix status is found
-            current_section = ""
-            code_matrix_questions = []
-            clarifying_questions = []
-            
-            if code_matrix_status:
-                current_section = code_matrix_status.curr_section or ""
-                code_matrix_questions = code_matrix_status.code_matrix_questions or []
-                clarifying_questions = code_matrix_status.clarifying_questions or []
-            
             if not self.ai_service:
                 logger.warning("AI service not available - returning fallback response")
                 # Return fallback response when AI service is unavailable
@@ -185,12 +172,8 @@ class ProjectService:
                     }
                 }
             
-            # Call AI service query with code matrix data (empty values if no record found)
-            return self.ai_service.query(
-                current_question_number=current_section,
-                form_questions_and_answers=code_matrix_questions,
-                clarifying_questions_and_answers=clarifying_questions
-            )
+            # Call AI service for code matrix query
+            return self.ai_service.query_code_matrix(org_id, project_id, self.code_matrix_repository)
             
         except Exception as e:
             logger.error(f"Error querying code matrix: {e}")

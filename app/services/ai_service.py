@@ -65,13 +65,94 @@ class AIService:
         self.prompt_builder = prompt_builder
 
     
+    def query_code_matrix(self, org_id: str, project_id: str, 
+                         code_matrix_repository: Any) -> Dict[str, Any]:
+        """
+        Query AI service with code matrix data.
+        
+        Args:
+            org_id: Organization ID
+            project_id: Project ID
+            code_matrix_repository: CodeMatrixRepository instance for data access
+            
+        Returns:
+            Dictionary with AI response
+        """
+        try:
+            # Get code matrix status from repository
+            code_matrix_status = code_matrix_repository.get_code_matrix_status(org_id, project_id)
+            
+            # Use empty values if no code matrix status is found
+            current_section = ""
+            code_matrix_questions = []
+            clarifying_questions = []
+            
+            if code_matrix_status:
+                current_section = code_matrix_status.curr_section or ""
+                code_matrix_questions = code_matrix_status.code_matrix_questions or []
+                clarifying_questions = code_matrix_status.clarifying_questions or []
+            
+            if not self.client or isinstance(self.client, MockGeminiClient):
+                logger.warning("AI service not available - returning fallback response")
+                # Return fallback response when AI service is unavailable
+                return {
+                    "id": "fallback-response",
+                    "type": "decision",
+                    "decision": {
+                        "text": "AI analysis service is currently unavailable. Please try again later.",
+                        "confidence": 0.0,
+                        "follow_up_required": False
+                    },
+                    "metadata": {
+                        "session_id": "fallback-session",
+                        "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+                        "next_step": "complete"
+                    }
+                }
+            
+            # Call AI service query with code matrix data (empty values if no record found)
+            ai_response = self.client.generate_content(self.prompt_builder.render(
+                current_question_number=current_section,
+                form_questions_and_answers=code_matrix_questions,
+                clarifying_questions_and_answers=clarifying_questions
+            ))
+            
+            # remove ```json and ``` if present
+            ai_response_text = ai_response.text.replace("```json", "").replace("```", "").strip()
+            
+            # TODO:
+            #   1. [x] Trim excessive text (JSON code block markdown, etc)
+            #   2. [ ] Make sure returned value matches expected JSON structure
+            #   3. [ ] Throw exception if not
+            #   4. Turn response into actual object/dict
+            return loads(ai_response_text)
+            
+        except Exception as e:
+            logger.error(f"Error querying code matrix: {e}")
+            # Return error response
+            return {
+                "id": "error-response",
+                "type": "decision",
+                "decision": {
+                    "text": "An error occurred while querying code matrix. Please try again.",
+                    "confidence": 0.0,
+                    "follow_up_required": False
+                },
+                "metadata": {
+                    "session_id": "error-session",
+                    "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+                    "next_step": "complete",
+                    "error": str(e)
+                }
+            }
+
     def query(self, 
         current_question_number: str,
         form_questions_and_answers: List[str],
         clarifying_questions_and_answers: List[str]
         ) -> Dict[str, Any]:
         """
-        Start AI analysis for a project - mock implementation for now
+        Generic AI query method for direct interaction.
         
         Args:
             current_question_number: The current question number
@@ -97,7 +178,7 @@ class AIService:
             return loads(ai_response)
             
         except Exception as e:
-            logger.error(f"Error in mock project analysis: {e}")
+            logger.error(f"Error in AI query: {e}")
             # Fallback response if mock generation fails
             return {
                 "id": "fallback-response",
