@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from app.models.project import Project, ProjectCreate, ProjectResponse
 from app.repositories.project_repository import ProjectRepository
 from app.repositories.code_matrix_repository import CodeMatrixRepository
+from app.models.ai_response import create_error_response
 import logging
 
 logger = logging.getLogger(__name__)
@@ -86,111 +87,3 @@ class ProjectService:
             raise ValueError(f"Project {project_id} does not belong to organization {org_id}")
             
         return project
-
-    def start_project_analysis(self, org_id: str, project_id: str) -> Dict[str, Any]:
-        """
-        Start AI analysis for a project.
-        
-        Args:
-            org_id: Organization ID
-            project_id: Project ID
-            
-        Returns:
-            Dictionary with AI analysis response (question or decision)
-        """
-        try:
-            if not self.ai_service:
-                logger.warning("AI service not available - returning fallback response")
-                # Return fallback response when AI service is unavailable
-                import datetime
-                return {
-                    "id": "fallback-response",
-                    "type": "decision",
-                    "decision": {
-                        "text": "AI analysis service is currently unavailable. Please try again later.",
-                        "confidence": 0.0,
-                        "follow_up_required": False
-                    },
-                    "metadata": {
-                        "session_id": "fallback-session",
-                        "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
-                        "next_step": "complete"
-                    }
-                }
-            
-            # Call AI service for project analysis
-            return self.ai_service.start_project_analysis(org_id, project_id)
-            
-        except Exception as e:
-            logger.error(f"Error starting project analysis: {e}")
-            # Return error response
-            import datetime
-            return {
-                "id": "error-response",
-                "type": "decision",
-                "decision": {
-                    "text": "An error occurred while starting project analysis. Please try again.",
-                    "confidence": 0.0,
-                    "follow_up_required": False
-                },
-                "metadata": {
-                    "session_id": "error-session",
-                    "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
-                    "next_step": "complete",
-                    "error": str(e)
-                }
-            }
-
-    def query_code_matrix(self, org_id: str, project_id: str) -> Dict[str, Any]:
-        """
-        Query AI service with code matrix data.
-        
-        Args:
-            org_id: Organization ID
-            project_id: Project ID
-            
-        Returns:
-            Dictionary with AI response
-        """
-        try:
-            if not self.ai_service:
-                logger.warning("AI service not available - returning fallback response")
-                # Return fallback response when AI service is unavailable
-                import datetime
-                return {
-                    "id": "fallback-response",
-                    "type": "decision",
-                    "decision": {
-                        "text": "AI analysis service is currently unavailable. Please try again later.",
-                        "confidence": 0.0,
-                        "follow_up_required": False
-                    },
-                    "metadata": {
-                        "session_id": "fallback-session",
-                        "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
-                        "next_step": "complete"
-                    }
-                }
-            
-            # Call AI service for code matrix query
-            return self.ai_service.query_code_matrix(org_id, project_id, self.code_matrix_repository)
-            
-        except Exception as e:
-            logger.error(f"Error querying code matrix: {e}")
-            # Return error response
-            import datetime
-            return {
-                "id": "error-response",
-                "type": "decision",
-                "decision": {
-                    "text": "An error occurred while querying code matrix. Please try again.",
-                    "confidence": 0.0,
-                    "follow_up_required": False
-                },
-                "metadata": {
-                    "session_id": "error-session",
-                    "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
-                    "next_step": "complete",
-                    "error": str(e)
-                }
-            }

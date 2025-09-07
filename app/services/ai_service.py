@@ -9,7 +9,8 @@ import logging
 import datetime
 from dataclasses import asdict
 from app.utils.prompt_builder import PromptBuilder
-from json import loads
+from app.models.ai_response import AIResponse, create_error_response, FinalAnswerData, MultipleChoiceMultipleOptionsData, MultipleChoiceSingleOptionData, NumericInputData, TextInputData, Metadata
+from json import loads, JSONDecodeError
 
 logger = logging.getLogger(__name__)
 
@@ -64,6 +65,100 @@ class AIService:
         self.client = gemini_client or MockGeminiClient()
         self.prompt_builder = prompt_builder
 
+    def _parse_llm_response(self, llm_response_text: str) -> AIResponse:
+        """
+        Parse LLM response and convert to unified AIResponse format.
+        
+        Args:
+            llm_response_text: Raw text response from LLM
+            
+        Returns:
+            AIResponse object in unified format
+        """
+        try:
+            # Clean and parse JSON response
+            cleaned_text = llm_response_text.replace("```json", "").replace("```", "").strip()
+            response_data = loads(cleaned_text)
+            
+            # Extract response type
+            response_type = response_data.get("response_type")
+            
+            if not response_type:
+                raise ValueError("Missing response_type in LLM response")
+            
+            # Create appropriate data object based on response type
+            if response_type == "final_answer":
+                data = FinalAnswerData(
+                    form_question_number=response_data.get("form_question_number", ""),
+                    form_question_title=response_data.get("form_question_title", ""),
+                    final_answer=response_data.get("final_answer", ""),
+                    justification=response_data.get("justification", "")
+                )
+                confidence = 0.9  # High confidence for final answers
+                
+            elif response_type == "clarifying_question":
+                input_type = response_data.get("input_type")
+                
+                if input_type == "multiple_choice_multiple_options":
+                    data = MultipleChoiceMultipleOptionsData(
+                        clarifying_question=response_data.get("clarifying_question", ""),
+                        clarifying_question_context=response_data.get("clarifying_question_context", ""),
+                        choices=response_data.get("choices", [])
+                    )
+                elif input_type == "multiple_choice_single_option":
+                    data = MultipleChoiceSingleOptionData(
+                        clarifying_question=response_data.get("clarifying_question", ""),
+                        clarifying_question_context=response_data.get("clarifying_question_context", ""),
+                        choices=response_data.get("choices", [])
+                    )
+                elif input_type == "numeric":
+                    data = NumericInputData(
+                        clarifying_question=response_data.get("clarifying_question", ""),
+                        clarifying_question_context=response_data.get("clarifying_question_context", ""),
+                        unit=response_data.get("unit", ""),
+                        validation=response_data.get("validation", {})
+                    )
+                elif input_type == "text":
+                    data = TextInputData(
+                        clarifying_question=response_data.get("clarifying_question", ""),
+                        clarifying_question_context=response_data.get("clarifying_question_context", "")
+                    )
+                else:
+                    raise ValueError(f"Unknown input_type: {input_type}")
+                
+                confidence = 0.8  # Moderate confidence for clarifying questions
+                
+            else:
+                raise ValueError(f"Unknown response_type: {response_type}")
+            
+            # Create metadata
+            metadata = Metadata(
+                timestamp=datetime.datetime.utcnow().isoformat() + "Z",
+                confidence=confidence
+            )
+            
+            return AIResponse(
+                response_type=response_type,
+                data=data,
+                metadata=metadata
+            )
+            
+        except JSONDecodeError as e:
+            logger.error(f"Failed to parse LLM response as JSON: {e}")
+            return create_error_response(
+                error_type="validation_error",
+                message="Invalid JSON response from AI service",
+                suggestion="Please try again or check the prompt formatting",
+                confidence=0.0
+            )
+        except Exception as e:
+            logger.error(f"Error parsing LLM response: {e}")
+            return create_error_response(
+                error_type="processing_error",
+                message=f"Failed to process AI response: {str(e)}",
+                suggestion="Please try again",
+                confidence=0.0
+            )
     
     def query_code_matrix(self, org_id: str, project_id: str, 
                          code_matrix_repository: Any) -> Dict[str, Any]:
@@ -76,7 +171,7 @@ class AIService:
             code_matrix_repository: CodeMatrixRepository instance for data access
             
         Returns:
-            Dictionary with AI response
+            Dictionary with AI response in unified format
         """
         try:
             # Get code matrix status from repository
@@ -94,57 +189,33 @@ class AIService:
             
             if not self.client or isinstance(self.client, MockGeminiClient):
                 logger.warning("AI service not available - returning fallback response")
-                # Return fallback response when AI service is unavailable
-                return {
-                    "id": "fallback-response",
-                    "type": "decision",
-                    "decision": {
-                        "text": "AI analysis service is currently unavailable. Please try again later.",
-                        "confidence": 0.0,
-                        "follow_up_required": False
-                    },
-                    "metadata": {
-                        "session_id": "fallback-session",
-                        "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
-                        "next_step": "complete"
-                    }
-                }
+                # Return fallback error response
+                return create_error_response(
+                    error_type="service_unavailable",
+                    message="AI analysis service is currently unavailable",
+                    suggestion="Please try again later",
+                    confidence=0.0
+                ).to_dict()
             
-            # Call AI service query with code matrix data (empty values if no record found)
+            # Call AI service query with code matrix data
             ai_response = self.client.generate_content(self.prompt_builder.render(
                 current_question_number=current_section,
                 form_questions_and_answers=code_matrix_questions,
                 clarifying_questions_and_answers=clarifying_questions
             ))
             
-            # remove ```json and ``` if present
-            ai_response_text = ai_response.text.replace("```json", "").replace("```", "").strip()
-            
-            # TODO:
-            #   1. [x] Trim excessive text (JSON code block markdown, etc)
-            #   2. [ ] Make sure returned value matches expected JSON structure
-            #   3. [ ] Throw exception if not
-            #   4. Turn response into actual object/dict
-            return loads(ai_response_text)
+            # Parse and return unified response
+            unified_response = self._parse_llm_response(ai_response.text)
+            return unified_response.to_dict()
             
         except Exception as e:
             logger.error(f"Error querying code matrix: {e}")
-            # Return error response
-            return {
-                "id": "error-response",
-                "type": "decision",
-                "decision": {
-                    "text": "An error occurred while querying code matrix. Please try again.",
-                    "confidence": 0.0,
-                    "follow_up_required": False
-                },
-                "metadata": {
-                    "session_id": "error-session",
-                    "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
-                    "next_step": "complete",
-                    "error": str(e)
-                }
-            }
+            return create_error_response(
+                error_type="processing_error",
+                message="An error occurred while querying code matrix",
+                suggestion="Please try again",
+                confidence=0.0
+            ).to_dict()
 
     def query(self, 
         current_question_number: str,
@@ -160,37 +231,24 @@ class AIService:
             clarifying_questions_and_answers: List of clarifying questions and answers
             
         Returns:
-            Dictionary with AI analysis response (question or decision)
+            Dictionary with AI analysis response in unified format
         """
         try:
             ai_response = self.client.generate_content(self.prompt_builder.render(
                 current_question_number=current_question_number,
                 form_questions_and_answers=form_questions_and_answers,
                 clarifying_questions_and_answers=clarifying_questions_and_answers
-                ))
-            # remove ```json and ``` if present
-            ai_response = ai_response.text.replace("```json", "").replace("```", "").strip()
-            # TODO:
-            #   1. [x] Trim excessive text (JSON code block markdown, etc)
-            #   2. [ ] Make sure returned value matches expected JSON structure
-            #   3. [ ] Throw exception if not
-            #   4. Turn response into actual object/dict
-            return loads(ai_response)
+            ))
+            
+            # Parse and return unified response
+            unified_response = self._parse_llm_response(ai_response.text)
+            return unified_response.to_dict()
             
         except Exception as e:
             logger.error(f"Error in AI query: {e}")
-            # Fallback response if mock generation fails
-            return {
-                "id": "fallback-response",
-                "type": "decision",
-                "decision": {
-                    "text": "AI analysis service is temporarily unavailable. Please try again later.",
-                    "confidence": 0.0,
-                    "follow_up_required": False
-                },
-                "metadata": {
-                    "session_id": "fallback-session",
-                    "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
-                    "next_step": "complete"
-                }
-            }
+            return create_error_response(
+                error_type="processing_error",
+                message="AI analysis service is temporarily unavailable",
+                suggestion="Please try again later",
+                confidence=0.0
+            ).to_dict()

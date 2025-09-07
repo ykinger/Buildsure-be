@@ -105,35 +105,6 @@ def get_project(org_id: str, project_id: str) -> Response:
         }), 500
 
 
-@project_bp.route('/api/v1/organizations/<org_id>/projects/<project_id>/start', methods=['POST'])
-def start_project_analysis(org_id: str, project_id: str) -> Response:
-    """
-    Start AI analysis for a project.
-    
-    Args:
-        org_id: Organization ID
-        project_id: Project ID
-        
-    Returns:
-        JSON response with AI analysis (question or decision)
-    """
-    try:
-        # Use pre-initialized service from app context
-        project_service: ProjectService = current_app.extensions['project_service']
-        
-        # Start project analysis
-        analysis_result: Dict[str, Any] = project_service.start_project_analysis(org_id, project_id)
-        
-        return jsonify(analysis_result), 200
-        
-    except Exception as e:
-        current_app.logger.error(f"Error starting project analysis: {e}")
-        return jsonify({
-            "error": "Failed to start project analysis",
-            "details": str(e)
-        }), 500
-
-
 @project_bp.route('/api/v1/organizations/<org_id>/projects/<project_id>/code-matrix/query', methods=['POST'])
 def query_code_matrix(org_id: str, project_id: str) -> Response:
     """
