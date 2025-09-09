@@ -133,3 +133,45 @@ def query_code_matrix(org_id: str, project_id: str) -> Response:
             "error": "Failed to query code matrix",
             "details": str(e)
         }), 500
+
+
+@project_bp.route('/api/v1/organizations/<org_id>/projects/<project_id>/code-matrix/answer', methods=['POST'])
+def answer_code_matrix(org_id: str, project_id: str) -> Response:
+    """
+    Save user's answer to a clarifying question and get the next question.
+    
+    Args:
+        org_id: Organization ID
+        project_id: Project ID
+        
+    Returns:
+        JSON response with next AI question or final answer
+    """
+    try:
+        payload: Dict[str, Any] = request.get_json()
+        if not payload:
+            return jsonify({'error': 'Request body is required'}), 400
+        
+        question = payload.get('question')
+        answer = payload.get('answer')
+        
+        if not question or not answer:
+            return jsonify({'error': 'Both question and answer are required'}), 400
+        
+        # Use pre-initialized services from app context
+        ai_service = current_app.extensions['ai_service']
+        code_matrix_repository = current_app.extensions['code_matrix_repository']
+        
+        # Save answer and get next question
+        result: Dict[str, Any] = ai_service.save_answer_and_get_next_question(
+            org_id, project_id, question, answer, code_matrix_repository
+        )
+        
+        return jsonify(result), 200
+        
+    except Exception as e:
+        current_app.logger.error(f"Error processing answer: {e}")
+        return jsonify({
+            "error": "Failed to process answer",
+            "details": str(e)
+        }), 500

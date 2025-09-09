@@ -107,3 +107,40 @@ class CodeMatrixRepository:
         return self.session.query(CodeMatrixStatus).filter(
             CodeMatrixStatus.project_id == project_id
         ).all()
+    
+    def add_clarifying_question(self, org_id: str, project_id: str, qa_pair: str) -> CodeMatrixStatus:
+        """
+        Add a clarifying question-answer pair to the existing record or create a new one.
+        
+        Args:
+            org_id: The organization ID
+            project_id: The project ID
+            qa_pair: The formatted question-answer pair string
+            
+        Returns:
+            Updated or created CodeMatrixStatus ORM object
+        """
+        # Get existing record or create new one
+        code_matrix_status = self.get_code_matrix_status(org_id, project_id)
+        
+        if code_matrix_status:
+            # Update existing record
+            if code_matrix_status.clarifying_questions is None:
+                code_matrix_status.clarifying_questions = []
+            
+            # Add the new Q&A pair to the array
+            code_matrix_status.clarifying_questions = code_matrix_status.clarifying_questions + [qa_pair]
+            
+            self.session.commit()
+            self.session.refresh(code_matrix_status)
+            return code_matrix_status
+        else:
+            # Create new record
+            code_matrix_data = CodeMatrixStatusCreate(
+                org_id=org_id,
+                project_id=project_id,
+                clarifying_questions=[qa_pair],
+                code_matrix_questions=None,
+                curr_section="3.01"  # Default starting section
+            )
+            return self.create_code_matrix_status(code_matrix_data)

@@ -1,7 +1,10 @@
 openapi: 3.0.0
 info:
-  title: BuildSure API
-  description: Adaptive AI Wizard for Ontario Building Code Form Completion
+  title: BuildSure Backend API
+  description: |
+    BuildSure Backend API provides project management and AI-powered code matrix analysis capabilities.
+    This API supports creating and managing building compliance projects, querying AI services for code analysis,
+    and monitoring system health.
   version: 1.0.0
   contact:
     name: BuildSure Team
@@ -11,31 +14,56 @@ info:
     url: https://buildsure.com/terms
 
 servers:
-  - url: https://api.buildsure.com/v1
+  - url: https://api.buildsure.com
     description: Production server
-  - url: https://staging-api.buildsure.com/v1
+  - url: https://staging-api.buildsure.com
     description: Staging server
-  - url: http://localhost:8000/v1
+  - url: http://localhost:5000
     description: Local development server
 
 tags:
   - name: projects
-    description: Operations related to form completion projects
+    description: Operations related to project management and code matrix analysis
+  - name: health
+    description: System health monitoring endpoints
 
 paths:
-  /projects:
+  /api/v1/organizations/{org_id}/projects:
     post:
       tags:
         - projects
       summary: Create a new project
-      description: Creates a new form completion project for a building or compliance case.
+      description: |
+        Creates a new project within the specified organization. A project represents a building compliance
+        or code analysis task that can be processed through the AI service.
       operationId: createProject
+      parameters:
+        - name: org_id
+          in: path
+          required: true
+          description: Unique identifier for the organization
+          schema:
+            type: string
+            format: uuid
+            example: "123e4567-e89b-12d3-a456-426614174000"
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateProjectRequest'
+            examples:
+              basic_project:
+                summary: Basic project creation
+                value:
+                  name: "Toronto Office Building Compliance"
+                  description: "Compliance analysis for new office building in downtown Toronto"
+                  dueDate: "2024-12-31"
+                  status: "not_started"
+              minimal_project:
+                summary: Minimal required fields
+                value:
+                  name: "Residential Building Analysis"
       responses:
         '201':
           description: Project created successfully
@@ -43,18 +71,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProjectResponse'
+              examples:
+                created_project:
+                  summary: Successfully created project
+                  value:
+                    id: "456e7890-e89b-12d3-a456-426614174001"
+                    name: "Toronto Office Building Compliance"
+                    description: "Compliance analysis for new office building in downtown Toronto"
+                    dueDate: "2024-12-31"
+                    organizationId: "123e4567-e89b-12d3-a456-426614174000"
+                    status: "not_started"
+                    currTask: null
+                    createdAt: "2024-01-15T10:30:00.000Z"
+                    updatedAt: "2024-01-15T10:30:00.000Z"
+                    createdBy: "user123"
         '400':
-          description: Bad request
+          description: Bad request - Missing required fields or invalid data
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                missing_name:
+                  summary: Missing required name field
+                  value:
+                    error: "Missing required field: name"
         '500':
           description: Internal server error
           content:
@@ -62,488 +103,713 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /projects/{project_id}/answer:
-    post:
+    get:
       tags:
         - projects
-      summary: Submit answer for a project
-      description: Submits a user's answer to the current question and returns the next step.
-      operationId: submitAnswer
+      summary: Get all projects for an organization
+      description: |
+        Retrieves a list of all projects belonging to the specified organization.
+        Projects are returned with their current status and metadata.
+      operationId: getProjects
       parameters:
-        - name: project_id
+        - name: org_id
           in: path
           required: true
-          description: UUID of the project
+          description: Unique identifier for the organization
           schema:
             type: string
             format: uuid
+            example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        '200':
+          description: List of projects retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectResponse'
+              examples:
+                project_list:
+                  summary: List of organization projects
+                  value:
+                    - id: "456e7890-e89b-12d3-a456-426614174001"
+                      name: "Toronto Office Building Compliance"
+                      description: "Compliance analysis for new office building"
+                      organizationId: "123e4567-e89b-12d3-a456-426614174000"
+                      status: "in_progress"
+                      currTask: "Analyzing building codes"
+                      createdAt: "2024-01-15T10:30:00.000Z"
+                      updatedAt: "2024-01-15T11:45:00.000Z"
+                      createdBy: "user123"
+                      dueDate: "2024-12-31"
+                    - id: "789e1234-e89b-12d3-a456-426614174002"
+                      name: "Residential Complex Review"
+                      description: "Code review for residential development"
+                      organizationId: "123e4567-e89b-12d3-a456-426614174000"
+                      status: "completed"
+                      currTask: null
+                      createdAt: "2024-01-10T09:15:00.000Z"
+                      updatedAt: "2024-01-14T16:20:00.000Z"
+                      createdBy: "user456"
+                      dueDate: "2024-02-15"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/organizations/{org_id}/projects/{project_id}:
+    get:
+      tags:
+        - projects
+      summary: Get a specific project
+      description: |
+        Retrieves detailed information about a specific project, including its current status,
+        metadata, and progress information.
+      operationId: getProject
+      parameters:
+        - name: org_id
+          in: path
+          required: true
+          description: Unique identifier for the organization
+          schema:
+            type: string
+            format: uuid
+            example: "123e4567-e89b-12d3-a456-426614174000"
+        - name: project_id
+          in: path
+          required: true
+          description: Unique identifier for the project
+          schema:
+            type: string
+            format: uuid
+            example: "456e7890-e89b-12d3-a456-426614174001"
+      responses:
+        '200':
+          description: Project details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+              examples:
+                project_details:
+                  summary: Detailed project information
+                  value:
+                    id: "456e7890-e89b-12d3-a456-426614174001"
+                    name: "Toronto Office Building Compliance"
+                    description: "Compliance analysis for new office building in downtown Toronto"
+                    dueDate: "2024-12-31"
+                    organizationId: "123e4567-e89b-12d3-a456-426614174000"
+                    status: "in_progress"
+                    currTask: "Analyzing structural requirements"
+                    createdAt: "2024-01-15T10:30:00.000Z"
+                    updatedAt: "2024-01-15T11:45:00.000Z"
+                    createdBy: "user123"
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                project_not_found:
+                  summary: Project does not exist
+                  value:
+                    error: "Project not found"
+                    details: "No project found with the specified ID"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/organizations/{org_id}/projects/{project_id}/code-matrix/query:
+    post:
+      tags:
+        - projects
+      summary: Query AI service with code matrix data
+      description: |
+        Initiates an AI-powered analysis of the project's code matrix data. This endpoint
+        processes building codes, regulations, and project requirements through the AI service
+        to provide intelligent insights and recommendations.
+      operationId: queryCodeMatrix
+      parameters:
+        - name: org_id
+          in: path
+          required: true
+          description: Unique identifier for the organization
+          schema:
+            type: string
+            format: uuid
+            example: "123e4567-e89b-12d3-a456-426614174000"
+        - name: project_id
+          in: path
+          required: true
+          description: Unique identifier for the project
+          schema:
+            type: string
+            format: uuid
+            example: "456e7890-e89b-12d3-a456-426614174001"
+      responses:
+        '200':
+          description: AI analysis completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CodeMatrixQueryResponse'
+              examples:
+                analysis_result:
+                  summary: Successful AI analysis
+                  value:
+                    status: "completed"
+                    analysis_id: "analysis_789"
+                    insights:
+                      - category: "structural"
+                        recommendation: "Consider reinforced concrete for seismic requirements"
+                        confidence: 0.92
+                        references: ["OBC 4.1.3.1", "OBC 4.1.8.3"]
+                      - category: "fire_safety"
+                        recommendation: "Install sprinkler system for buildings over 6 stories"
+                        confidence: 0.98
+                        references: ["OBC 3.2.5.12"]
+                    processing_time_ms: 2340
+                    timestamp: "2024-01-15T12:30:45.000Z"
+        '500':
+          description: Internal server error during AI processing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                ai_service_error:
+                  summary: AI service processing failed
+                  value:
+                    error: "Failed to query code matrix"
+                    details: "AI service temporarily unavailable"
+
+  /api/v1/organizations/{org_id}/projects/{project_id}/code-matrix/answer:
+    post:
+      tags:
+        - projects
+      summary: Submit answer to clarifying question and get next question
+      description: |
+        Submits the user's answer to a previously asked clarifying question and retrieves
+        the next question or final answer from the AI service. This endpoint saves the
+        question-answer pair for context and continues the interactive analysis process.
+      operationId: answerCodeMatrix
+      parameters:
+        - name: org_id
+          in: path
+          required: true
+          description: Unique identifier for the organization
+          schema:
+            type: string
+            format: uuid
+            example: "123e4567-e89b-12d3-a456-426614174000"
+        - name: project_id
+          in: path
+          required: true
+          description: Unique identifier for the project
+          schema:
+            type: string
+            format: uuid
+            example: "456e7890-e89b-12d3-a456-426614174001"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AnswerRequest'
+              $ref: '#/components/schemas/CodeMatrixAnswerRequest'
+            examples:
+              multiple_choice_answer:
+                summary: Answer to multiple choice question
+                value:
+                  question: "What is the primary use of this building?"
+                  answer: "Commercial office space"
+              text_answer:
+                summary: Answer to text input question
+                value:
+                  question: "Please describe the building's structural system"
+                  answer: "Steel frame construction with concrete core for lateral stability"
+              numeric_answer:
+                summary: Answer to numeric question
+                value:
+                  question: "What is the total floor area in square meters?"
+                  answer: "15000"
       responses:
         '200':
-          description: Success response with next step
+          description: Answer processed successfully, next question or final answer returned
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: '#/components/schemas/FormQuestionResponse'
-                  - $ref: '#/components/schemas/ClarifyingQuestionResponse'
-                  - $ref: '#/components/schemas/CompletedFormResponse'
-                  - $ref: '#/components/schemas/AdvanceWithClarificationResponse'
+                $ref: '#/components/schemas/CodeMatrixQueryResponse'
+              examples:
+                next_question:
+                  summary: Next clarifying question returned
+                  value:
+                    response_type: "clarifying_question"
+                    data:
+                      input_type: "multiple_choice_single_option"
+                      clarifying_question: "What is the building height?"
+                      clarifying_question_context: "Building height affects fire safety requirements"
+                      choices: ["1-3 stories", "4-6 stories", "7-12 stories", "Over 12 stories"]
+                    metadata:
+                      timestamp: "2024-01-15T12:35:00.000Z"
+                      confidence: 0.8
+                      version: "1.0"
+                      model: "gemini-pro"
+                final_answer:
+                  summary: Final analysis result
+                  value:
+                    response_type: "final_answer"
+                    data:
+                      form_question_number: "3.01"
+                      form_question_title: "Building Classification"
+                      final_answer: "Based on the provided information, this building should be classified as Group A, Division 2 occupancy."
+                      justification: "The commercial office use with over 150 occupants requires Group A classification per OBC 3.1.2.1"
+                    metadata:
+                      timestamp: "2024-01-15T12:35:00.000Z"
+                      confidence: 0.9
+                      version: "1.0"
+                      model: "gemini-pro"
         '400':
-          description: Bad request
+          description: Bad request - Missing or invalid question/answer
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
-          description: Project not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '422':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationErrorResponse'
+              examples:
+                missing_fields:
+                  summary: Missing required fields
+                  value:
+                    error: "Both question and answer are required"
+                empty_request:
+                  summary: Empty request body
+                  value:
+                    error: "Request body is required"
         '500':
-          description: Internal server error
+          description: Internal server error during answer processing
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                processing_error:
+                  summary: Error processing answer
+                  value:
+                    error: "Failed to process answer"
+                    details: "An error occurred while processing your answer"
 
-  /projects/{project_id}:
+  /health:
     get:
       tags:
-        - projects
-      summary: Get project status
-      description: Retrieves the current state of a project.
-      operationId: getProject
-      parameters:
-        - name: project_id
-          in: path
-          required: true
-          description: UUID of the project
-          schema:
-            type: string
-            format: uuid
+        - health
+      summary: Comprehensive health check
+      description: |
+        Performs a comprehensive health check of the application, including database connectivity,
+        AI service status, and system information. This endpoint is suitable for detailed monitoring
+        and diagnostic purposes.
+      operationId: healthCheck
       responses:
         '200':
-          description: Project status retrieved successfully
+          description: Health check completed successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectStatusResponse'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
-          description: Project not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/HealthResponse'
+              examples:
+                healthy_system:
+                  summary: All systems healthy
+                  value:
+                    status: "healthy"
+                    timestamp: "2024-01-15T12:30:45.000Z"
+                    service: "BuildSure Backend API"
+                    version: "1.0.0"
+                    environment:
+                      python_version: "3.11.5 (main, Aug 24 2023, 15:18:16) [Clang 14.0.3 ]"
+                      platform: "macOS-14.1-arm64-arm-64bit"
+                    database:
+                      status: "connected"
+                      message: "Database connection is healthy"
+                    ai_service:
+                      status: "healthy"
+                      gemini_client_healthy: true
+                      active_chat_sessions: 3
+                degraded_system:
+                  summary: System with degraded performance
+                  value:
+                    status: "degraded"
+                    timestamp: "2024-01-15T12:30:45.000Z"
+                    service: "BuildSure Backend API"
+                    version: "1.0.0"
+                    environment:
+                      python_version: "3.11.5 (main, Aug 24 2023, 15:18:16) [Clang 14.0.3 ]"
+                      platform: "macOS-14.1-arm64-arm-64bit"
+                    database:
+                      status: "connected"
+                      message: "Database connection is healthy"
+                    ai_service:
+                      status: "unhealthy"
+                      message: "AI service health check failed: Connection timeout"
         '500':
-          description: Internal server error
+          description: Health check failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/HealthErrorResponse'
+              examples:
+                health_check_failed:
+                  summary: Health check encountered an error
+                  value:
+                    status: "unhealthy"
+                    error: "Internal server error during health check"
 
-  /projects/{project_id}/form:
+  /health/simple:
     get:
       tags:
-        - projects
-      summary: Get completed form
-      description: Retrieves the completed form data for a project.
-      operationId: getCompletedForm
-      parameters:
-        - name: project_id
-          in: path
-          required: true
-          description: UUID of the project
-          schema:
-            type: string
-            format: uuid
+        - health
+      summary: Simple health check
+      description: |
+        Performs a basic health check suitable for load balancers and simple monitoring systems.
+        Returns minimal information to quickly verify the service is responsive.
+      operationId: simpleHealthCheck
       responses:
         '200':
-          description: Completed form retrieved successfully
+          description: Simple health check passed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CompletedFormResponse'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
-          description: Project not found or form not completed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/SimpleHealthResponse'
+              examples:
+                simple_ok:
+                  summary: Service is responsive
+                  value:
+                    status: "ok"
+                    timestamp: "2024-01-15T12:30:45.000Z"
         '500':
-          description: Internal server error
+          description: Simple health check failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
-  /projects/{project_id}/reset:
-    post:
-      tags:
-        - projects
-      summary: Reset project
-      description: Resets a project to its initial state or to a specific question.
-      operationId: resetProject
-      parameters:
-        - name: project_id
-          in: path
-          required: true
-          description: UUID of the project
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ResetRequest'
-      responses:
-        '200':
-          description: Project reset successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResetResponse'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
-          description: Project not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/SimpleHealthErrorResponse'
+              examples:
+                simple_error:
+                  summary: Service encountered an error
+                  value:
+                    status: "error"
+                    message: "Health check failed"
 
 components:
   schemas:
     CreateProjectRequest:
       type: object
       required:
-        - project_name
+        - name
       properties:
-        project_name:
+        name:
           type: string
           description: Name of the project
+          minLength: 1
+          maxLength: 255
           example: "Toronto Office Building Compliance"
-        form_type:
+        description:
           type: string
-          description: Type of form to complete
-          default: "obc_compliance"
-          example: "obc_compliance"
-        metadata:
-          type: object
-          properties:
-            building_address:
-              type: string
-              example: "123 Main St, Toronto, ON"
-            client_name:
-              type: string
-              example: "ABC Architects"
+          description: Detailed description of the project
+          nullable: true
+          maxLength: 1000
+          example: "Compliance analysis for new office building in downtown Toronto"
+        dueDate:
+          type: string
+          format: date
+          description: Project due date in YYYY-MM-DD format
+          nullable: true
+          example: "2024-12-31"
+        status:
+          type: string
+          description: Initial project status
+          enum: [not_started, in_progress, completed, on_hold]
+          default: not_started
+          example: "not_started"
+        currTask:
+          type: string
+          description: Current task or phase of the project
+          nullable: true
+          maxLength: 255
+          example: "Initial code analysis"
 
     ProjectResponse:
       type: object
       properties:
-        project_id:
+        id:
           type: string
           format: uuid
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        project_name:
+          description: Unique identifier for the project
+          example: "456e7890-e89b-12d3-a456-426614174001"
+        name:
           type: string
+          description: Name of the project
           example: "Toronto Office Building Compliance"
+        description:
+          type: string
+          nullable: true
+          description: Detailed description of the project
+          example: "Compliance analysis for new office building in downtown Toronto"
+        dueDate:
+          type: string
+          format: date
+          nullable: true
+          description: Project due date
+          example: "2024-12-31"
+        organizationId:
+          type: string
+          format: uuid
+          description: ID of the organization that owns this project
+          example: "123e4567-e89b-12d3-a456-426614174000"
         status:
           type: string
-          enum: [in_progress]
+          description: Current project status
+          enum: [not_started, in_progress, completed, on_hold]
           example: "in_progress"
-        current_question:
-          $ref: '#/components/schemas/Question'
-        created_at:
+        currTask:
+          type: string
+          nullable: true
+          description: Current task or phase of the project
+          example: "Analyzing structural requirements"
+        createdAt:
           type: string
           format: date-time
-          example: "2024-01-15T10:30:00Z"
+          nullable: true
+          description: Timestamp when the project was created
+          example: "2024-01-15T10:30:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Timestamp when the project was last updated
+          example: "2024-01-15T11:45:00.000Z"
+        createdBy:
+          type: string
+          nullable: true
+          description: ID of the user who created the project
+          example: "user123"
 
-    AnswerRequest:
+    CodeMatrixAnswerRequest:
       type: object
       required:
-        - question_id
+        - question
         - answer
       properties:
-        question_id:
-          type: string
-          description: ID of the question being answered
-          example: "q1"
-        answer:
-          oneOf:
-            - type: string
-            - type: number
-          description: User's response to the question
-          example: "residential"
-
-    Question:
-      type: object
-      properties:
-        question_id:
-          type: string
-          example: "q1"
-        text:
-          type: string
-          example: "What is the building's major occupancy?"
-        type:
-          type: string
-          enum: [multiple_choice, number]
-          example: "multiple_choice"
-        options:
-          type: array
-          items:
-            type: string
-          nullable: true
-          example: ["residential", "commercial", "industrial"]
-
-    FormQuestionResponse:
-      type: object
-      properties:
-        type:
-          type: string
-          enum: [form_question]
-          example: "form_question"
-        question:
-          $ref: '#/components/schemas/Question'
-
-    ClarifyingQuestionResponse:
-      type: object
-      properties:
-        type:
-          type: string
-          enum: [clarifying_question]
-          example: "clarifying_question"
         question:
           type: string
-          example: "Could you clarify what type of residential occupancy this is?"
-        context:
-          type: string
-          nullable: true
-          example: "The Ontario Building Code distinguishes between different residential types..."
-
-    CompletedFormResponse:
-      type: object
-      properties:
-        type:
-          type: string
-          enum: [completed_form]
-          example: "completed_form"
-        form_data:
-          $ref: '#/components/schemas/FormData'
-
-    AdvanceWithClarificationResponse:
-      type: object
-      properties:
-        type:
-          type: string
-          enum: [advance_with_clarification]
-          example: "advance_with_clarification"
-        current_question_resolved:
-          type: boolean
-          example: true
-        next_question:
-          $ref: '#/components/schemas/ClarifyingQuestionResponse'
-
-    FormData:
-      type: object
-      properties:
-        project_id:
-          type: string
-          format: uuid
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        answers:
-          type: array
-          items:
-            $ref: '#/components/schemas/Answer'
-        completed_at:
-          type: string
-          format: date-time
-          example: "2024-01-15T11:30:00Z"
-
-    Answer:
-      type: object
-      properties:
-        question_id:
-          type: string
-          example: "q1"
-        question_text:
-          type: string
-          example: "What is the building's major occupancy?"
+          description: The original question that was asked by the AI service
+          minLength: 1
+          example: "What is the primary use of this building?"
         answer:
-          oneOf:
-            - type: string
-            - type: number
-          example: "residential"
-        justification:
           type: string
-          example: "Based on OBC Section 3.1.2.1, the building is classified as residential due to..."
-        references:
-          type: array
-          items:
-            type: string
-          example: ["OBC 3.1.2.1", "OBC 3.1.2.2"]
-        timestamp:
-          type: string
-          format: date-time
-          example: "2024-01-15T10:35:00Z"
+          description: User's answer to the question
+          minLength: 1
+          example: "Commercial office space"
 
-    ProjectStatusResponse:
+    CodeMatrixQueryResponse:
       type: object
       properties:
-        project_id:
-          type: string
-          format: uuid
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        project_name:
-          type: string
-          example: "Toronto Office Building Compliance"
         status:
           type: string
-          enum: [in_progress, completed]
-          example: "in_progress"
-        current_question:
-          $ref: '#/components/schemas/Question'
-        answered_questions:
+          description: Status of the AI analysis
+          enum: [completed, processing, failed]
+          example: "completed"
+        analysis_id:
+          type: string
+          description: Unique identifier for this analysis session
+          example: "analysis_789"
+        insights:
           type: array
+          description: AI-generated insights and recommendations
           items:
-            $ref: '#/components/schemas/AnsweredQuestion'
-        progress:
-          $ref: '#/components/schemas/Progress'
-        created_at:
-          type: string
-          format: date-time
-          example: "2024-01-15T10:30:00Z"
-        updated_at:
-          type: string
-          format: date-time
-          example: "2024-01-15T10:35:00Z"
-
-    AnsweredQuestion:
-      type: object
-      properties:
-        question_id:
-          type: string
-          example: "q1"
-        question_text:
-          type: string
-          example: "What is the building's major occupancy?"
-        answer:
-          oneOf:
-            - type: string
-            - type: number
-          example: "residential"
+            $ref: '#/components/schemas/AIInsight'
+        processing_time_ms:
+          type: integer
+          description: Time taken to process the analysis in milliseconds
+          example: 2340
         timestamp:
           type: string
           format: date-time
-          example: "2024-01-15T10:35:00Z"
+          description: Timestamp when the analysis was completed
+          example: "2024-01-15T12:30:45.000Z"
+        error:
+          type: string
+          nullable: true
+          description: Error message if analysis failed
+          example: null
 
-    Progress:
+    AIInsight:
       type: object
       properties:
-        completed:
-          type: integer
-          example: 2
-        total:
-          type: integer
-          example: 15
-        percentage:
+        category:
+          type: string
+          description: Category of the insight
+          enum: [structural, fire_safety, accessibility, energy_efficiency, zoning, general]
+          example: "structural"
+        recommendation:
+          type: string
+          description: AI-generated recommendation
+          example: "Consider reinforced concrete for seismic requirements"
+        confidence:
           type: number
           format: float
-          example: 13.33
-
-    ResetRequest:
-      type: object
-      properties:
-        target_question_id:
+          minimum: 0
+          maximum: 1
+          description: Confidence score for the recommendation (0-1)
+          example: 0.92
+        references:
+          type: array
+          description: Building code references supporting this recommendation
+          items:
+            type: string
+          example: ["OBC 4.1.3.1", "OBC 4.1.8.3"]
+        priority:
           type: string
-          description: Question ID to reset to (optional, defaults to start)
-          example: "q3"
+          description: Priority level of the recommendation
+          enum: [low, medium, high, critical]
+          example: "high"
 
-    ResetResponse:
+    HealthResponse:
       type: object
       properties:
+        status:
+          type: string
+          description: Overall system health status
+          enum: [healthy, degraded, unhealthy]
+          example: "healthy"
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of the health check
+          example: "2024-01-15T12:30:45.000Z"
+        service:
+          type: string
+          description: Name of the service
+          example: "BuildSure Backend API"
+        version:
+          type: string
+          description: Version of the service
+          example: "1.0.0"
+        environment:
+          $ref: '#/components/schemas/EnvironmentInfo'
+        database:
+          $ref: '#/components/schemas/DatabaseHealth'
+        ai_service:
+          $ref: '#/components/schemas/AIServiceHealth'
+
+    EnvironmentInfo:
+      type: object
+      properties:
+        python_version:
+          type: string
+          description: Python version information
+          example: "3.11.5 (main, Aug 24 2023, 15:18:16) [Clang 14.0.3 ]"
+        platform:
+          type: string
+          description: Platform information
+          example: "macOS-14.1-arm64-arm-64bit"
+
+    DatabaseHealth:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Database connection status
+          enum: [connected, disconnected]
+          example: "connected"
         message:
           type: string
-          example: "Project reset successfully"
-        current_question:
-          $ref: '#/components/schemas/Question'
+          description: Detailed status message
+          example: "Database connection is healthy"
+
+    AIServiceHealth:
+      type: object
+      properties:
+        status:
+          type: string
+          description: AI service health status
+          enum: [healthy, unhealthy, unavailable]
+          example: "healthy"
+        gemini_client_healthy:
+          type: boolean
+          description: Whether the Gemini client is healthy
+          example: true
+        active_chat_sessions:
+          type: integer
+          description: Number of active chat sessions
+          example: 3
+        message:
+          type: string
+          nullable: true
+          description: Error message if service is unhealthy
+          example: null
+
+    SimpleHealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Simple health status
+          enum: [ok]
+          example: "ok"
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of the health check
+          example: "2024-01-15T12:30:45.000Z"
 
     ErrorResponse:
       type: object
       properties:
         error:
           type: string
-          example: "invalid_request"
-        message:
+          description: Error message
+          example: "Missing required field: name"
+        details:
           type: string
-          example: "Description of the error"
+          nullable: true
+          description: Additional error details
+          example: "The 'name' field is required for project creation"
 
-    ValidationErrorResponse:
+    HealthErrorResponse:
       type: object
       properties:
+        status:
+          type: string
+          description: Health status indicating failure
+          enum: [unhealthy]
+          example: "unhealthy"
         error:
           type: string
-          example: "validation_error"
+          description: Error message
+          example: "Internal server error during health check"
+
+    SimpleHealthErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Simple health status indicating failure
+          enum: [error]
+          example: "error"
         message:
           type: string
-          example: "Answer validation failed"
-        details:
-          type: object
-          properties:
-            field:
-              type: string
-              example: "answer"
-            issue:
-              type: string
-              example: "Expected number, got string"
+          description: Error message
+          example: "Health check failed"
 
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+      description: JWT token for API authentication
 
 security:
   - BearerAuth: []

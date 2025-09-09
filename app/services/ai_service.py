@@ -178,12 +178,12 @@ class AIService:
             code_matrix_status = code_matrix_repository.get_code_matrix_status(org_id, project_id)
             
             # Use empty values if no code matrix status is found
-            current_section = ""
+            current_section = "3.01"
             code_matrix_questions = []
             clarifying_questions = []
             
             if code_matrix_status:
-                current_section = code_matrix_status.curr_section or ""
+                current_section = code_matrix_status.curr_section or "3.01"
                 code_matrix_questions = code_matrix_status.code_matrix_questions or []
                 clarifying_questions = code_matrix_status.clarifying_questions or []
             
@@ -213,6 +213,43 @@ class AIService:
             return create_error_response(
                 error_type="processing_error",
                 message="An error occurred while querying code matrix",
+                suggestion="Please try again",
+                confidence=0.0
+            ).to_dict()
+
+    def save_answer_and_get_next_question(self, org_id: str, project_id: str, 
+                                        question: str, answer: str,
+                                        code_matrix_repository: Any) -> Dict[str, Any]:
+        """
+        Save user's answer to a clarifying question and get the next question.
+        
+        Args:
+            org_id: Organization ID
+            project_id: Project ID
+            question: The original question that was asked
+            answer: User's answer to the question
+            code_matrix_repository: CodeMatrixRepository instance for data access
+            
+        Returns:
+            Dictionary with next AI question or final answer in unified format
+        """
+        try:
+            # Format the question-answer pair for storage
+            qa_pair = f"Q: {question} | A: {answer}"
+            
+            # Save the answer to the database
+            code_matrix_repository.add_clarifying_question(org_id, project_id, qa_pair)
+            
+            # Get the next question by calling query_code_matrix
+            next_question_result = self.query_code_matrix(org_id, project_id, code_matrix_repository)
+            
+            return next_question_result
+            
+        except Exception as e:
+            logger.error(f"Error saving answer and getting next question: {e}")
+            return create_error_response(
+                error_type="processing_error",
+                message="An error occurred while processing your answer",
                 suggestion="Please try again",
                 confidence=0.0
             ).to_dict()
