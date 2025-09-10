@@ -9,6 +9,7 @@ from app import db
 
 class Project(db.Model):
     __tablename__ = 'projects'
+    __table_args__ = {'schema': 'buildsure'}
 
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(255), nullable=False)
