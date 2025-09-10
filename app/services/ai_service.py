@@ -7,6 +7,7 @@ It includes text generation, analysis, and conversation management.
 from typing import Dict, List, Optional, Any, Union
 import logging
 import datetime
+import os
 from dataclasses import asdict
 from app.utils.prompt_builder import PromptBuilder
 from app.models.ai_response import AIResponse, create_error_response, FinalAnswerData, MultipleChoiceMultipleOptionsData, MultipleChoiceSingleOptionData, NumericInputData, TextInputData, Metadata
@@ -64,6 +65,36 @@ class AIService:
         """
         self.client = gemini_client or MockGeminiClient()
         self.prompt_builder = prompt_builder
+
+    def _log_prompt_to_file(self, current_question_number: str, 
+                           clarifying_questions_count: int, 
+                           rendered_prompt: str) -> None:
+        """
+        Log rendered prompt to a file in storage/logs directory.
+        
+        Args:
+            current_question_number: The current question number
+            clarifying_questions_count: Number of clarifying questions asked so far
+            rendered_prompt: The rendered prompt content to save
+        """
+        try:
+            # Create directory if it doesn't exist
+            log_dir = "storage/logs"
+            os.makedirs(log_dir, exist_ok=True)
+            
+            # Generate filename: current_question + clarifying_count + timestamp
+            timestamp = datetime.datetime.now().strftime("%H%M")
+            filename = f"{current_question_number}_{clarifying_questions_count}_{timestamp}.md"
+            filepath = os.path.join(log_dir, filename)
+            
+            # Write prompt content to file
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(rendered_prompt)
+                
+            logger.info(f"Prompt logged to file: {filepath}")
+            
+        except Exception as e:
+            logger.error(f"Failed to log prompt to file: {e}")
 
     def _parse_llm_response(self, llm_response_text: str) -> AIResponse:
         """
@@ -197,12 +228,19 @@ class AIService:
                     confidence=0.0
                 ).to_dict()
             
-            # Call AI service query with code matrix data
-            ai_response = self.client.generate_content(self.prompt_builder.render(
+            # Render prompt and log to file
+            rendered_prompt = self.prompt_builder.render(
                 current_question_number=current_section,
                 form_questions_and_answers=code_matrix_questions,
                 clarifying_questions_and_answers=clarifying_questions
-            ))
+            )
+            
+            # Log the rendered prompt to file
+            clarifying_count = len(clarifying_questions)
+            self._log_prompt_to_file(current_section, clarifying_count, rendered_prompt)
+            
+            # Call AI service query with code matrix data
+            ai_response = self.client.generate_content(rendered_prompt)
             
             # Parse and return unified response
             unified_response = self._parse_llm_response(ai_response.text)
@@ -271,11 +309,18 @@ class AIService:
             Dictionary with AI analysis response in unified format
         """
         try:
-            ai_response = self.client.generate_content(self.prompt_builder.render(
+            # Render prompt and log to file
+            rendered_prompt = self.prompt_builder.render(
                 current_question_number=current_question_number,
                 form_questions_and_answers=form_questions_and_answers,
                 clarifying_questions_and_answers=clarifying_questions_and_answers
-            ))
+            )
+            
+            # Log the rendered prompt to file
+            clarifying_count = len(clarifying_questions_and_answers)
+            self._log_prompt_to_file(current_question_number, clarifying_count, rendered_prompt)
+            
+            ai_response = self.client.generate_content(rendered_prompt)
             
             # Parse and return unified response
             unified_response = self._parse_llm_response(ai_response.text)
