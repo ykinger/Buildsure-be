@@ -60,6 +60,17 @@ class DevelopmentConfig(Config):
     DEBUG: bool = True
     DEVELOPMENT: bool = True
     SQLALCHEMY_ECHO: bool = True
+    
+    @property
+    def SQLALCHEMY_DATABASE_URI(self) -> str:
+        """Use SQLite for development."""
+        return "sqlite:///buildsure_dev.db"
+    
+    # Override engine options for SQLite
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        'pool_pre_ping': True,
+        'connect_args': {'check_same_thread': False}  # Allow SQLite to work with Flask threading
+    }
 
 
 class ProductionConfig(Config):

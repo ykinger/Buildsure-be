@@ -9,7 +9,6 @@ from app import db
 
 class Project(db.Model):
     __tablename__ = 'projects'
-    __table_args__ = {'schema': 'buildsure'}
 
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(255), nullable=False)
@@ -19,8 +18,8 @@ class Project(db.Model):
     status = db.Column(db.String(32), nullable=False, default='not_started')
     curr_task = db.Column(db.String(255), nullable=True)
     created_by = db.Column(db.String(36), nullable=True)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
+    created_at = db.Column(db.DateTime, server_default=db.text('CURRENT_TIMESTAMP'))
+    updated_at = db.Column(db.DateTime, server_default=db.text('CURRENT_TIMESTAMP'), onupdate=db.text('CURRENT_TIMESTAMP'))
 
 class ProjectBase(BaseModel):
     name: str

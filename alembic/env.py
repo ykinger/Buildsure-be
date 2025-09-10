@@ -38,8 +38,9 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    config = Config()
-    url = config.SQLALCHEMY_DATABASE_URI
+    from app.config.settings import get_config
+    app_config = get_config()
+    url = app_config.SQLALCHEMY_DATABASE_URI
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -58,18 +59,20 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    # Get the raw connection URL without schema parameter
-    db_url = config.get_main_option("sqlalchemy.url").split('?')[0]
-    connectable = create_engine(db_url, poolclass=pool.NullPool)
+    from app.config.settings import get_config
+    app_config = get_config()
+    db_url = app_config.SQLALCHEMY_DATABASE_URI
     
-    # Create a single connection and set schema before any operations
+    # Create engine with appropriate configuration
+    engine_options = getattr(app_config, 'SQLALCHEMY_ENGINE_OPTIONS', {})
+    connectable = create_engine(db_url, poolclass=pool.NullPool, **engine_options)
+    
     with connectable.connect() as connection:
-        connection.execute("SET search_path TO buildsure")
         context.configure(
             connection=connection, 
-            target_metadata=target_metadata,
-            include_schemas=True
+            target_metadata=target_metadata
         )
+        
         with context.begin_transaction():
             context.run_migrations()
 
