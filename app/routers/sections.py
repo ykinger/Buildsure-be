@@ -1,0 +1,196 @@
+"""
+Sections Router
+FastAPI router for section CRUD operations.
+"""
+from typing import List, Optional
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, func
+from sqlalchemy.orm import selectinload
+import math
+
+from app.database import get_async_db
+from app.models.section import Section
+from app.models.project import Project
+from app.schemas.section import (
+    SectionCreate,
+    SectionUpdate,
+    SectionResponse,
+    SectionListResponse
+)
+
+router = APIRouter(prefix="/api/v1/sections", tags=["sections"])
+
+
+@router.get("/", response_model=SectionListResponse)
+async def list_sections(
+    page: int = Query(1, ge=1, description="Page number"),
+    size: int = Query(10, ge=1, le=100, description="Page size"),
+    project_id: Optional[str] = Query(None, description="Filter by project ID"),
+    db: AsyncSession = Depends(get_async_db)
+):
+    """List sections with pagination and optional project filtering"""
+    # Build query
+    query = select(Section)
+    count_query = select(func.count(Section.id))
+    
+    if project_id:
+        query = query.where(Section.project_id == project_id)
+        count_query = count_query.where(Section.project_id == project_id)
+    
+    # Get total count
+    count_result = await db.execute(count_query)
+    total = count_result.scalar()
+    
+    # Calculate pagination
+    offset = (page - 1) * size
+    pages = math.ceil(total / size) if total > 0 else 1
+    
+    # Get sections
+    result = await db.execute(
+        query
+        .offset(offset)
+        .limit(size)
+        .order_by(Section.section_number.asc())
+    )
+    sections = result.scalars().all()
+    
+    return SectionListResponse(
+        items=[SectionResponse.model_validate(section) for section in sections],
+        total=total,
+        page=page,
+        size=size,
+        pages=pages
+    )
+
+
+@router.post("/", response_model=SectionResponse, status_code=201)
+async def create_section(
+    section_data: SectionCreate,
+    db: AsyncSession = Depends(get_async_db)
+):
+    """Create a new section"""
+    # Verify project exists
+    project_result = await db.execute(
+        select(Project).where(Project.id == section_data.project_id)
+    )
+    if not project_result.scalar_one_or_none():
+        raise HTTPException(status_code=400, detail="Project not found")
+    
+    # Check if section number already exists for this project
+    existing_section = await db.execute(
+        select(Section).where(
+            Section.project_id == section_data.project_id,
+            Section.section_number == section_data.section_number
+        )
+    )
+    if existing_section.scalar_one_or_none():
+        raise HTTPException(status_code=400, detail="Section number already exists for this project")
+    
+    section = Section(**section_data.model_dump())
+    db.add(section)
+    await db.commit()
+    await db.refresh(section)
+    
+    return SectionResponse.model_validate(section)
+
+
+@router.get("/{section_id}", response_model=SectionResponse)
+async def get_section(
+    section_id: str,
+    db: AsyncSession = Depends(get_async_db)
+):
+    """Get section by ID"""
+    result = await db.execute(
+        select(Section).where(Section.id == section_id)
+    )
+    section = result.scalar_one_or_none()
+    
+    if not section:
+        raise HTTPException(status_code=404, detail="Section not found")
+    
+    return SectionResponse.model_validate(section)
+
+
+@router.put("/{section_id}", response_model=SectionResponse)
+async def update_section(
+    section_id: str,
+    section_data: SectionUpdate,
+    db: AsyncSession = Depends(get_async_db)
+):
+    """Update section by ID"""
+    result = await db.execute(
+        select(Section).where(Section.id == section_id)
+    )
+    section = result.scalar_one_or_none()
+    
+    if not section:
+        raise HTTPException(status_code=404, detail="Section not found")
+    
+    update_data = section_data.model_dump(exclude_unset=True)
+    
+    # Verify project exists if project_id is being updated
+    if "project_id" in update_data:
+        project_result = await db.execute(
+            select(Project).where(Project.id == update_data["project_id"])
+        )
+        if not project_result.scalar_one_or_none():
+            raise HTTPException(status_code=400, detail="Project not found")
+    
+    # Check if section number already exists for the project (excluding current section)
+    if "section_number" in update_data:
+        project_id = update_data.get("project_id", section.project_id)
+        existing_section = await db.execute(
+            select(Section).where(
+                Section.project_id == project_id,
+                Section.section_number == update_data["section_number"],
+                Section.id != section_id
+            )
+        )
+        if existing_section.scalar_one_or_none():
+            raise HTTPException(status_code=400, detail="Section number already exists for this project")
+    
+    # Update fields
+    for field, value in update_data.items():
+        setattr(section, field, value)
+    
+    await db.commit()
+    await db.refresh(section)
+    
+    return SectionResponse.model_validate(section)
+
+
+@router.delete("/{section_id}", status_code=204)
+async def delete_section(
+    section_id: str,
+    db: AsyncSession = Depends(get_async_db)
+):
+    """Delete section by ID"""
+    result = await db.execute(
+        select(Section).where(Section.id == section_id)
+    )
+    section = result.scalar_one_or_none()
+    
+    if not section:
+        raise HTTPException(status_code=404, detail="Section not found")
+    
+    await db.delete(section)
+    await db.commit()
+
+
+@router.get("/projects/{project_id}/sections", response_model=SectionListResponse)
+async def list_sections_by_project(
+    project_id: str,
+    page: int = Query(1, ge=1, description="Page number"),
+    size: int = Query(10, ge=1, le=100, description="Page size"),
+    db: AsyncSession = Depends(get_async_db)
+):
+    """List sections by project ID"""
+    # Verify project exists
+    project_result = await db.execute(
+        select(Project).where(Project.id == project_id)
+    )
+    if not project_result.scalar_one_or_none():
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    return await list_sections(page=page, size=size, project_id=project_id, db=db)

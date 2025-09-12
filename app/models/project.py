@@ -1,41 +1,86 @@
 """
 Project Model
-Defines the database model and Pydantic schemas for projects.
+Defines the database model for projects.
 """
 import uuid
-from datetime import date, datetime
-from pydantic import BaseModel, ConfigDict
-from app import db
+from datetime import datetime
+from typing import List, TYPE_CHECKING
+from sqlalchemy import Column, String, Text, DateTime, func, ForeignKey, Integer, Enum
+from sqlalchemy.orm import relationship
+from app.database import Base
+import enum
 
-class Project(db.Model):
-    __tablename__ = 'projects'
+if TYPE_CHECKING:
+    from .organization import Organization
+    from .user import User
+    from .section import Section
 
-    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    name = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.Text, nullable=True)
-    due_date = db.Column(db.Date, nullable=True)
-    organization_id = db.Column(db.String(36), nullable=False)
-    status = db.Column(db.String(32), nullable=False, default='not_started')
-    curr_task = db.Column(db.String(255), nullable=True)
-    created_by = db.Column(db.String(36), nullable=True)
-    created_at = db.Column(db.DateTime, server_default=db.text('CURRENT_TIMESTAMP'))
-    updated_at = db.Column(db.DateTime, server_default=db.text('CURRENT_TIMESTAMP'), onupdate=db.text('CURRENT_TIMESTAMP'))
 
-class ProjectBase(BaseModel):
-    name: str
-    description: str | None = None
-    due_date: date | None = None
-    organization_id: str
-    status: str = 'not_started'
-    curr_task: str | None = None
+class ProjectStatus(enum.Enum):
+    NOT_STARTED = "not_started"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+    ON_HOLD = "on_hold"
 
-class ProjectCreate(ProjectBase):
-    pass
 
-class ProjectResponse(ProjectBase):
-    id: str
-    created_by: str | None
-    created_at: datetime
-    updated_at: datetime
+class Project(Base):
+    __tablename__ = "projects"
 
-    model_config = ConfigDict(from_attributes=True)
+    id = Column(
+        String(36), 
+        primary_key=True, 
+        default=lambda: str(uuid.uuid4()),
+        nullable=False
+    )
+    org_id = Column(
+        String(36), 
+        ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True
+    )
+    user_id = Column(
+        String(36), 
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True
+    )
+    name = Column(String(255), nullable=False)
+    description = Column(Text, nullable=True)
+    status = Column(
+        Enum(ProjectStatus), 
+        nullable=False, 
+        default=ProjectStatus.NOT_STARTED
+    )
+    current_section = Column(Integer, nullable=False, default=0)
+    total_sections = Column(Integer, nullable=False, default=0)
+    completed_sections = Column(Integer, nullable=False, default=0)
+    created_at = Column(
+        DateTime, 
+        server_default=func.now(),
+        nullable=False
+    )
+    updated_at = Column(
+        DateTime, 
+        server_default=func.now(),
+        onupdate=func.now(),
+        nullable=False
+    )
+
+    # Relationships
+    organization: "Organization" = relationship(
+        "Organization", 
+        back_populates="projects"
+    )
+    user: "User" = relationship(
+        "User", 
+        back_populates="projects"
+    )
+    sections: List["Section"] = relationship(
+        "Section", 
+        back_populates="project",
+        cascade="all, delete-orphan",
+        order_by="Section.section_number"
+    )
+
+    def __repr__(self) -> str:
+        return f"<Project(id={self.id}, name='{self.name}', status='{self.status.value}')>"

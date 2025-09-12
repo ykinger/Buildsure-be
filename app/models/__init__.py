@@ -1,8 +1,9 @@
 """
-Models package initialization
+Database Models
 """
-from app.models.base import BaseModel
-from app.models.project import Project
-from app.models.code_matrix_status import CodeMatrixStatus
+from .organization import Organization
+from .user import User
+from .project import Project
+from .section import Section
 
-__all__ = ['BaseModel', 'Project', 'CodeMatrixStatus']
+__all__ = ["Organization", "User", "Project", "Section"]
