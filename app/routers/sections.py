@@ -16,8 +16,10 @@ from app.schemas.section import (
     SectionCreate,
     SectionUpdate,
     SectionResponse,
-    SectionListResponse
+    SectionListResponse,
+    SectionStartResponse
 )
+from app.services.section_service import SectionService
 
 router = APIRouter(prefix="/api/v1/sections", tags=["sections"])
 
@@ -176,6 +178,42 @@ async def delete_section(
     
     await db.delete(section)
     await db.commit()
+
+
+@router.post("/projects/{project_id}/sections/{section_number}/start", response_model=SectionStartResponse)
+async def start_section(
+    project_id: str,
+    section_number: int,
+    db: AsyncSession = Depends(get_async_db)
+):
+    """
+    Start a section by generating the first question.
+    
+    This endpoint:
+    1. Validates that the section matches the project's current_section
+    2. Updates the section status to 'in_progress'
+    3. Retrieves relevant guideline chunks for this section
+    4. Calls LangChain with prompt template to generate the first question
+    5. Returns the generated question without saving it
+    """
+    try:
+        section_service = SectionService(db)
+        result = await section_service.start_section(project_id, section_number)
+        
+        return SectionStartResponse(
+            section_id=result["section_id"],
+            section_number=result["section_number"],
+            status=result["status"],
+            question=result["question"],
+            question_type="initial"
+        )
+        
+    except ValueError as e:
+        # Business logic validation errors
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        # Unexpected errors
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 
 @router.get("/projects/{project_id}/sections", response_model=SectionListResponse)

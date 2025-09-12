@@ -50,3 +50,14 @@ class SectionListResponse(BaseModel):
     pages: int
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class SectionStartResponse(BaseModel):
+    """Schema for section start response with generated question"""
+    section_id: str
+    section_number: int
+    status: SectionStatus
+    question: str
+    question_type: str = "initial"
+    
+    model_config = ConfigDict(from_attributes=True)
