@@ -11,6 +11,7 @@ from sqlalchemy.orm import selectinload
 from app.models.project import Project
 from app.models.section import Section, SectionStatus
 from app.models.guideline_chunk import GuidelineChunk
+from app.models.answer import Answer
 from app.services.ai_service import AIService
 
 logger = logging.getLogger(__name__)
@@ -262,6 +263,249 @@ class SectionService:
         except Exception as e:
             logger.error(f"Error getting section status: {str(e)}")
             raise
+    
+    async def process_section_answer(
+        self,
+        project_id: str,
+        section_number: int,
+        question_text: str,
+        answer_text: str,
+        db: AsyncSession
+    ) -> Dict[str, Any]:
+        """
+        Process a section answer and determine next step.
+        
+        Args:
+            project_id: The project ID
+            section_number: The section number
+            question_text: The question that was answered
+            answer_text: The user's answer
+            db: Database session
+            
+        Returns:
+            Dict containing next_question or draft_output
+            
+        Raises:
+            ValueError: If validation fails
+            RuntimeError: If processing fails
+        """
+        try:
+            # Step 1: Validate section exists and is in progress
+            section = await self._validate_section_answer(
+                project_id, section_number, db
+            )
+            
+            # Step 2: Save the answer to the answers table
+            answer = await self._save_answer(
+                section.id, question_text, answer_text, db
+            )
+            
+            # Step 3: Retrieve all previous answers for this section
+            previous_answers = await self._get_section_answers(section.id, db)
+            
+            # Step 4: Get relevant guideline chunks
+            guideline_chunks = await self._get_relevant_guidelines(
+                section_number, db
+            )
+            
+            # Step 5: Call AI service to determine next step
+            ai_result = await self.ai_service.process_answer_and_generate_next(
+                section_number=section_number,
+                current_question=question_text,
+                current_answer=answer_text,
+                previous_answers=previous_answers,
+                guideline_chunks=guideline_chunks
+            )
+            
+            # Step 6: Handle the AI result
+            response = await self._handle_ai_result(
+                section, ai_result, len(previous_answers), db
+            )
+            
+            logger.info(f"Successfully processed answer for section {section_number}")
+            return response
+            
+        except Exception as e:
+            logger.error(f"Error processing answer for section {section_number}: {str(e)}")
+            await db.rollback()
+            raise
+    
+    async def _validate_section_answer(
+        self,
+        project_id: str,
+        section_number: int,
+        db: AsyncSession
+    ) -> Section:
+        """
+        Validate that the section exists and is in progress.
+        
+        Args:
+            project_id: The project ID
+            section_number: The section number
+            db: Database session
+            
+        Returns:
+            The section object
+            
+        Raises:
+            ValueError: If validation fails
+        """
+        # Check if section exists and is in progress
+        result = await db.execute(
+            select(Section).where(
+                Section.project_id == project_id,
+                Section.section_number == section_number
+            )
+        )
+        section = result.scalar_one_or_none()
+        
+        if not section:
+            raise ValueError(
+                f"Section {section_number} not found for project {project_id}"
+            )
+        
+        if section.status != SectionStatus.IN_PROGRESS:
+            raise ValueError(
+                f"Section {section_number} is not in progress. Current status: {section.status.value}"
+            )
+        
+        return section
+    
+    async def _save_answer(
+        self,
+        section_id: str,
+        question_text: str,
+        answer_text: str,
+        db: AsyncSession
+    ) -> Answer:
+        """
+        Save an answer to the database.
+        
+        Args:
+            section_id: The section ID
+            question_text: The question text
+            answer_text: The answer text
+            db: Database session
+            
+        Returns:
+            The created answer object
+        """
+        try:
+            answer = Answer(
+                section_id=section_id,
+                question_text=question_text,
+                answer_text=answer_text,
+                question_type="clarifying"
+            )
+            
+            db.add(answer)
+            await db.commit()
+            await db.refresh(answer)
+            
+            logger.debug(f"Saved answer for section {section_id}")
+            return answer
+            
+        except Exception as e:
+            await db.rollback()
+            logger.error(f"Failed to save answer: {str(e)}")
+            raise RuntimeError(f"Failed to save answer: {str(e)}")
+    
+    async def _get_section_answers(
+        self,
+        section_id: str,
+        db: AsyncSession
+    ) -> List[Dict[str, Any]]:
+        """
+        Retrieve all answers for a section.
+        
+        Args:
+            section_id: The section ID
+            db: Database session
+            
+        Returns:
+            List of answer dictionaries
+        """
+        try:
+            result = await db.execute(
+                select(Answer)
+                .where(Answer.section_id == section_id)
+                .order_by(Answer.created_at)
+            )
+            answers = result.scalars().all()
+            
+            # Convert to dictionaries
+            answer_data = []
+            for answer in answers:
+                answer_data.append({
+                    "id": answer.id,
+                    "question_text": answer.question_text,
+                    "answer_text": answer.answer_text,
+                    "question_type": answer.question_type,
+                    "created_at": answer.created_at.isoformat() if answer.created_at else None
+                })
+            
+            return answer_data
+            
+        except Exception as e:
+            logger.error(f"Error retrieving answers for section {section_id}: {str(e)}")
+            return []
+    
+    async def _handle_ai_result(
+        self,
+        section: Section,
+        ai_result: Dict[str, Any],
+        answers_count: int,
+        db: AsyncSession
+    ) -> Dict[str, Any]:
+        """
+        Handle the AI service result and update section if needed.
+        
+        Args:
+            section: The section object
+            ai_result: Result from AI service
+            answers_count: Number of answers for this section
+            db: Database session
+            
+        Returns:
+            Response dictionary
+        """
+        try:
+            action = ai_result.get("action", "question")
+            
+            if action == "draft":
+                # Update section with draft output
+                draft_output = ai_result.get("draft_output")
+                section.draft_output = draft_output
+                db.add(section)
+                await db.commit()
+                await db.refresh(section)
+                
+                return {
+                    "section_id": section.id,
+                    "section_number": section.section_number,
+                    "status": section.status.value,
+                    "next_question": None,
+                    "draft_output": draft_output,
+                    "message": f"Draft generated for section {section.section_number}",
+                    "answers_count": answers_count
+                }
+            else:
+                # Return next question
+                next_question = ai_result.get("next_question")
+                
+                return {
+                    "section_id": section.id,
+                    "section_number": section.section_number,
+                    "status": section.status.value,
+                    "next_question": next_question,
+                    "draft_output": None,
+                    "message": f"Next question generated for section {section.section_number}",
+                    "answers_count": answers_count
+                }
+                
+        except Exception as e:
+            logger.error(f"Error handling AI result: {str(e)}")
+            raise RuntimeError(f"Error handling AI result: {str(e)}")
     
     async def health_check(self) -> Dict[str, Any]:
         """

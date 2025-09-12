@@ -102,6 +102,155 @@ class AIService:
             # Return a fallback question
             return self._get_fallback_question(section_number)
     
+    async def process_answer_and_generate_next(
+        self,
+        section_number: int,
+        current_question: str,
+        current_answer: str,
+        previous_answers: List[Dict[str, Any]],
+        guideline_chunks: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
+        """
+        Process the current answer and determine next step: ask another question or generate draft.
+        
+        Args:
+            section_number: The current section number
+            current_question: The question that was just answered
+            current_answer: The answer provided by the user
+            previous_answers: List of previous Q&A pairs for this section
+            guideline_chunks: Relevant Ontario Building Code chunks
+            
+        Returns:
+            Dict containing either next_question or draft_output
+        """
+        try:
+            # Format previous Q&A pairs for context
+            qa_context = self._format_previous_answers(previous_answers)
+            
+            # Add current Q&A to context
+            current_qa = f"Q: {current_question}\nA: {current_answer}"
+            
+            # Format guideline context
+            guideline_context = self._format_guideline_chunks(guideline_chunks)
+            
+            # Create decision prompt
+            decision_prompt = f"""
+Based on the following context, determine if we need to ask more clarifying questions or if we have enough information to generate a draft section.
+
+Section Number: {section_number}
+
+Previous Q&A pairs:
+{qa_context}
+
+Current Q&A:
+{current_qa}
+
+Relevant Building Code Sections:
+{guideline_context}
+
+Instructions:
+1. If more information is needed, respond with: QUESTION: [your next question]
+2. If enough information is gathered, respond with: DRAFT: [generate a draft section based on all the information]
+
+Consider that we need sufficient detail to create a comprehensive building permit section.
+"""
+            
+            # Create the chat prompt template
+            chat_prompt = ChatPromptTemplate.from_messages([
+                SystemMessagePromptTemplate.from_template(
+                    "You are an expert Ontario Building Code consultant. Analyze the conversation "
+                    "and determine if more questions are needed or if you can generate a draft section. "
+                    "Be thorough but efficient - don't ask unnecessary questions."
+                ),
+                HumanMessagePromptTemplate.from_template("{prompt}")
+            ])
+            
+            # Format and call LLM
+            formatted_prompt = chat_prompt.format_prompt(prompt=decision_prompt)
+            response = await self._call_llm_async(formatted_prompt.to_messages())
+            
+            # Parse the response to determine next action
+            return self._parse_decision_response(response, section_number)
+            
+        except Exception as e:
+            logger.error(f"Error processing answer for section {section_number}: {str(e)}")
+            # Return a fallback next question
+            return {
+                "action": "question",
+                "next_question": f"Could you provide any additional details about section {section_number} requirements?",
+                "metadata": {
+                    "generated_by": "fallback",
+                    "reason": "error_processing_answer"
+                }
+            }
+    
+    def _format_previous_answers(self, answers: List[Dict[str, Any]]) -> str:
+        """Format previous answers for context."""
+        if not answers:
+            return "No previous questions asked."
+        
+        formatted_answers = []
+        for i, answer in enumerate(answers, 1):
+            q_text = answer.get('question_text', 'Unknown question')
+            a_text = answer.get('answer_text', 'No answer')
+            formatted_answers.append(f"{i}. Q: {q_text}\n   A: {a_text}")
+        
+        return "\n".join(formatted_answers)
+    
+    def _parse_decision_response(self, response: str, section_number: int) -> Dict[str, Any]:
+        """Parse the LLM decision response."""
+        try:
+            cleaned_response = response.strip()
+            
+            if cleaned_response.startswith("QUESTION:"):
+                # Extract the question
+                question_text = cleaned_response[9:].strip()
+                return {
+                    "action": "question",
+                    "next_question": question_text,
+                    "metadata": {
+                        "generated_by": "gemini-pro",
+                        "section_number": section_number
+                    }
+                }
+            elif cleaned_response.startswith("DRAFT:"):
+                # Extract the draft content
+                draft_content = cleaned_response[6:].strip()
+                return {
+                    "action": "draft",
+                    "draft_output": {
+                        "section_number": section_number,
+                        "content": draft_content,
+                        "generated_at": "now",
+                        "status": "draft"
+                    },
+                    "metadata": {
+                        "generated_by": "gemini-pro",
+                        "section_number": section_number
+                    }
+                }
+            else:
+                # Default to asking another question if format is unclear
+                return {
+                    "action": "question",
+                    "next_question": f"Could you provide more specific details about section {section_number}?",
+                    "metadata": {
+                        "generated_by": "gemini-pro",
+                        "reason": "unclear_response_format"
+                    }
+                }
+                
+        except Exception as e:
+            logger.error(f"Error parsing decision response: {str(e)}")
+            return {
+                "action": "question",
+                "next_question": f"Could you provide additional information about section {section_number}?",
+                "metadata": {
+                    "generated_by": "fallback",
+                    "reason": "parse_error"
+                }
+            }
+    
     async def _call_llm_async(self, messages: List[Any]) -> str:
         """Make async call to the LLM."""
         try:

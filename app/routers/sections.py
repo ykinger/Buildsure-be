@@ -19,6 +19,7 @@ from app.schemas.section import (
     SectionListResponse,
     SectionStartResponse
 )
+from app.schemas.answer import AnswerCreate, SectionAnswerResponse
 from app.services.section_service import SectionService
 
 router = APIRouter(prefix="/api/v1/sections", tags=["sections"])
@@ -197,8 +198,8 @@ async def start_section(
     5. Returns the generated question without saving it
     """
     try:
-        section_service = SectionService(db)
-        result = await section_service.start_section(project_id, section_number)
+        section_service = SectionService()
+        result = await section_service.start_section(project_id, section_number, db)
         
         return SectionStartResponse(
             section_id=result["section_id"],
@@ -232,3 +233,40 @@ async def list_sections_by_project(
         raise HTTPException(status_code=404, detail="Project not found")
     
     return await list_sections(page=page, size=size, project_id=project_id, db=db)
+
+
+@router.post("/projects/{project_id}/sections/{section_number}/answer", response_model=SectionAnswerResponse)
+async def submit_section_answer(
+    project_id: str,
+    section_number: int,
+    answer_data: AnswerCreate,
+    db: AsyncSession = Depends(get_async_db)
+):
+    """
+    Submit an answer for a section question.
+    
+    This endpoint:
+    1. Accepts question_text and answer_text
+    2. Saves both in answers table
+    3. Retrieves all previous answers and relevant guideline chunks
+    4. Calls LangChain with prompt template to generate next question or draft section
+    5. Returns JSON with next_question or draft_output
+    """
+    try:
+        section_service = SectionService()
+        result = await section_service.process_section_answer(
+            project_id=project_id,
+            section_number=section_number,
+            question_text=answer_data.question_text,
+            answer_text=answer_data.answer_text,
+            db=db
+        )
+        
+        return SectionAnswerResponse(**result)
+        
+    except ValueError as e:
+        # Business logic validation errors
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        # Unexpected errors
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")

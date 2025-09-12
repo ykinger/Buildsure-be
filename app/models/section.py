@@ -12,6 +12,7 @@ import enum
 
 if TYPE_CHECKING:
     from .project import Project
+    from .answer import Answer
 
 
 class SectionStatus(enum.Enum):
@@ -60,6 +61,12 @@ class Section(Base):
     project: "Project" = relationship(
         "Project", 
         back_populates="sections"
+    )
+    answers: list["Answer"] = relationship(
+        "Answer",
+        back_populates="section",
+        cascade="all, delete-orphan",
+        order_by="Answer.created_at"
     )
 
     def __repr__(self) -> str:
