@@ -61,3 +61,19 @@ class SectionStartResponse(BaseModel):
     question_type: str = "initial"
     
     model_config = ConfigDict(from_attributes=True)
+
+
+class SectionConfirmResponse(BaseModel):
+    """Schema for section confirmation response"""
+    section_id: str
+    section_number: int
+    status: SectionStatus
+    final_output: Optional[Dict[str, Any]] = None
+    project_id: str
+    project_status: str
+    completed_sections: int
+    total_sections: int
+    current_section: int
+    message: str
+    
+    model_config = ConfigDict(from_attributes=True)

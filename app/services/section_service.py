@@ -507,6 +507,202 @@ class SectionService:
             logger.error(f"Error handling AI result: {str(e)}")
             raise RuntimeError(f"Error handling AI result: {str(e)}")
     
+    async def confirm_section(
+        self,
+        project_id: str,
+        section_number: int,
+        db: AsyncSession
+    ) -> Dict[str, Any]:
+        """
+        Confirm a section by saving draft as final output and updating project progress.
+        
+        Args:
+            project_id: The project ID
+            section_number: The section number to confirm
+            db: Database session
+            
+        Returns:
+            Dict containing confirmation details and updated project status
+            
+        Raises:
+            ValueError: If validation fails
+            RuntimeError: If database operations fail
+        """
+        try:
+            # Step 1: Validate the section can be confirmed
+            project, section = await self._validate_section_confirm(
+                project_id, section_number, db
+            )
+            
+            # Step 2: Save draft_output as final_output and mark section as completed
+            await self._finalize_section(section, db)
+            
+            # Step 3: Update project progress
+            updated_project = await self._update_project_progress(project, db)
+            
+            # Step 4: Prepare the response
+            response = {
+                "section_id": section.id,
+                "section_number": section.section_number,
+                "status": SectionStatus.COMPLETED.value,
+                "final_output": section.final_output,
+                "project_id": project_id,
+                "project_status": updated_project.status.value,
+                "completed_sections": updated_project.completed_sections,
+                "total_sections": updated_project.total_sections,
+                "current_section": updated_project.current_section,
+                "message": f"Section {section_number} confirmed successfully"
+            }
+            
+            logger.info(f"Successfully confirmed section {section_number} for project {project_id}")
+            return response
+            
+        except Exception as e:
+            logger.error(f"Error confirming section {section_number} for project {project_id}: {str(e)}")
+            # Rollback any changes if needed
+            await db.rollback()
+            raise
+    
+    async def _validate_section_confirm(
+        self,
+        project_id: str,
+        section_number: int,
+        db: AsyncSession
+    ) -> tuple[Project, Section]:
+        """
+        Validate that the section can be confirmed.
+        
+        Args:
+            project_id: The project ID
+            section_number: The section number
+            db: Database session
+            
+        Returns:
+            Tuple of (project, section)
+            
+        Raises:
+            ValueError: If validation fails
+        """
+        # Check if project exists
+        project_result = await db.execute(
+            select(Project).where(Project.id == project_id)
+        )
+        project = project_result.scalar_one_or_none()
+        
+        if not project:
+            raise ValueError(f"Project with ID {project_id} not found")
+        
+        # Check if section exists for this project
+        section_result = await db.execute(
+            select(Section).where(
+                Section.project_id == project_id,
+                Section.section_number == section_number
+            )
+        )
+        section = section_result.scalar_one_or_none()
+        
+        if not section:
+            raise ValueError(
+                f"Section {section_number} not found for project {project_id}"
+            )
+        
+        # Validate that this section matches the project's current section
+        if project.current_section != section_number:
+            raise ValueError(
+                f"Cannot confirm section {section_number}. "
+                f"Current section is {project.current_section}"
+            )
+        
+        # Check if section is in progress
+        if section.status != SectionStatus.IN_PROGRESS:
+            raise ValueError(
+                f"Section {section_number} is not in progress. "
+                f"Current status: {section.status.value}"
+            )
+        
+        # Check if section has draft_output to confirm
+        if not section.draft_output:
+            raise ValueError(
+                f"Section {section_number} has no draft output to confirm"
+            )
+        
+        return project, section
+    
+    async def _finalize_section(
+        self,
+        section: Section,
+        db: AsyncSession
+    ) -> None:
+        """
+        Finalize the section by copying draft to final output and marking as completed.
+        
+        Args:
+            section: The section to finalize
+            db: Database session
+        """
+        try:
+            # Copy draft_output to final_output
+            section.final_output = section.draft_output
+            
+            # Mark section as completed
+            section.status = SectionStatus.COMPLETED
+            
+            db.add(section)
+            await db.commit()
+            await db.refresh(section)
+            
+            logger.debug(f"Finalized section {section.section_number}")
+            
+        except Exception as e:
+            await db.rollback()
+            logger.error(f"Failed to finalize section: {str(e)}")
+            raise RuntimeError(f"Failed to finalize section: {str(e)}")
+    
+    async def _update_project_progress(
+        self,
+        project: Project,
+        db: AsyncSession
+    ) -> Project:
+        """
+        Update project progress after section confirmation.
+        
+        Args:
+            project: The project to update
+            db: Database session
+            
+        Returns:
+            Updated project object
+        """
+        try:
+            # Import here to avoid circular imports
+            from app.models.project import ProjectStatus
+            
+            # Increment completed sections
+            project.completed_sections += 1
+            
+            # Advance current section
+            project.current_section += 1
+            
+            # Check if all sections are completed
+            if project.completed_sections >= project.total_sections:
+                project.status = ProjectStatus.COMPLETED
+                logger.info(f"Project {project.id} completed - all sections finished")
+            elif project.status == ProjectStatus.NOT_STARTED:
+                # If project was not started, mark it as in progress
+                project.status = ProjectStatus.IN_PROGRESS
+            
+            db.add(project)
+            await db.commit()
+            await db.refresh(project)
+            
+            logger.debug(f"Updated project progress: {project.completed_sections}/{project.total_sections}")
+            return project
+            
+        except Exception as e:
+            await db.rollback()
+            logger.error(f"Failed to update project progress: {str(e)}")
+            raise RuntimeError(f"Failed to update project progress: {str(e)}")
+
     async def health_check(self) -> Dict[str, Any]:
         """
         Check the health of the section service and its dependencies.

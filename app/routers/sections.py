@@ -17,7 +17,8 @@ from app.schemas.section import (
     SectionUpdate,
     SectionResponse,
     SectionListResponse,
-    SectionStartResponse
+    SectionStartResponse,
+    SectionConfirmResponse
 )
 from app.schemas.answer import AnswerCreate, SectionAnswerResponse
 from app.services.section_service import SectionService
@@ -263,6 +264,36 @@ async def submit_section_answer(
         )
         
         return SectionAnswerResponse(**result)
+        
+    except ValueError as e:
+        # Business logic validation errors
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        # Unexpected errors
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+
+@router.post("/projects/{project_id}/sections/{section_number}/confirm", response_model=SectionConfirmResponse)
+async def confirm_section(
+    project_id: str,
+    section_number: int,
+    db: AsyncSession = Depends(get_async_db)
+):
+    """
+    Confirm a section by finalizing its output and updating project progress.
+    
+    This endpoint:
+    1. Validates that the section is in_progress and matches current_section
+    2. Saves draft_output as final_output
+    3. Marks section as completed
+    4. Increments project's completed_sections and advances current_section
+    5. If all sections completed, marks project as completed
+    """
+    try:
+        section_service = SectionService()
+        result = await section_service.confirm_section(project_id, section_number, db)
+        
+        return SectionConfirmResponse(**result)
         
     except ValueError as e:
         # Business logic validation errors
