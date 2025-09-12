@@ -35,3 +35,7 @@ httpx==0.25.2
 
 # Markdown processing
 markdown==3.5.1
+
+# Report export libraries
+reportlab==4.0.7
+openpyxl==3.1.2

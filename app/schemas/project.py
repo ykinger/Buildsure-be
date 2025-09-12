@@ -2,7 +2,7 @@
 Project Pydantic Schemas
 """
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, ConfigDict
 from app.models.project import ProjectStatus
 
@@ -53,5 +53,27 @@ class ProjectListResponse(BaseModel):
     page: int
     size: int
     pages: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class SectionReportData(BaseModel):
+    """Schema for individual section data in project report"""
+    section_number: int
+    final_output: Optional[Dict[str, Any]] = None
+    completed: bool = False
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ProjectReportResponse(BaseModel):
+    """Schema for project report response with dynamic sections"""
+    project_id: str
+    project_name: str
+    project_status: ProjectStatus
+    total_sections: int
+    completed_sections: int
+    generated_at: datetime
+    sections: Dict[str, SectionReportData]  # Dynamic keys like "section_1", "section_2", etc.
 
     model_config = ConfigDict(from_attributes=True)

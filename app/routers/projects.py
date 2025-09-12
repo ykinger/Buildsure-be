@@ -4,10 +4,12 @@ FastAPI router for project CRUD operations.
 """
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 import math
+from io import BytesIO
 
 from app.database import get_async_db
 from app.models.project import Project
@@ -17,8 +19,11 @@ from app.schemas.project import (
     ProjectCreate,
     ProjectUpdate,
     ProjectResponse,
-    ProjectListResponse
+    ProjectListResponse,
+    ProjectReportResponse
 )
+from app.services.project_service import ProjectService
+from app.services.report_export_service import ReportExportService
 
 router = APIRouter(prefix="/api/v1/projects", tags=["projects"])
 
@@ -217,3 +222,60 @@ async def list_projects_by_user(
         raise HTTPException(status_code=404, detail="User not found")
     
     return await list_projects(page=page, size=size, user_id=user_id, db=db)
+
+
+@router.get("/{project_id}/report")
+async def get_project_report(
+    project_id: str,
+    format: Optional[str] = Query("json", description="Report format: json, pdf, or excel"),
+    db: AsyncSession = Depends(get_async_db)
+):
+    """Generate and return a comprehensive report for the project in various formats"""
+    try:
+        project_service = ProjectService()
+        report = await project_service.generate_project_report(project_id, db)
+        
+        # Return JSON format by default
+        if format.lower() == "json":
+            return report
+        
+        # Handle export formats
+        export_service = ReportExportService()
+        
+        if format.lower() == "pdf":
+            pdf_buffer = await export_service.export_to_pdf(report)
+            
+            def iter_pdf():
+                yield pdf_buffer.read()
+            
+            return StreamingResponse(
+                iter_pdf(),
+                media_type="application/pdf",
+                headers={
+                    "Content-Disposition": f"attachment; filename=project_{project_id}_report.pdf"
+                }
+            )
+        
+        elif format.lower() == "excel":
+            excel_buffer = await export_service.export_to_excel(report)
+            
+            def iter_excel():
+                yield excel_buffer.read()
+            
+            return StreamingResponse(
+                iter_excel(),
+                media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                headers={
+                    "Content-Disposition": f"attachment; filename=project_{project_id}_report.xlsx"
+                }
+            )
+        
+        else:
+            raise HTTPException(status_code=400, detail="Invalid format. Supported formats: json, pdf, excel")
+            
+    except ValueError as e:
+        # Project not found or validation error
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        # Internal server error
+        raise HTTPException(status_code=500, detail=f"Failed to generate report: {str(e)}")
