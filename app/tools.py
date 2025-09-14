@@ -27,14 +27,14 @@ class LLMTools:
         """
         pass
 
-    def retrieve_obc_section(query: str) -> str:
+    def retrieve_obc_section(section: str) -> str:
         """
         Retrieves a section from the Ontario Building Code based on a section number.
 
         Args:
-            query (str): The search query (e.g., keywords, section number).
+            section (str): Section number in the format of part.section.sub-section.article
 
         Returns:
-            str: The content of the OBC section, or an indication that no section was found.
+            str: The content of the OBC section.
         """
         pass
