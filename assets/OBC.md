@@ -1,15 +1,6 @@
+## Section 3.2. Building Fire Safety
 
-## **Knowledge and Context**
-
-### **Ontario Building Code (OBC) Excerpts**
-
-These are specific sections from the Ontario Building Code relevant to the current task. Use this information to understand technical terms, justify your reasoning, and formulate your answers.  
-OBC Excerpt:
-
-
-### Section 3.2. Building Fire Safety
-
-#### 3.2.1. General
+### 3.2.1. General
 
 #### 3.2.1.1. Exceptions in Determining Building Height
 
@@ -74,7 +65,7 @@ with Sentence (1) is permited to be penetrated by openings that are not protecte
 
 (1)The floor assemblyofa mezzanine that is required tobe considered as a storey incalculating the building height shall be constructed in conformance with the fire separation requirements for floor assemblies in Articles 3.2.2.20.to 3.2.2.93.
 
-#### 3.2.2. Building Size and Construction Relative to Occupancy
+### 3.2.2. Building Size and Construction Relative to Occupancy
 
 #### 3.2.2.1. Application
 
@@ -545,7 +536,7 @@ construction,and
 
 (3)In a building that contains dweling units that have more thanone storey,subject to the requirements ofSentence 3.3.4.2.(3),the floor assemblies,including floorsover basements,which are entirelycontained within these dwelling units, shall have a fire-resistance rating not less than $^ { 1 \mathrm { ~ h ~ } }$ but need not be constructed as fire separations.
 
-#### r1 3.2.2.48. Group C, up to 12 Storeys, Sprinklered, Encapsulated Mass Timber Construction
+#### 3.2.2.48. Group C, up to 12 Storeys, Sprinklered, Encapsulated Mass Timber Construction
 
 (1) A building classified as Group C,other than a retirement home,is permitted to conform to Sentence (2), provided   
 (a) it is sprinklered throughout,   
@@ -567,7 +558,7 @@ partofabuilding within the scope of this Article are permited to be constructed 
 (c) the storage garage is located below the fifth storey. (See also Article 4.4.2.1.)   
 (See Note A-3.2.2.48.(4), 3.2.2.57.(3) and 3.2.2.93.(5) to (7))
 
-#### 1.2.2.49. Group C, up to 6 Storeys, Sprinklered, Noncombustible Construction
+#### 3.2.2.49. Group C, up to 6 Storeys, Sprinklered, Noncombustible Construction
 
 (1) A building classified as Group C,other than a retirement home,is permited to conform to Sentence (2) provided   
 (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -763,7 +754,7 @@ construction,and
 (b) floor assemblies shal be fire separations with a fire-resistance rating not less than $^ { 2 \mathrm { h } }$ mezzanines shall have a fire-resistance rating not less $^ { 1 \mathrm { ~ h ~ } }$ and   
 (d) loadbearing walls,columns and arches shallhave a fire-resistance rating not less than that required for the supported assembly.
 
-#### r1 3.2.2.57. Group D, up to 12 Storeys, Sprinklered, Encapsulated Mass Timber Construction
+#### 3.2.2.57. Group D, up to 12 Storeys, Sprinklered, Encapsulated Mass Timber Construction
 
 (1) A building classified as Group D is permitted to conform to Sentence (2), provided   
 (a) it is sprinklered throughout,   
@@ -1218,7 +1209,7 @@ construction used singly or in combination provided
 (c) not more than $1 0 0 0 0 \mathrm { m } ^ { 2 }$ in building area,and   
 (d) designed so that every portion of each floor area is within $6 0 \mathrm { m }$ of an exterior wall opening.
 
-#### r1 3.2.2.93. Encapsulated Mass Timber Construction, Various Occupancies, Heights and Areas, Sprinklered
+#### 3.2.2.93. Encapsulated Mass Timber Construction, Various Occupancies, Heights and Areas, Sprinklered
 
 (1)A building that is clasified as Group A,Division2, Group B,Division 3, Group Cother than a retirement home, Group D, Group E, or Group r, Division 4 or 5,is permiutea to coniorm to sentence (2) proviaea
 
@@ -1255,12 +1246,12 @@ Table 3.2.2.93. Encapsulated Mass Timber Construction, Various Occupancies, Heig
 
 <table><tr><td>Major Occupancy</td><td></td><td>Maximum Height, m</td><td>Maximum Bulin Area,</td><td>Mim Encansuainn</td></tr><tr><td rowspan="3">Group A, Division 2</td><td>18</td><td>76</td><td rowspan="3">7200</td><td>70</td></tr><tr><td>12</td><td>51</td><td>50</td></tr><tr><td>6</td><td>26</td><td>0</td></tr><tr><td rowspan="3">Group B, Division 3</td><td>10</td><td>42</td><td rowspan="3">8000</td><td>70</td></tr><tr><td>6</td><td>26</td><td>50</td></tr><tr><td>4</td><td>17</td><td>0</td></tr><tr><td rowspan="2">Group C</td><td>18</td><td>76</td><td rowspan="2">6000</td><td>70</td></tr><tr><td>8</td><td>34</td><td>0</td></tr><tr><td rowspan="2">Group D</td><td>18</td><td>76</td><td rowspan="2">7200</td><td>70</td></tr><tr><td>9</td><td>38</td><td>0</td></tr><tr><td rowspan="3">Group E</td><td>12</td><td>51</td><td rowspan="3">6000</td><td>70</td></tr><tr><td>8</td><td>34</td><td>50</td></tr><tr><td>6</td><td>26</td><td>0</td></tr><tr><td rowspan="3">Group F, Division 2</td><td>10</td><td>42</td><td rowspan="3">4500</td><td>70</td></tr><tr><td>7</td><td>30</td><td>50</td></tr><tr><td>5</td><td>21</td><td>0</td></tr><tr><td rowspan="3">Group F, Division 3</td><td>12</td><td>51</td><td rowspan="3">7200</td><td>70</td></tr><tr><td>8</td><td>34</td><td>50</td></tr><tr><td>5</td><td>21</td><td>0</td></tr></table>
 
-#### Notes to Table 3.2.2.93.:
+##### Notes to Table 3.2.2.93.:
 
 (1)See Sentences (5)to (7)and Articles 3.2.2.4.to 3.2.2.8.forinformation pertaining to multiple majoroccupancies.   
 (2)Linear interpolation is not permitted in using Table 3.2.2.93.
 
-#### 3.2.3. Spatial Separation and Exposure Protection (See Note A-3.2.3.)
+### 3.2.3. Spatial Separation and Exposure Protection (See Note A-3.2.3.)
 
 #### 3.2.3.1. Limiting Distance and Area of Unprotected Openings
 
@@ -1352,7 +1343,7 @@ Table 3.2.3.1.-B Unprotected Opening Limits for a Building or Fire Compartment t
 
 <table><tr><td colspan="2">Exposing Building Face</td><td colspan="18">Areaof UnprotectedOpenings forGroupsA,C,D,andF,Division3Occupancies,%</td></tr><tr><td>Maximum Area,</td><td>Ratio</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>Limiting Distance, m</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>mm^1</td><td>(L/H or H/L)(1) Less than 3:1</td><td>0</td><td>88</td><td>121.5</td><td>10 12</td><td>2 2.5 18 29</td><td>3 46</td><td>4 91</td><td>5 100</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10 11</td><td></td><td>1213</td><td>14</td><td>16</td><td>18</td><td>20 25</td><td>30</td><td></td><td></td><td>35404550</td></tr><tr><td>10</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>000 0 0</td><td>11 7 8</td><td>18 9 10</td><td>21 32 14 17</td><td>48 22 25</td><td>3350 68100 33 37</td><td>96100 63 67100</td><td>100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>15 20</td><td>3:1 to 10:1 over 10:1 Less than 3:1 3:1 to 10:1</td><td>0 0 0</td><td>10 7</td><td>9 10</td><td>1526 12 15</td><td>39 18 21</td><td>53 26 30</td><td>87100 49 53</td><td>81100 85100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>over 10:1 Less than 3:1 3:1 to 10:1</td><td>0 0 0</td><td>89 78</td><td>14 89</td><td>11 13</td><td>2333 16 19</td><td>45 23 26</td><td>72100 41 45</td><td>66 70100</td><td>98100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>25</td><td>over 10:1 Less than 3:1</td><td>0 0</td><td>9 778</td><td>89</td><td>1321 11 12</td><td>30 15</td><td>39 20</td><td>6290100 35</td><td>56</td><td>83100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>30</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0 0</td><td>7</td><td>12 8 8</td><td>10 11</td><td>17 192736 13</td><td>23 17</td><td>39 5679100 28</td><td>61 44</td><td>88100 64</td><td>89100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>40</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0</td><td>78 7 7</td><td>11 88</td><td>17 9 10</td><td>15 24</td><td>20 31 1215</td><td>32 4766 24</td><td>48 37</td><td>69 88100 53 72</td><td>93100 96100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>50</td><td>3:1 to 10:1 over10:1 Lessthan 3:1</td><td>0 0 0</td><td>8 7</td><td>10 88</td><td>9</td><td>14 1521 11</td><td>18 28 14</td><td>28 41 21</td><td>41 57 32</td><td>57 76 45 62</td><td>77100 97100 81</td><td>100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>60</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>7 8 7</td><td>10 7</td><td>10 14 89</td><td>13 20 10</td><td>16 25 12</td><td>25 38 18</td><td>36 51 26</td><td>49 66 67 36 48</td><td>85100 62</td><td>85100 79</td><td>98100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>80</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>7 8 77</td><td>89 78</td><td>13 89</td><td>11 17 9</td><td>14 22 11</td><td>21 32 16</td><td>29 44 22</td><td>40 52 56 70 30 40</td><td>51</td><td>6784100 86100 6580</td><td></td><td>97100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>100</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>7 7</td><td>9 7</td><td></td><td>11 12 16 9</td><td>13 20 10</td><td>18 29 1317</td><td>25 39</td><td>34 44 49 61 22 29</td><td>56 74 37</td><td>4656</td><td>6984100 89100</td><td>67</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>150</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>77</td><td>7 8 7</td><td>11 7</td><td>88 10 13 8</td><td>11 17 9</td><td>15 2431 10</td><td>20 13</td><td>26 33 39 48 16 20</td><td>41 57 25</td><td>50 68 30</td><td>60 79 36</td><td>71 91 43</td><td>7 9100 84 100 51 59</td><td>100 68</td><td>87100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>250</td><td>3:1 t0 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>777</td><td>8 7</td><td>7 7</td><td>89 9 11 8</td><td>10 14</td><td>12 19 9</td><td>15 24 11</td><td>19 24 30 36 14 16</td><td>28 43 20</td><td>34 50 2428</td><td>40 57</td><td>47 55 65 73 33 38</td><td>63 82 44</td><td>72 92100 50</td><td>92100 64</td><td>81</td><td>99100</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>350</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>777 7</td><td>7</td><td>7 8</td><td>89 9 10 7 7</td><td>89 12 88</td><td>11 16 9</td><td>13 21 10</td><td>16 19 25 30 12 14</td><td>23 36 16</td><td>27 41 19</td><td>32 47 22</td><td>37 53 25</td><td>42 48 59 66 2933</td><td>55 73 37</td><td>69 88100 47</td><td>85100 59</td><td>71100</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>500</td><td>3:1 to 10:1 over 10:1 Less than 3:1 3:1 to 10:1</td><td>0 0 0 0</td><td>77 77</td><td>7 7 7 7</td><td>7 8 7 7</td><td>8 9 7 7</td><td>11 7 8</td><td>10 14 89</td><td>12 18 9 10</td><td>14 16 22 25 9 10 11 12</td><td>19 12 14</td><td>2225 3034 13 15</td><td>38 14</td><td>29 43 16</td><td>33 37 48 53 1820</td><td>41 58 22</td><td>52 70 27</td><td>63 8296100 33</td><td>76100 39</td><td>58 82</td><td>100</td><td></td><td></td><td></td></tr><tr><td>1000 2000</td><td>over10:1 Less than 3:1 3:1 to 10:1 over 10:1</td><td>0 0 0 0</td><td>7 7 7 7</td><td>7</td><td>7 7 7</td><td>8 8 7 7 7 78 7</td><td>9 7 7 8</td><td>11 7 89</td><td>13</td><td>16 9 12</td><td>1921 9 10 1416</td><td></td><td>17 2427 1011 121314 181921</td><td>19 30 12 2325</td><td>21 3336 1314 1516</td><td>23 26 39 15 17</td><td>31 46 17 20</td><td>37 53 20 23</td><td>43 60 27</td><td>63 82100 2334</td><td>86100 58 49 63</td><td>79</td><td>100</td><td>100</td></tr></table>
 
-#### Notes to Table 3.2.3.1.-B:
+##### Notes to Table 3.2.3.1.-B:
 
 (1)Apply whichever is greater, ${ \mathsf { L } } =$ Length of exposing building face $\mathsf { H } =$ Heightof exposing building face
 
@@ -1360,7 +1351,7 @@ Table 3.2.3.1.-C Unprotected Opening Limits for a Building or Fire Compartment t
 
 <table><tr><td colspan="2">ExposingBuilding Face</td><td colspan="13"></td></tr><tr><td>Maximum</td><td>Ratio</td><td colspan="12">Areaof Unprotected Openings for Groups EandF,Division1and2Occupancies,%</td><td></td><td></td><td>Limiting Distance,m</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>Area,m2(L/HorH/L) Less than 3:1</td><td>0 0</td><td>1.21.522.53 4</td><td></td><td>9</td><td>152346</td><td>4</td><td>5 77100</td><td>6</td><td>7</td><td>8</td><td>9</td><td></td><td></td><td></td><td></td><td></td><td>10111213141618</td><td></td><td>2025303540455055606570</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>10</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>00 0</td><td>45 4</td><td>5</td><td>162434 7</td><td>11</td><td></td><td>18 58</td><td>91100</td><td>16325379100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>15</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>4 5 4</td><td>558</td><td>8 131926 6</td><td>9</td><td>13</td><td>1318345582100 43 25</td><td>6693100</td><td></td><td>6185100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>20</td><td>3:1 t0 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>4 5 4</td><td>457</td><td>7 11172236</td><td></td><td>11 20</td><td>40 111527436387100 53</td><td></td><td>7499100</td><td></td><td>6992100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>25</td><td>3:1 to 10:1 over 10:1</td><td>0 0</td><td>4 4 4</td><td>456</td><td>67 10152031</td><td>89</td><td></td><td>13223551</td><td>3349 456282100</td><td></td><td>7194100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>30</td><td>Less than 3:1 3:1 t0 10:1 over 10:1</td><td>0 0 0 0</td><td>4 4 4</td><td>446 4</td><td>56 5</td><td>7 9 6</td><td>14</td><td>122030446080100 1014182840547191100</td><td></td><td></td><td></td><td>101828425877100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>40</td><td>Less than 3:1 3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>4 4 4</td><td>45 4</td><td>68 5</td><td>8 12 6</td><td>8 15 23 7 12</td><td>1016243447617897100 33</td><td></td><td></td><td>18263648</td><td>44577289100 61</td><td>223244597694100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>50</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>4 4 4</td><td>4 5</td><td>5 8</td><td>7 11</td><td>9 14 14 21</td><td>20 29</td><td>29 38</td><td></td><td></td><td></td><td>7693100 3850637995100 48617490100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>60</td><td>3:1 to 10:1 over 10:1</td><td>0 0</td><td>4 4 4</td><td></td><td></td><td>5 6</td><td>7 8</td><td>11 10131926344353647792100</td><td></td><td></td><td></td><td></td><td></td><td></td><td>1623314052647894100 121825334354668196100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>80</td><td>Less than 3:1 3:1 to 101 over 10:1</td><td>0 0 0</td><td>4 4</td><td>4 45</td><td>4 56</td><td>5 6 9</td><td>6 7 11</td><td>9 13 1015202633425162 16 22</td><td>18</td><td></td><td>2431</td><td>40 2835435262</td><td>49</td><td>60 73</td><td></td><td>718498100 7486100 8598100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>100</td><td>Less than 3:1 3:1 to 10:1 over 10:1</td><td>0 0 0</td><td>4 4 4 4</td><td>44 4</td><td>4 4 6</td><td>5 5 8</td><td>5 6 10</td><td>8 11 9 14 19</td><td></td><td></td><td></td><td>1520263240 25313744</td><td>13172228354251</td><td>526171</td><td></td><td>81</td><td>48586879100 607081100 92100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>150</td><td>Less than 3:1 3:1 to 101 over 10:1</td><td>0 0 0</td><td>4 4 4</td><td>4 44</td><td>4 4 5</td><td>4 5 7</td><td>5 6 8</td><td>6 8 8 12 16</td><td>20</td><td></td><td></td><td>242934</td><td>39</td><td>4652</td><td></td><td>11141823283340465470 59 67</td><td>101316202530364249567392100 84100</td><td>89100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>250</td><td>Less than 3:1 3:1 to 10:1 over 10:1</td><td>0 0 0 0</td><td>4 4 4</td><td>44 4 4</td><td>4 4 5 4</td><td>4 4 6</td><td>4 5 7</td><td>5 7 6 8 9</td><td>8 10</td><td></td><td>121417</td><td></td><td></td><td></td><td>121518212528323741</td><td>101215182225293444 46</td><td>56</td><td>55 68</td><td>68100 2024273236465770100 81100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>350</td><td>Less than 3:1 3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>4 4 4</td><td>44 4</td><td>44 4</td><td>4 4 5 4</td><td>4 46</td><td>5 6 58 7 10</td><td>7 8 6</td><td>8 7</td><td>8</td><td>1012 1315182123 9</td><td>14 11</td><td>101214161821 26</td><td></td><td>303336</td><td>1619222532 44</td><td>40 2427344352 53</td><td>49</td><td>77100 79100 6290100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>500</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>4 4 4 4</td><td>4 4 44</td><td>4 4 44 4</td><td>4 5 4</td><td>4 4 5 4</td><td>4 56 5 7 9 4 45</td><td>7 55</td><td>8 56</td><td>9 6</td><td>11 11131517 6</td><td>7</td><td>8</td><td>19212426 9</td><td>1314161821 29 1011</td><td>131416192429 26 35 14</td><td>31 41 16</td><td>36 38 48</td><td>55 57 68</td><td>78100 80100 92100</td><td>2045</td><td></td><td>89100</td><td></td><td></td><td></td><td></td></tr><tr><td>1000 2000</td><td>3:1 to 10:1 over 10:1 Less than 3:1 3:101</td><td>0 0 4 0 4 00</td></table>
 
-#### Notes to Table3.2.3.1.-C:
+##### Notes to Table3.2.3.1.-C:
 
 (1)Apply whichever is greater, ${ \mathsf L } =$ Length of exposing building face $\mathsf { H } =$ Heightof exposing building face
 
@@ -1426,7 +1417,7 @@ Table 3.2.3.7. Minimum Construction Requirements for Exposing Building Faces For
 
 <table><tr><td>Occupancy Classification of Building or Fire Compartment</td><td>Maximum Areaof Unprotected Openings Permitted,% of Exposing Building Face Area</td><td>Minimum Required Fire-Resistance Rating</td><td>Type of Construction Required</td><td>Type of Cladding Required</td></tr><tr><td rowspan="4">Group A, B, C,D,or Group F, Division 3</td><td>0to 10</td><td>1h</td><td>Noncombustible</td><td>Noncombustible</td></tr><tr><td>&gt; 10 to 25</td><td>1h</td><td>Coo</td><td>Noncombustible</td></tr><tr><td>&gt; 25 to 50</td><td>45min</td><td>Co</td><td>Noncombustible</td></tr><tr><td>&gt; 50to&lt;100</td><td>45 min</td><td>Coo</td><td>NCombustbleor</td></tr><tr><td rowspan="4">Group E,or Group F, Division 1or 2</td><td>0to 10</td><td>2h</td><td>Noncombustible</td><td>Noncombustible</td></tr><tr><td>&gt; 10 to 25</td><td>2h</td><td>Coo</td><td>Noncombustible</td></tr><tr><td>&gt; 25 to 50</td><td>1h</td><td>Como</td><td>Noncombustible</td></tr><tr><td>&gt; 50 to&lt;100</td><td>1h</td><td>Coo</td><td>Combustbleor</td></tr></table>
 
-#### Notes to Table 3.2.3.7.:
+##### Notes to Table 3.2.3.7.:
 
 (1)ThecladdingonGroupCbuildingswithinthscoeofArticle3.51.andonGoupDbuldingswihin thesopeofArticle6. shall be noncombustible or consist of a wallthat satisfies the requirements of Article 3.1.4.8. r1 (2) ThecladdingonbuidingsorpartsthereofconforngtoArtce3..248.3.2.257or3..93.shallconformtortice3..6.rbe noncombustible. (2)Except as provided in Sentences (3) and (4) and Article 3.2.3.10.,thefire-resistance rating,construction and cladding for exposing buildingfacesofbuildings orfire compartments ofGroupEor Group F,Division 1or 2 occupancy classification shall comply with Table 3.2.3.7. (3)Except as provided in Articles3.1.4.8.and 3.1.6.9.,therequirement in Table3.2.3.7.for noncombustiblecladding for buildings or fire compartments where the maximum permited area of unprotected openings is more than $10 \%$ of the exposing buildingface is permited tobe waived for exterior wallassemblies that comply with Article 3.1.5.5.or3.1.5.6. (4)Exceptas providedby Articles 3.1.4.8.and3.1.6.9.,therequirement in Table3.2.3.7.for noncombustiblecladding for buildings or fire compartments where the maximum permitted area of unprotected openings is more than $2 5 \%$ but not more than $50 \%$ of the exposing building face is permitted to be waived where (a)the limiting distance is greater than $5 \mathrm { m }$ , (b) the building or fire compartment and allcombustible attc or roofspaces are sprinklered throughout, (c) the cladding (i)conforms to Subsection 9.27.6.,9.27.7., 9.27.8., 9.27.9. or 9.27.10., (ii) is installed without furring members, or on furring not more than $2 5 \mathrm { m m }$ thick, over gypsum sheathing at least $1 2 . 7 \mathrm { m m }$ thick or over masonry, and (ii) after conditioning in conformance with ASTM D2898,“Standard Practice for Accelerated Weathering of Fire-Retardant-Treated Wood for Fire Testing,” has aflame-spread rating not greater than 25 on the exterior face when tested in accordance with Sentence 3.1.12.1.(1),
 
@@ -1594,7 +1585,7 @@ $\mathrm { ~ D ~ } =$ the greater required limiting distance for the exposing bu
 
 (1)A building shallnot beconstructed over an existing buried flammable gas main unless the gas main is encased in a gas-tight conduit in conformance with CAN/CSA-Z662,“Oil and gas pipeline systems.”
 
-#### 3.2.4.Fire Alarm and Detection Systems (See Note A-3.2.4.)
+### 3.2.4.Fire Alarm and Detection Systems (See Note A-3.2.4.)
 
 #### 3.2.4.1. Determination of Requirement for a Fire Alarm System
 
@@ -2022,7 +2013,7 @@ message shall be provided.
 (4)The voice communication system required by Sentence (1)shall meet the silecing and transmision requirements 0   
 Sentences 3.2.4.22.(2) to (4) and (6).
 
-#### 3.2.5.Provisions for Firefighting (See Note A-3)
+### 3.2.5.Provisions for Firefighting (See Note A-3)
 
 #### 3.2.5.1. Access to Above Grade Storeys
 
@@ -2242,7 +2233,7 @@ room
 
 (1)Ifafire pump is installed, it shallbe instaled in accordance with therequirements ofNFPA 20,“Standard for the Installation of Stationary Pumps for Fire Protection.” (See Note A-3.2.5.18.(1))
 
-#### 3.2.6.Additional Requirements for High Buildings (See Note A-3.2.6.)
+### 3.2.6.Additional Requirements for High Buildings (See Note A-3.2.6.)
 
 #### 3.2.6.1. Application
 
@@ -2356,7 +2347,7 @@ is used,each elevator for use by firefighters shall
 
 (1)The systems for control ofsmoke movement and mechanical venting required byArticles3.2.6.2.and 3.2.6.6.shall be tested to ensure satisfactory operation in accordance with the procedures described in MMAH Supplementary Standard SB-4,“Measures for Fire Safety in High Buildings.”
 
-#### 3.2.7. Lighting and Emergency Power Systems
+### 3.2.7. Lighting and Emergency Power Systems
 
 #### 3.2.7.1. Minimum Lighting Requirements
 
@@ -2382,7 +2373,7 @@ is used,each elevator for use by firefighters shall
 
 (1) Emergency lighting shall be provided to an average level of illumination not less than $1 0 1 \mathrm { x }$ at floor or tread level in (@) exits, (b) principal routes providing access to exit in open floor areas and in service rooms, (c) corridors used by the public, (d) cordors serving patients’ or residents’ sleeping rooms in a Group B, Division 2 or3 occupancy, (e) reserved, (f) corridors serving classrooms, (g) underground walkways, (h) public corridors, (i) floor areas or parts of thereof where the public may congregate (i) in Group A, Division 1 occupancies, or (ii) in Group A,Divisions 2 and 3 occupancies having an occupant load of 60 or more, i floor areas or parts of thereof in day care centres where persons are cared for, (k) food preparation areas in commercial kitchens, (1) washrooms with fixtures for public use, (m) locations where doors are equipped with an electromagnetic lock as described in Clauses 3.4.6.16.(5)(k), (n) universal washrooms required by Article 3.8.3.12.and universal shower rooms required by Article 3.8.3.13., (0) principal routes providing accessto exit in afloor area that is not subdivided into rooms or suites ofrooms served by corridors in a business and personal services occupancy,a mercantile occupancy or an industrial occupancy,and (p) internal corridors or aisles serving as principal routes to exits in a business and personal services occupancy, a mercantile occupancy or an industrial occupancy that is subdivided into rooms or suites ofrooms,and is not served by a public corridor. (2)Emergency lighting to provide an average level of illumination of not less than $1 0 1 \mathrm { x }$ at floor or catwalk level shall be included (a) in a service space referred to in Sentence 3.2.1.1.(8), and (b) on a shelf and rack storage system,in locations described in Sentence 3.16.1.5.(2). (3) The minimum value of the illumination required by Sentences (1) and (2) shall not be less than 1 lx. (4)In addition to therequirements of Sentences (1) to (3), the installtionofbattry-operated emergencylighting in health care facilities shall conform to theappropriate requirements ofCSA Z32,“Electricalsafety and essential electrical systems in health care facilities." 3.2.7.4. Emergency Power for Lighting
 
-####
+#### 3.2.7.4 Emergency Power for Lighting
 
 (1) An emergency power supply shall be   
 (a) provided to maintain the emergency lighting required by this Subsection from a power source such as battries or generators that will continue to supply power in the event that the regular power supply to the building is interrupted, and   
@@ -2477,7 +2468,7 @@ extend from the source of emergency power to
 
 (11) Conductors leading from a distribution panel to emergency lighting units located on other storeys shallbe protected in accordance with Sentence (2)between the distributionpaneland the floor area where the emergency lighting units are located.
 
-#### 3.2.8. Mezzanines and Openings Through Floor Assemblies
+### 3.2.8. Mezzanines and Openings Through Floor Assemblies
 
 #### 3.2.8.1. Application
 
@@ -2552,7 +2543,7 @@ e2 (6) An interconnected floor space need not conform to the requirements of Art
 
 (1)An interconnected floor space shallbe designed so thatthecombustible contents,excluding interior finishes,in those parts of a floor area in which the ceiling is more than $8 \mathrm { m }$ above the floor, are limited to not more than $1 6 \mathrm { g }$ of combustible material for each cubic metre of volume of the interconnected floor space.
 
-#### 3.2.9. Testing of Integrated Fire Protection and Life Safety Systems
+### 3.2.9. Testing of Integrated Fire Protection and Life Safety Systems
 
 #### 3.2.9.1. Testing
 
@@ -4128,13 +4119,13 @@ This is a complete list of all official form questions. Your goal is to resolve 
 Form Questions Reference:  
 | Section | Description | OBC Reference |  
 | :--- | :--- | :--- |  
-| 3.01 | Project Type | [A] 1.3.3.2. |  
+| 3.01 | Project Type | [Division A] 1.3.3.2. |  
 | 3.02 | Major Occupancy Classification | 3.1.2. |  
 | 3.03 | Superimposed Major Occupancies | 3.2.2.7. |  
-| 3.04 | Building Area (m2) | [A] 1.4.1.2. |  
-| 3.05 | Gross Area (m2) | [A] 1.4.1.2. |  
+| 3.04 | Building Area (m2) | [Division A] 1.4.1.2. |  
+| 3.05 | Gross Area (m2) | [Division A] 1.4.1.2. |  
 | 3.06 | Mezzanine Area (m2) | 3.2.1.1. |  
-| 3.07 | Building Height (Storeys and meters) | [A] 1.4.1.2. & 3.2.1.1. |  
+| 3.07 | Building Height (Storeys and meters) | [Division A] 1.4.1.2. & 3.2.1.1. |  
 | 3.08 | High Building | 3.2.6. |  
 | 3.09 | Number of Streets/Firefighter Access | 3.2.2.10. & 3.2.5. |  
 | 3.10 | Building Group/Div Classification | 3.2.2.20.-93. & 3.2.2. |  
@@ -4153,5 +4144,5 @@ Form Questions Reference:
 | 3.23a, b | Plumbing Fixture Requirements | 3.7.4., 3.8.2.3., & Tables 3.8.2.3.A and 3.8.2.3.B |  
 | 3.24 | Energy Efficiency | 12.2.1.2., SB-1 Table 2, SB-3, 5.8.1.2.(2), 5.8.1.4., & 5.8.1.5. |  
 | 3.25 | Sound Transmission Design | 5.9.1.2. |  
-| 3.26 | Alternative Solution | [A] 1.2.1.1. |  
-| 3.27 | Notes | [C] 2.1. |
+| 3.26 | Alternative Solution | [Division A] 1.2.1.1. |  
+| 3.27 | Notes | [Division C] 2.1. |

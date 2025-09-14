@@ -45,11 +45,6 @@ Thumbs.db
 logs/
 *.log
 
-# Database
-*.db
-*.sqlite
-*.sqlite3
-
 # Testing
 .coverage
 .pytest_cache/
