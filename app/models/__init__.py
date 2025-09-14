@@ -6,6 +6,7 @@ from .user import User
 from .project import Project
 from .section import Section
 from .guideline_chunk import GuidelineChunk
+from .ontario_chunk import OntarioChunk
 from .answer import Answer
 
-__all__ = ["Organization", "User", "Project", "Section", "GuidelineChunk", "Answer"]
+__all__ = ["Organization", "User", "Project", "Section", "GuidelineChunk", "OntarioChunk", "Answer"]
