@@ -4,9 +4,9 @@ Defines the database model for users.
 """
 import uuid
 from datetime import datetime
-from typing import List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING, Optional
 from sqlalchemy import Column, String, DateTime, func, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped
 from app.database import Base
 
 if TYPE_CHECKING:
@@ -44,11 +44,11 @@ class User(Base):
     )
 
     # Relationships
-    organization: "Organization" = relationship(
+    organization: Mapped["Organization"] = relationship(
         "Organization", 
         back_populates="users"
     )
-    projects: List["Project"] = relationship(
+    projects: Mapped[List["Project"]] = relationship(
         "Project", 
         back_populates="user",
         cascade="all, delete-orphan"

@@ -6,7 +6,7 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING
 from sqlalchemy import Column, String, DateTime, func, ForeignKey, Text
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped
 from app.database import Base
 
 if TYPE_CHECKING:
@@ -42,7 +42,7 @@ class Answer(Base):
     )
 
     # Relationships
-    section: "Section" = relationship(
+    section: Mapped["Section"] = relationship(
         "Section", 
         back_populates="answers"
     )

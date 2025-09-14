@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import List, TYPE_CHECKING
 from sqlalchemy import Column, String, Text, DateTime, func
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped
 from app.database import Base
 
 if TYPE_CHECKING:
@@ -39,12 +39,12 @@ class Organization(Base):
     )
 
     # Relationships
-    users: List["User"] = relationship(
+    users: Mapped[List["User"]] = relationship(
         "User", 
         back_populates="organization",
         cascade="all, delete-orphan"
     )
-    projects: List["Project"] = relationship(
+    projects: Mapped[List["Project"]] = relationship(
         "Project", 
         back_populates="organization",
         cascade="all, delete-orphan"

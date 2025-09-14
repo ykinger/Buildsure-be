@@ -6,7 +6,7 @@ import uuid
 from datetime import datetime
 from typing import List, TYPE_CHECKING
 from sqlalchemy import Column, String, Text, DateTime, func, ForeignKey, Integer, Enum
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped
 from app.database import Base
 import enum
 
@@ -67,15 +67,15 @@ class Project(Base):
     )
 
     # Relationships
-    organization: "Organization" = relationship(
+    organization: Mapped["Organization"] = relationship(
         "Organization", 
         back_populates="projects"
     )
-    user: "User" = relationship(
+    user: Mapped["User"] = relationship(
         "User", 
         back_populates="projects"
     )
-    sections: List["Section"] = relationship(
+    sections: Mapped[List["Section"]] = relationship(
         "Section", 
         back_populates="project",
         cascade="all, delete-orphan",

@@ -4,9 +4,9 @@ Defines the database model for sections.
 """
 import uuid
 from datetime import datetime
-from typing import Dict, Any, TYPE_CHECKING
+from typing import Dict, Any, TYPE_CHECKING, List
 from sqlalchemy import Column, String, DateTime, func, ForeignKey, Integer, Enum, JSON
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped
 from app.database import Base
 import enum
 
@@ -58,11 +58,11 @@ class Section(Base):
     )
 
     # Relationships
-    project: "Project" = relationship(
+    project: Mapped["Project"] = relationship(
         "Project", 
         back_populates="sections"
     )
-    answers: list["Answer"] = relationship(
+    answers: Mapped[List["Answer"]] = relationship(
         "Answer",
         back_populates="section",
         cascade="all, delete-orphan",
