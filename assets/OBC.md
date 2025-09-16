@@ -1,6 +1,8 @@
-## Section 3.2. Building Fire Safety
+## Part 3
 
-### 3.2.1. General
+### Section 3.2. Building Fire Safety
+
+#### 3.2.1. General
 
 #### 3.2.1.1. Exceptions in Determining Building Height
 
@@ -65,17 +67,17 @@ with Sentence (1) is permited to be penetrated by openings that are not protecte
 
 (1)The floor assemblyofa mezzanine that is required tobe considered as a storey incalculating the building height shall be constructed in conformance with the fire separation requirements for floor assemblies in Articles 3.2.2.20.to 3.2.2.93.
 
-### 3.2.2. Building Size and Construction Relative to Occupancy
+#### 3.2.2. Building Size and Construction Relative to Occupancy
 
-#### 3.2.2.1. Application
+##### 3.2.2.1. Application
 
 (1)Except as permited by Article 3.2.2.3.,a building shall beconstructed in conformance with this Subsection to prevent fire spread and collapsecaused by the effects offire. (See Subsection 3.1.3.forfire separations between major occupancies.)
 
-#### 3.2.2.2. Special and Unusual Structures
+##### 3.2.2.2. Special and Unusual Structures
 
 (1)A structure thatcannotbe identified withthecharacteristicsofabuilding in Articles 3.2.2.20.to3.2.2.93.shall be protected against fire spread and collapse in conformance with good fire protection engineering practice. (See Note A3.2.2.2.(1)) (See also Notes A-3 and A-3.2.5.12.(1))
 
-#### 3.2.2.3. Exceptions to Structural Fire Protection
+##### 3.2.2.3. Exceptions to Structural Fire Protection
 
 (1) Fire protection is not required for   
 (a) steel lintels above openings not more than $2 \mathrm { m }$ wide in loadbearing walls and not more than $3 \mathrm { m }$ wide in nonloadbearing walls,   
@@ -86,7 +88,7 @@ with Sentence (1) is permited to be penetrated by openings that are not protecte
 (f) steel members of porches,exterior balconies, exterior stairways,fire escapes,cornices,marquees and other similar appurtenances, provided they are outside an exterior wall ofa building, and   
 (g)) loadbearing steel or concrete members wholly or partly outside a building face in a building not more than 4 storeys in building height and clasified as Group A,B,C,DorF,Division 3 major occupancy provided the members are (i) not less than $1 \textrm { m }$ away from any unprotected opening in an exterior wall, or (ii) shielded from heat radiation in the event of a fire within the building by construction that willprovide the same degree of protection that would be necessary if the member was located inside the building, with the protection extending on either side of the member a distance equal to the projection of the member from the face of the wall.
 
-#### 3.2.2.4. Buildings with Multiple Major Occupancies
+##### 3.2.2.4. Buildings with Multiple Major Occupancies
 
 (1)The requirements restricting fire spread and collapse for a building of a single major occupancy clasification are provided in this Subsection according to its building height and building area.
 
@@ -94,13 +96,13 @@ with Sentence (1) is permited to be penetrated by openings that are not protecte
 
 (3)For the purposes ofSentences (1)and(2),aretirement home is demedto be a separate major occupancy.
 
-#### 3.2.2.5. Applicable Building Height and Area
+##### 3.2.2.5. Applicable Building Height and Area
 
 (1)Indetermining the fire safety requirements ofa building in relation to each of the major occupancies contained therein,the building height and building area of the entire building shall be used.
 
 (2) For the purposes of Sentence (1), a retirement home is deemed to be a separate major occupancy.
 
-#### 3.2.2.6. Multiple Major Occupancies
+##### 3.2.2.6. Multiple Major Occupancies
 
 (1)Except as permited byArticles 3.2.2.7.and 3.2.2.8.,and Sentences 3.2..48.(4),3.2.2.51.(5),3.2.2.57.(3)and 3.2.2.60.(4)and 3.22.93.(5)to (7), in abuilding containing more than one major occupancy,the requirements of this Subsection for the most restricted major occupancy contained shallapply to the whole building.
 
@@ -108,7 +110,7 @@ with Sentence (1) is permited to be penetrated by openings that are not protecte
 
 (3)Ina building or part thereof constructed in conformance with Article3.2.2.48.,3.2.2.57.or3.2.2.93.containing more than one major occupancy,the most restrictive encapsulation requirements of Article 3.1.6.4.and Table 3.2.2.93. for any major occupancy contained within a storey shall apply to the encapsulation required on the interiorof a public corridor or exit within that storey.
 
-#### 3.2.2.7. Superimposed Major Occupancies
+##### 3.2.2.7. Superimposed Major Occupancies
 
 (1)Exceptas permited inArticle3..2.8.andSentences3.22.18.(),3.22.48.(4),3.2.2.51.(5),3.2.2.57(3),.0.(4) and 3.2.2.93.(5)to (7), in a building in whichone major occupancy is located entirely above another major occupancy, the requirements in this Subsection for each portion of the building containing a major occupancy shall apply to that portion as if the entire building were ofthat major occupancy.
 
@@ -121,7 +123,7 @@ occupancy is located above another major occupancy,
 (a)the most restrictive encapsulation requirements of Article 3.1.6.4. and Table 3.2.2.93.for any major occupancy contained within the building shallapply to the encapsulation required on the interior of vertical service spaces and exit stairs, and   
 (b) the encapsulation requirements of Article 3.1.6.4. and Table 3.2.2.93.fora masstimber floor assembly between the major occupancies shallbe determined on the basis of the requirements for, (i) the upper major occupancy for the encapsulation ofthe upper surface of the mass timber floor assembly, and (ii) the lower major occupancy for the encapsulation of the underside of the mass timber floor assembly.
 
-#### 3.2.2.8. Exceptions for Major Occupancies
+##### 3.2.2.8. Exceptions for Major Occupancies
 
 (1)In a building in which the aggregate area of allmajor occupancies ina particular Group or Division is not more than $10 \%$ of the floor area ofthe storey in which they are located, these major occupancies need not be considered as major occupancies for thepurposes ofthis Subsection,provided theyare notclasifiedas GroupF,Division lor2 occupancies.
 
@@ -129,7 +131,7 @@ occupancy is located above another major occupancy,
 
 (3)A helicopter landing area on the roof ofa building need not be considered a major occupancy for purposes of Subsection 3.2.2.where such landing area is not more than $10 \%$ of the area of the roof.
 
-#### 3.2.2.9. Crawl Spaces
+##### 3.2.2.9. Crawl Spaces
 
 (1) For the purposes of Articles 3.1.11.6.,3.2.1.4.and3.2.1.5.,a crawl space shallbeconsidered asabasementif it is (a) more than $1 . 8 \mathrm { m }$ high between the lowest part of the floor assembly and the ground or other surface below, (b) used for any occupancy,   
 () used for the passage of flue pipes, or   
@@ -137,7 +139,7 @@ occupancy is located above another major occupancy,
 
 (2)A floor assembly immediately above acrawl space is not required to be constructed as a fire separation and is not required to have a fire-resistance rating provided the crawl space is not required to be considered as a basement by Sentence (1).
 
-#### 3.2.2.10. Streets
+##### 3.2.2.10. Streets
 
 (1)Everybuilding shall face a street located in conformance with the requirements of Articles 3.2.5.4 and 3.2.5.5 for access routes.
 
@@ -151,28 +153,28 @@ occupancy is located above another major occupancy,
 
 (6)Enclosed spaces,tunnels,bridges and similar structures,even though used for vehicular or pedestrian trafic,are nol considered as streets for the purpose of this Part.
 
-#### 3.2.2.11. Exterior Balconies
+##### 3.2.2.11. Exterior Balconies
 
 (1)Except as provided in Sentence (2),an exterior balcony shall be constructed in accordance with the type of construction required by Articles 3.2.2.20.to3.2.2.93.,as applicable to theoccupancy clasification ofthebuilding.
 
 r1 (2)The floor assmblyofan exterior balcony in a building or part thereof conformingto Article 3.2.2.48.,3.2.2.57.or 3.2.2.93. shall (a)be of noncombustible construction, or (b)be constructed in accordance with Article 3.1.6.3., but need not comply with Sentence 3.1.6.4.(1).
 
-#### 3.2.2.12. Exterior Passageways
+##### 3.2.2.12. Exterior Passageways
 
 r1 (1) An elevated exterior passageway used as part ofa means of egress shall conform to the requirements of Articles 3.2.2.20. to 3.2.2.93. for mezzanines.
 
-#### 3.2.2.13. Occupancy on Roof
+##### 3.2.2.13. Occupancy on Roof
 
 (1)A portion of a roof that supports an occupancy shall be constructed in conformance with the fire separation requirements of Articles 3.2.2.20.to 3.2.2.93.for floor assemblies.
 
-#### 3.2.2.14. Rooftop Enclosures
+##### 3.2.2.14. Rooftop Enclosures
 
 (1)A rooftop enclosure for elevator machinery or for a service room shallbe constructed in accordance with the type of construction required by Articles 3.2.2.20. to 3.2.2.93.   
 (2)A rooftop enclosure for elevator machinery orfor a service room,not more than l storey high,is not required to have a fire-resistance rating.   
 (3)A rooftop enclosure for a stairway shallbe constructed in accordance with the type of construction required by Articles 3.2.2.20. to 3.2.2.93.   
 (4) A rooftop enclosure for a stairway need not haveafire-resistance rating nor be constructed as afire separation.
 
-#### 3.2.2.15. Storeys Below Ground
+##### 3.2.2.15. Storeys Below Ground
 
 (1)Ifa building is erected entirely below the adjoining finished ground level and does not extend more than one storey below that ground level,the minimum precautions against fire spread and collapse shallbe the same as are required for basements under a building of 1 storey in building height having the same occupancy and building area.
 
@@ -186,13 +188,13 @@ below the first storey, provided the storey below
 (a)contains only residential occupancies, and   
 (b)has at least one unobstructed access opening conforming to Sentence 3.2.5.1.(2)installed on that storey for each $1 5 ~ \mathrm { m }$ of wall length in at least one wall required by this Subsection to face a street.
 
-#### 3.2.2.16. Heavy Timber Roof Permitted
+##### 3.2.2.16. Heavy Timber Roof Permitted
 
 (1)Unless otherwise permitted by Articles 3.2.2.20.to3.2.2.93.,aroof assembly in a building up to2 storeys in building height is permited to be ofheavy timber construction regardless ofbuilding area or type of construction required, provided the building is sprinklered throughout.
 
 (2)If Sentence (1) permits a roof assembly to be of heavy timber construction, structural members in the storey immediately below the roof assembly are permited to be of heavy timber construction.
 
-#### 3.2.2.17. Roof Assemblies and Mezzanines in Gymnasiums, Swimming Pools, Arenas and Rinks
+##### 3.2.2.17. Roof Assemblies and Mezzanines in Gymnasiums, Swimming Pools, Arenas and Rinks
 
 (1)The requirements for aroof assembly to have a fire-resistance rating stated in Articles 3.2.2.25.,3.2.2.30.and 3.2.2.32.are permited to be waived for gymnasiums, swimming pools, arenas,and rinks, provided
 
@@ -206,13 +208,13 @@ below the first storey, provided the storey below
 
 (3) The restrictions concerning minimum distance stated in Clauses (1)(b) and (2)(c) shall not apply to (a) an inclined and stepped floor ascending from the main floor that is used for seating purposes only, or (b)a balcony used for seating purposes only.
 
-#### 3.2.2.18. Automatic Sprinkler System Required
+##### 3.2.2.18. Automatic Sprinkler System Required
 
 r1 (1)Except as permitted by Sentence (2),an automatic sprinkler system conforming to the requirements of Articles 3.2.4.7.,3.2.4.8.,3.2.4.9.and3.2.5.12.shallbe instaled throughout abuildingregulatedbyoneor moreof Articles 3.2.2.20.,3.2221.,3.22.22.,3.2.223.,.2224,3.22.26,3.2.2.27,.22.29.,.2.2.1,3.2.2.,.2.2.3,., 3.2.2.38.,3.22.9.,3.2240.,.2241,3.22.42.,3.2243,3.2.244,3.22.45,.22.46,.2247,3.2248.,.4, 3.22.51,3.22.,.22,.22.5,.225,.22.5C.,.225D,3.225E,.22.56,.22.7,9, 3.2.2.60.,.2261,3.22.6.,.2.2.65.,.22.66,.2.2.67,3.22.69.,.2.271,.2.72,.22.,.2.2.74,76, 3.2.2.77.,3.2.2.79.,3.2.2.81.,3.2.2.82.,3.2.2.84.,3.2.2.86.,3.2.2.88.,3.2.2.90. and 3.2.2.93.
 
 r1 (2)If a storey in a building or afloor area is required to have an automatic sprinkler system installed throughout in accordance withone ormoreof Articles 3.2.2.20.to3.2.2.93.orSection3.3.,theautomaticsprinkler systemshallalsobe instaled throughout allower storeys inthe building notwithstanding permision in Articles 3.2.2.20.to3.2.2.93.to construct one or more of those storeys without installing automatic sprinkler protection. (See Note A-3.2.2.18.(2))
 
-#### 3.2.2.19. Buildings Containing Impeded Egress Zones
+##### 3.2.2.19. Buildings Containing Impeded Egress Zones
 
 r1 (1)A building containing an impeded egres zone and conforming to the appropriate requirements ofArticles 3.2.2.20. to 3.2.2.93.is notrequired to conform to the requirements ofArticles 3.2.2.36.and3..2.37.fora Group B,Division1 major occupancy provided
 
@@ -222,7 +224,7 @@ r1 (1)A building containing an impeded egres zone and conforming to the appropri
 
 (d) the building area is not more than $6 4 0 0 \mathrm { m } ^ { 2 }$ if the building includes a medium-hazard industrial occupancy, (e)the impeded egresszone does not extend beyondthe boundaries ofthe firecompartment in which it is located,and (f)the occupant load of the impeded egress zone is not more than 100.
 
-#### 3.2.2.20. Group A, Division 1, Any Height, Any Area, Sprinklered
+##### 3.2.2.20. Group A, Division 1, Any Height, Any Area, Sprinklered
 
 (1)Except as permitted by Articles 3.2.2.1.and3.2.2.22.,a building classified as Group A,Division 1 shallconform to Sentence (2).
 
@@ -231,7 +233,7 @@ r1 (1)A building containing an impeded egres zone and conforming to the appropri
 (C) mezzanines shall have a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ ,and   
 (d) loadbearing wals, columns and arches shallhave a fire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.21. Group A, Division 1, One Storey, Limited Area, Sprinklered
+##### 3.2.2.21. Group A, Division 1, One Storey, Limited Area, Sprinklered
 
 (1) A building classified as Group A, Division 1 is permited to conform to Sentence (2) provided (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2), the building is sprinklered throughout, (b)it is not more than 1 storey in building height,
 
@@ -249,7 +251,7 @@ r1 (1)A building containing an impeded egres zone and conforming to the appropri
 (a)floor assemblies shall be fire separations (i) with a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ ,or (ii) of heavy timber construction,and   
 (b) loadbearing walls,columns and arches shall (i) have a fire-resistance rating not less than that required for the supported assembly, or (ii) be of heavy timber construction.
 
-#### 3.2.2.22. Group A, Division 1, One Storey, Sprinklered
+##### 3.2.2.22. Group A, Division 1, One Storey, Sprinklered
 
 (1) A building classified as Group A, Division 1 is permitted to conform to Sentence (2) provided (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2), the building is sprinklered throughout, (b) it is not more than l storey in building height,   
 (c) no part of an auditorium floor is more than $5 \mathrm { m }$ above or below grade,   
@@ -262,7 +264,7 @@ r1 (1)A building containing an impeded egres zone and conforming to the appropri
 (c) loadbearing walls, columns and arches supporting an assembly required to have a fire-resistance rating shall (i) have a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ ,or (ii) be of noncombustible construction, and   
 (d) loadbearing wals,columns and arches supporting a fire separation shallhave afire-resistance rating not less than that required for the fire separation.
 
-#### 3.2.2.23. Group A, Division 2, Any Height, Any Area, Sprinklered
+##### 3.2.2.23. Group A, Division 2, Any Height, Any Area, Sprinklered
 
 (1)Exept as permittedby Articles 3.2.2.24.to3.2.2.28.and3.2.2.93.,a building classified as Group A,Division 2 shall conform to Sentence (2).   
 (2)Except as permited by Article 3.2.2.16., the building referred to in Sentence (1) shall be of noncombustible construction, and   
@@ -270,7 +272,7 @@ r1 (1)A building containing an impeded egres zone and conforming to the appropri
 () mezzanines shal have a fire-resistance rating not less $^ { 1 \mathrm { h } }$ ,and   
 (@) loadbearing wals, columns and arches shallhave afire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.24. Group A, Division 2, up to 6 Storeys, Any Area, Sprinklered
+##### 3.2.2.24. Group A, Division 2, up to 6 Storeys, Any Area, Sprinklered
 
 (1)A building clasified as Group A,Division 2,that is notlimited by building area,is permitted to conform to Sentence (2) provided   
 (a)except as permitted by Sentences 3.2.2.7.(1) and3.2.2.18.(2),the building is sprinklered throughout, and (b) it is not more than 6 storeys in building height.   
@@ -279,7 +281,7 @@ r1 (1)A building containing an impeded egres zone and conforming to the appropri
 (b) mezzanines shall have a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ ,and   
 (c) alloadbearing walls,columns and arches shall have a fire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.25. Group A, Division 2, up to 2 Storeys
+##### 3.2.2.25. Group A, Division 2, up to 2 Storeys
 
 (1) A building classified as Group A, Division 2 is permited to conform to Sentence (2) provided (a)it is not more than 2 storeys in building height, and   
 (b) it has a building area not more than the value in Table 3.2.2.25.
@@ -297,7 +299,7 @@ Table 3.2.2.25. Maximum Building Area,Group A, Division 2,up to 2 Storeys Formin
 
 (i) have a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ ,or (ii) be of noncombustible construction.
 
-#### 3.2.2.26. Group A, Division 2, up to 2 Storeys, Increased Area, Sprinklered
+##### 3.2.2.26. Group A, Division 2, up to 2 Storeys, Increased Area, Sprinklered
 
 (1) A building classified as Group A, Division 2 is permitted to conform to Sentence (2) provided   
 (a) except as permited by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -309,7 +311,7 @@ construction used singly or in combination, and
 (b) mezzanines shall have,if of combustible construction,a fire-resistance rating not less $4 5 \mathrm { { m i n } }$ ,and   
 (c) loadbearing wals, columns and arches supporting an assembly required to have a fire-resistance rating shall (i) have a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ 0r (ii) be of noncombustible construction.
 
-#### 3.2.2.27. Group A, Division 2, up to 2 Storeys, Sprinklered
+##### 3.2.2.27. Group A, Division 2, up to 2 Storeys, Sprinklered
 
 (1)A building classified as Group A,Division 2 is permited to be of combustibleconstruction or noncombustible   
 construction used singly or in combination,provided   
@@ -317,7 +319,7 @@ construction used singly or in combination,provided
 (b) it is not more than 2 storeys in building height, and   
 (c) it has a building area not more than (i) $2 4 0 0 \mathrm { m } ^ { 2 }$ if l storey in building height with no basement, (ii) $1 2 0 0 \mathrm { m } ^ { 2 }$ if 1 storey in building height, or (ii) $6 0 0 \mathrm { m } ^ { 2 }$ if 2 storeys in building height.
 
-#### 3.2.2.28. Group A, Division 2, One Storey
+##### 3.2.2.28. Group A, Division 2, One Storey
 
 (1)A building classified as Group A,Division 2 is permited to be of combustible construction or noncombustible   
 construction used singly or in combination, provided   
@@ -326,7 +328,7 @@ construction used singly or in combination, provided
 
 (2)In a building referred to in Sentence (1) withouta basement,the building area limits ofSentence (1)are permitted to be doubled provided a fire separation with a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ is used to separate the building into fire compartments, each one of which does not exceed the area limits of Clause (1)(b).
 
-#### 3.2.2.29. Group A, Division 3, Any Height, Any Area, Sprinklered
+##### 3.2.2.29. Group A, Division 3, Any Height, Any Area, Sprinklered
 
 (1)Except as permitedby Articles 3.22.30.to3.2.2.34.,a building classified as Group A,Division 3 shallconformto Sentence (2).
 
@@ -335,7 +337,7 @@ construction used singly or in combination, provided
 (c) mezzanines shall have a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ ,and   
 (d) loadbearing walls, columns and arches shallhave a fire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.30. Group A, Division 3, up to 2 Storeys
+##### 3.2.2.30. Group A, Division 3, up to 2 Storeys
 
 (1)A building classified as Group A, Division 3 is permitted to conform to Sentence (2) provided (a)it is not more than 2 storeys in building height, and   
 (b)it has a building area not more than the value in Table 3.2.2.30.
@@ -353,7 +355,7 @@ Table 3.2.2.30. Maximum Building Area,Group A, Division 3,up to 2 Storeys Formin
 
 (3)If ntended foroccasional use for trade shows and similar exhibition purposes,the building referrd to in Sentence (1) that is more than $1 5 0 0 \mathrm { m } ^ { 2 }$ in building area shall be sprinklered throughout.
 
-#### 3.2.2.31. Group A, Division 3, up to 2 Storeys, Sprinklered
+##### 3.2.2.31. Group A, Division 3, up to 2 Storeys, Sprinklered
 
 (1) A building classified as Group A, Division 3 is permitted to conform to Sentence (2) provided   
 (a) except as permited by Sentences 3.2.2.7.(1) and 3.2.2.18.(2), the building shallbe sprinklered throughout,   
@@ -364,7 +366,7 @@ Table 3.2.2.30. Maximum Building Area,Group A, Division 3,up to 2 Storeys Formin
 
 (a) floor assemblies shall be fire separations with a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ (b) mezzanines shall have a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ ,and (c) loadbearing walls, columns and arches shallhave afire-resistance rating not less than that required for the supported assembly, except that arches are permitted to be of heavy timber construction.
 
-#### 3.2.2.32. Group A, Division 3, One Storey, Increased Area
+##### 3.2.2.32. Group A, Division 3, One Storey, Increased Area
 
 (1) A building classified as Group A, Division 3 is permited to conform to Sentence (2) provided   
 (a) it is not more than 1 storey in building height,and   
@@ -379,7 +381,7 @@ i $1 2 0 0 \mathrm { m } ^ { 2 }$ if facing one street, (ii) $1 5 0 0 \mathrm { 
 
 (3)Ifintended foroccasional use for trade showsand similar exhibition purposes,the building refered to in Sentence (1) that is more than ] $1 5 0 0 \mathrm { m } ^ { 2 }$ in building area shall be sprinklered throughout.
 
-#### 3.2.2.33. Group A, Division 3, One Storey, Sprinklered
+##### 3.2.2.33. Group A, Division 3, One Storey, Sprinklered
 
 (1)A building classified as Group A,Division 3 is permited to be of combustible construction or noncombustible   
 construction used singly or in combination, provided,   
@@ -387,14 +389,14 @@ construction used singly or in combination, provided,
 (b) it is not more than 1 storey in building height,and   
 (c) it has a building area not more than $7 2 0 0 \mathrm { m } ^ { 2 }$
 
-#### 3.2.2.34. Group A, Division 3, One Storey
+##### 3.2.2.34. Group A, Division 3, One Storey
 
 (1)A building classified as Group A,Division 3 is permittedto be of combustible construction or noncombustible construction used singly or in combination, provided
 
 (a)it is not more than l storey in building height, and   
 (b) it has a building area not more than i $1 0 0 0 { \mathrm { m } } ^ { 2 }$ if facing one street, (i $1 2 5 0 \mathrm { m } ^ { 2 }$ if facing 2 streets, or (ii) $1 5 0 0 \mathrm { m } ^ { 2 }$ if facing 3 streets.
 
-#### 3.2.2.35. Group A, Division 4
+##### 3.2.2.35. Group A, Division 4
 
 (1)Except as permited by Sentences (2) and (3),a building classified as Group A,Division 4 shall be of noncombustible construction.
 
@@ -406,7 +408,7 @@ construction used singly or in combination, provided,
 
 (4)Sprinklers shallbe instaled inallspaces below tiers ofseats in a building clasifiedas Group A,Division 4ifthose spaces are used for occupancy. (See Note A-3.2.2.35.(4))
 
-#### 3.2.2.36. Group B, Division 1, Any Height, Any Area, Sprinklered
+##### 3.2.2.36. Group B, Division 1, Any Height, Any Area, Sprinklered
 
 (1)Except as permitted by Article 3.2.2.37., a buildingclassified as GroupB,Division 1 shallconformto Sentence (2).
 
@@ -415,7 +417,7 @@ construction used singly or in combination, provided,
 (c) mezzanines shall have a fire-resistance rating not less $^ { 1 \mathrm { h } }$ ,and   
 (d)loadbearing wals, columns and arches shall have afre-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.37. Group B, Division 1, up to 3 Storeys, Sprinklered
+##### 3.2.2.37. Group B, Division 1, up to 3 Storeys, Sprinklered
 
 (1) A building classified as Group B,Division 1 is permitted to conform to Sentence (2) provided   
 (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -428,7 +430,7 @@ construction used singly or in combination, provided,
 (b) mezzanines shall have a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ ,and   
 (c) loadbearing walls, columns and arches shallhave afire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.38. Group B, Division 2, Any Height, Any Area, Sprinklered
+##### 3.2.2.38. Group B, Division 2, Any Height, Any Area, Sprinklered
 
 (1)Except as permitedby Articles 3.2.2.39.to3.2.2.41.,a building classified as Group B,Division 2 shallconform to Sentence (2).
 
@@ -437,7 +439,7 @@ construction used singly or in combination, provided,
 ( mezzanines shall have a fire-resistance rating not less $^ { 1 \mathrm { h } }$ ,and   
 (d) loadbearing wals,columns and arches shallhave a fire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.39. Group B, Division 2, up to 3 Storeys, Sprinklered
+##### 3.2.2.39. Group B, Division 2, up to 3 Storeys, Sprinklered
 
 (1) A building classified as Group B, Division 2 is permitted to conform to Sentence (2) provided   
 (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -450,7 +452,7 @@ construction used singly or in combination, provided,
 (b) mezzanines shall have a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ ,and   
 (c) loadbearing wals,columns and arches shall have a fire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.40. Group B, Division 2, up to 2 Storeys, Sprinklered
+##### 3.2.2.40. Group B, Division 2, up to 2 Storeys, Sprinklered
 
 (1) A building classified as Group B,Division 2 is permitted to conform to Sentence (2) provided   
 (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -461,7 +463,7 @@ construction used singly or in combination, provided,
 
 (a) floor assemblies shall be fire separations with a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ , (b) mezzanines shall have, if of combustible construction,a fire-resistance rating not less than $4 5 ~ \mathrm { m i n }$ ,and (c) loadbearing wals,columns and arches shall have a fire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.41. Group B, Division 2, One Storey, Sprinklered
+##### 3.2.2.41. Group B, Division 2, One Storey, Sprinklered
 
 (1)A building classified as GroupB,Division 2 is permittedto be of combustible construction or noncombustible   
 construction used singly or in combination, provided   
@@ -469,7 +471,7 @@ construction used singly or in combination, provided
 (b)it is not more than 1 storey in building height, and   
 (c) it has a building area not more than $5 0 0 \mathrm { m } ^ { 2 }$ :
 
-#### 3.2.2.42. Group B, Division 3, Any Height, Any Area, Sprinklered
+##### 3.2.2.42. Group B, Division 3, Any Height, Any Area, Sprinklered
 
 (1)Exceptas permitedbyArticles3.2.2.43.to3.2.2.46.and3.2.2.93.,a building classifiedasGroupB,Division3hal conform to Sentence (2).
 
@@ -478,7 +480,7 @@ construction used singly or in combination, provided
 () mezzanines shall have a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ ,and   
 (d) loadbearing wals,columns and arches shallhave afire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.43. Group B, Division 3, Up to 3 Storeys, (Noncombustible), Sprinklered
+##### 3.2.2.43. Group B, Division 3, Up to 3 Storeys, (Noncombustible), Sprinklered
 
 (1) A building classified as Group B,Division 3 is permitted to conform to Sentence (2) provided   
 (a) except as permitted by Sentences 3.2.2.7.(1) and 3..2.18.(2),the building is sprinklered throughout,   
@@ -491,7 +493,7 @@ construction used singly or in combination, provided
 (b) mezzanines shall have a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ and   
 (c) loadbearing wals,columns and arches shallhave afire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.44. Group B, Division 3, Up to 3 Storeys, Sprinklered
+##### 3.2.2.44. Group B, Division 3, Up to 3 Storeys, Sprinklered
 
 (1) A building classified as Group B,Division 3 is permitted to conform to Sentence (2) provided   
 (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -504,7 +506,7 @@ construction used singly or in combination, provided
 (b) mezzanines shall have a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ ,and   
 (c) loadbearing wals,columns and arches shallhave afire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.45. Group B, Division 3, Up to 2 Storeys, Sprinklered
+##### 3.2.2.45. Group B, Division 3, Up to 2 Storeys, Sprinklered
 
 (1) A building classified as Group B,Division 3 is permitted to conform to Sentence (2) provided   
 (a) except as permited by Sentences 3.2..7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -515,7 +517,7 @@ construction used singly or in combination, provided
 
 (a) floor assemblies shall be fire separations with a fire-resistance rating not less than $4 5 ~ \mathrm { m i n }$ , (b) mezzanines shall have,if of combustible construction,a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ ,and (c) loadbearing wals,columns and arches shallhave afire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.46. Group B, Division 3, One Storey, Sprinklered
+##### 3.2.2.46. Group B, Division 3, One Storey, Sprinklered
 
 (1)A buildingclassified as GroupB,Division 3 is permited to be of combustible construction or noncombustible   
 construction,used singly or in combination,provided   
@@ -523,7 +525,7 @@ construction,used singly or in combination,provided
 (b) it is not more than 1 storey in building height, and   
 (c) it has a building area not more than $6 0 0 \mathrm { m } ^ { 2 }$
 
-#### 3.2.2.47. Group C, Any Height, Any Area, Sprinklered
+##### 3.2.2.47. Group C, Any Height, Any Area, Sprinklered
 
 r1 (1)Except as permitted byArticles 3.2.2.48.to3.2.2.55.and 3.2.2.93.,a building clasifiedas Group Cother than a retirement home shall conform to Sentence (2).
 
@@ -536,7 +538,7 @@ construction,and
 
 (3)In a building that contains dweling units that have more thanone storey,subject to the requirements ofSentence 3.3.4.2.(3),the floor assemblies,including floorsover basements,which are entirelycontained within these dwelling units, shall have a fire-resistance rating not less than $^ { 1 \mathrm { ~ h ~ } }$ but need not be constructed as fire separations.
 
-#### 3.2.2.48. Group C, up to 12 Storeys, Sprinklered, Encapsulated Mass Timber Construction
+##### 3.2.2.48. Group C, up to 12 Storeys, Sprinklered, Encapsulated Mass Timber Construction
 
 (1) A building classified as Group C,other than a retirement home,is permitted to conform to Sentence (2), provided   
 (a) it is sprinklered throughout,   
@@ -558,7 +560,7 @@ partofabuilding within the scope of this Article are permited to be constructed 
 (c) the storage garage is located below the fifth storey. (See also Article 4.4.2.1.)   
 (See Note A-3.2.2.48.(4), 3.2.2.57.(3) and 3.2.2.93.(5) to (7))
 
-#### 3.2.2.49. Group C, up to 6 Storeys, Sprinklered, Noncombustible Construction
+##### 3.2.2.49. Group C, up to 6 Storeys, Sprinklered, Noncombustible Construction
 
 (1) A building classified as Group C,other than a retirement home,is permited to conform to Sentence (2) provided   
 (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -571,7 +573,7 @@ construction,and
 
 (3)Ina building that contains dweling units that have more than one storey,subject to the requirements ofSentence 3.3.4.2.(3),the floor assemblies,including floors over basements,which are entirely contained within these dwelling units, shall have a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ but need not be constructed as fire separations.
 
-#### 3.2.2.50. Group C, up to 4 Storeys, Noncombustible Construction
+##### 3.2.2.50. Group C, up to 4 Storeys, Noncombustible Construction
 
 (1)A building clasifiedas GroupC,other thana retirement home,is permitted to conformto Sentence (2) provided   
 (a)it is not more than (i) 3 storeys in building height, or (ii)4 storeys in building height provided there is not more than one dwelling unit above another dwelling unit, and vertical fire separations of adjacent dwelling units conform to Sentence (4), and   
@@ -590,7 +592,7 @@ Table 3.2.2.50. Maximum Building Area, Group C, up to 4 Storeys Forming Part of 
 
 (4)The dwellng units described in Subclause (1)(a)(ii)shallbe separated by continuous vertical fireseparations that extend through all storeys and service spaces of the separated portions.
 
-#### 3.2.2.51. Group C, up to 6 Storeys, Sprinklered, Combustible Construction
+##### 3.2.2.51. Group C, up to 6 Storeys, Sprinklered, Combustible Construction
 
 (1) A building classified as Group C,other than a retirement home,is permited to conform to Sentence (2) provided   
 (a) it is sprinklered throughout,   
@@ -618,7 +620,7 @@ partthereof within the scope of this Article are permited to be constructed inac
 (b)the storage garage is located below the fourth storey. (See also Article 4.4.2.1.)   
 (See Note A-3.2.2.51.(5) and 3.2.2.60.(4))
 
-#### 3.2.2.52. Group C, up to 4 Storeys, Sprinklered
+##### 3.2.2.52. Group C, up to 4 Storeys, Sprinklered
 
 (1) A building classified as Group C,other than a retirement home,is permited to conform to Sentence (2) provided   
 (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -635,7 +637,7 @@ partthereof within the scope of this Article are permited to be constructed inac
 
 (4)Ina building in which there is no dwelling unit above another dwelling unit,thefre-resistance rating for floor assemblies entirely within the dwelling unit is waived.
 
-#### 3.2.2.53. Group C, up to 3 Storeys, Increased Area
+##### 3.2.2.53. Group C, up to 3 Storeys, Increased Area
 
 (1)A building clasified as Group C,other than a retirement home,is permitted toconform to Sentence (2) provided (a)it is not more than 3 storeys in building height,and   
 (b)it has a building area not more than the value in Table 3.2.2.53.
@@ -655,7 +657,7 @@ Table 3.2.2.53. Maximum Building Area, Group C up to 3 Storeys, Increased Area F
 
 (4)Ina building in which there is no dwelling unit above another dwelling unit, thefre-resistance rating for floor assemblies entirely within the dwelling unit is waived.
 
-#### 3.2.2.54. Group C, up to 3 Storeys
+##### 3.2.2.54. Group C, up to 3 Storeys
 
 (1) A building clasified as GroupC,other than a retirement home,is permitted to conformto Sentence (2) provided (a) it is not more than 3 storeys in building height,and   
 (b)it has a building area not more than the value in Table 3.2.2.54.
@@ -674,7 +676,7 @@ Table 3.2.2.54. Maximum Building Area, Group C, up to 3 Storeys Forming Part of 
 
 (4)Ina building in which there is no dwelling unit above another dwelling unit,thefre-resistance rating for floor assemblies entirely within the dwelling unit is waived.
 
-#### 3.2.2.55. Group C, up to 3 Storeys, Sprinklered
+##### 3.2.2.55. Group C, up to 3 Storeys, Sprinklered
 
 (1)A building clasifiedas Group C,other thana retirement home,is permitted toconform to Sentence (2) provided (a)except as permited by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,
 
@@ -691,7 +693,7 @@ Table 3.2.2.54. Maximum Building Area, Group C, up to 3 Storeys Forming Part of 
 
 (4)Ina building in which there is no dwelling unit above another dwelling unit, the fre-resistance rating for floor assemblies entirely within the dwelling unit is waived.
 
-#### 3.2.2.55A. Group C, Retirement Home, Any Height, Any Area, Sprinklered
+##### 3.2.2.55A. Group C, Retirement Home, Any Height, Any Area, Sprinklered
 
 (1)Except as permited by Articles 3.2.2.55B.to 3.2.2.55E. a retirement home shall conform to Sentence (2).
 
@@ -700,7 +702,7 @@ Table 3.2.2.54. Maximum Building Area, Group C, up to 3 Storeys Forming Part of 
 (c) mezzanines shall have a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ ,and   
 (d) loadbearing walls, columns and arches shallhave a fire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.55B. Group C, Retirement Home, up to 4 Storeys, Sprinklered, Increased Area
+##### 3.2.2.55B. Group C, Retirement Home, up to 4 Storeys, Sprinklered, Increased Area
 
 (1) A retirement home is permitted to conform to Sentence (2) provided   
 (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -711,7 +713,7 @@ Table 3.2.2.54. Maximum Building Area, Group C, up to 3 Storeys Forming Part of 
 
 (a) floor assemblies shall be fire separations with a fire-resistance rating not less than $^ { 2 \mathrm { h } }$ , (b) mezzanines shall have,if of combustible construction,a fire-resistance rating not less than $^ { 1 \mathrm { ~ h ~ } }$ ,and (c) lodbearing walls, columns and arches shallhave afire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.55C. Group C, Retirement Home, up to 4 Storeys, Sprinklered
+##### 3.2.2.55C. Group C, Retirement Home, up to 4 Storeys, Sprinklered
 
 (1) A retirement home is permitted to conform to Sentence (2) provided except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
 (b) it is not more than 4 storeys in building height, and   
@@ -721,7 +723,7 @@ Table 3.2.2.54. Maximum Building Area, Group C, up to 3 Storeys Forming Part of 
 
 (a) floor assemblies shall be fire separations with a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ , (b) mezzanines shall have, if of combustible construction,a fire-resistance rating not less than $^ { 1 \mathrm { ~ h ~ } }$ ,and (c) loadbearing wals,columns and arches shall have a fire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.55D. Group C, Retirement Home, up to 3 Storeys, Sprinklered, Noncombustible Construction
+##### 3.2.2.55D. Group C, Retirement Home, up to 3 Storeys, Sprinklered, Noncombustible Construction
 
 (1) Aretirement home is permitted to conform to Sentence (2) provided   
 (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -734,7 +736,7 @@ Table 3.2.2.54. Maximum Building Area, Group C, up to 3 Storeys Forming Part of 
 (b) mezzanines shall have a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ ,and   
 (c) loadbearing wals,columns and arches shall have a fire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.55E. Group C, Retirement Home, up to 3 Storeys, Sprinklered, Combustible Construction
+##### 3.2.2.55E. Group C, Retirement Home, up to 3 Storeys, Sprinklered, Combustible Construction
 
 (1) A retirement home is permitted to conform to Sentence (2) provided   
 (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -744,7 +746,7 @@ Table 3.2.2.54. Maximum Building Area, Group C, up to 3 Storeys Forming Part of 
 
 (a) floor assemblies shall be fire separations with a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ , (b) mezzanines shall have, if of combustible construction,a fire-resistance rating not less than $4 5 ~ \mathrm { m i n }$ ,and (c) loadbearing walls, columns and arches shallhave afire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.56. Group D, Any Height, Any Area, Sprinklered
+##### 3.2.2.56. Group D, Any Height, Any Area, Sprinklered
 
 (1)Except as permittedby Articles 3.2.2.57.to3.2.2.65.and3.2.2.93.,abuilding classified as Group Dshallconformt Sentence (2).
 
@@ -754,7 +756,7 @@ construction,and
 (b) floor assemblies shal be fire separations with a fire-resistance rating not less than $^ { 2 \mathrm { h } }$ mezzanines shall have a fire-resistance rating not less $^ { 1 \mathrm { ~ h ~ } }$ and   
 (d) loadbearing walls,columns and arches shallhave a fire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.57. Group D, up to 12 Storeys, Sprinklered, Encapsulated Mass Timber Construction
+##### 3.2.2.57. Group D, up to 12 Storeys, Sprinklered, Encapsulated Mass Timber Construction
 
 (1) A building classified as Group D is permitted to conform to Sentence (2), provided   
 (a) it is sprinklered throughout,   
@@ -772,7 +774,7 @@ accordance with this Article, provided
 (c)the storage garage is located below the fifth storey. (See also Article 4.4.2.1.)   
 (See Note A-3.2.2.48.(4),3.2.2.57.(3),and 3.2.2.93.(5) to (7))
 
-#### 3.2.2.58. Group D, up to 6 Storeys
+##### 3.2.2.58. Group D, up to 6 Storeys
 
 (1) A building classfied as Group D is permitted to conform to Sentence (2) provided (a) it is not more than 6 storeys in building height, and (b) it has a building area not more than the value in Table 3.2.2.58.
 
@@ -786,7 +788,7 @@ Table 3.2.2.58. Maximum Building Area, Group D, up to 6 Storeys Forming Part of 
 (c) roof assemblies shalhave afire-resistance rating not less than $^ { 1 \mathrm { h } }$ , except that in a building not more than l storey in building height this requirement is waived, and   
 (d) loadbearing wals,columns and arches shallhave a fire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.59. Group D, up to 6 Storeys, Sprinklered, Noncombustible Construction
+##### 3.2.2.59. Group D, up to 6 Storeys, Sprinklered, Noncombustible Construction
 
 (1) A building classified as Group D is permitted to conform to Sentence (2) provided (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout, (b) it is not more than 6 storeys in building height,and
 
@@ -803,7 +805,7 @@ Table 3.2.2.58. Maximum Building Area, Group D, up to 6 Storeys Forming Part of 
 (b) mezzanines shall have a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ and   
 (c) loadbearing wals, columns and arches shall have a fire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.60. Group D, up to 6 Storeys, Sprinklered
+##### 3.2.2.60. Group D, up to 6 Storeys, Sprinklered
 
 (1)A building classified as Group D is permitted to conform to Sentence (2) provided (a)it is sprinklered throughout,
 
@@ -828,7 +830,7 @@ accordance with this Article, provided
 (b) storage garages are located below the fourth storey. (See also Article 4.4.2.1.)   
 (See Note A-3.2.2.51.(5) and 3.2.2.60.(4))
 
-#### 3.2.2.61. Group D, up to 4 Storeys, Sprinklered
+##### 3.2.2.61. Group D, up to 4 Storeys, Sprinklered
 
 (1) A building classified as Group D is permitted to conform to Sentence (2) provided   
 @ except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -838,7 +840,7 @@ accordance with this Article, provided
 (b) mezzanines shall have a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ ,and   
 (c) loadbearing walls, columns and arches shallhave a fire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.62. Group D, up to 3 Storeys
+##### 3.2.2.62. Group D, up to 3 Storeys
 
 (1) A building classified as Group D is permitted to conform to Sentence (2) provided (a) it is not more than 3 storeys in building height,and (b) it has a building area not more than the value in Table 3.2.2.62.
 
@@ -854,7 +856,7 @@ Table 3.2.2.62. Maximum Building Area, Group D, up to 3 Storeys Forming Part of 
 
 (d)loadbearing walls,columns and arches supporting an assembly required to have a fire-resistance rating shall (i) have a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ ,or (ii) be of noncombustible construction.
 
-#### 3.2.2.63. Group D, up to 3 Storeys, Sprinklered
+##### 3.2.2.63. Group D, up to 3 Storeys, Sprinklered
 
 (1) A building classified as Group D is permitted to conform to Sentence (2) provided   
 (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -867,7 +869,7 @@ Table 3.2.2.62. Maximum Building Area, Group D, up to 3 Storeys Forming Part of 
 (b) mezzanines shall have, if of combustible construction, a fire-resistance rating not less than $4 5 ~ \mathrm { m i n }$ and   
 (c) loadbearing walls, columns and arches supporting an assembly required to have a fre-resistance rating shall (i) have a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ ,or (ii) be of noncombustible construction.
 
-#### 3.2.2.64. Group D, up to 2 Storeys
+##### 3.2.2.64. Group D, up to 2 Storeys
 
 (1) A building classified as Group D is permitted to conform to Sentence (2) provided (a) it is not more than 2 storeys in building height,and (b) it has a building area not more than the value in Table 3.2.2.64.
 
@@ -880,7 +882,7 @@ construction used singly or in combination,and
 (a) floor assemblies shallbe fire separations and,ifofcombustibleconstruction,shallhaveafire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ ,and   
 (b) loadbearing walls, columns and arches supporting an assembly required to have a fire-resistance rating shall (i) have a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ or (ii) be of noncombustible construction.
 
-#### 3.2.2.65. Group D, up to 2 Storeys, Sprinklered
+##### 3.2.2.65. Group D, up to 2 Storeys, Sprinklered
 
 (1) A building classified as Group D is permitted to conform to Sentence (2) provided   
 (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -892,7 +894,7 @@ construction used singly or in combination,and
 (a) floor assemblies shallbefire separationsand,ifofcombustibleconstruction,shall have afire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ and   
 (b) loadbearing walls, columns and arches supporting an assembly required to have a fire-resistance rating shall (i) have a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ ,or (ii) be of noncombustible construction.
 
-#### 3.2.2.66. Group E, Any Height, Any Area, Sprinklered
+##### 3.2.2.66. Group E, Any Height, Any Area, Sprinklered
 
 (1)Except as permittedby Articles3.2.2.67.to3.2.2.71.and3.2.2.93.,abuilding classified as GroupEshallconformt Sentence (2).
 
@@ -901,7 +903,7 @@ construction used singly or in combination,and
 (c) mezzanines shall have a fire-resistance rating not less $^ { 1 \mathrm { h } }$ ,and   
 (d) loadbearing wals, columns and arches shallhave a fire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.67. Group E, up to 4 Storeys, Sprinklered
+##### 3.2.2.67. Group E, up to 4 Storeys, Sprinklered
 
 (1) A building classified as Group E is permitted to conform to Sentence (2) provided   
 @ except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -911,7 +913,7 @@ construction used singly or in combination,and
 (b) mezzanines shall have a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ ,and   
 (c) loadbearing walls, columns and arches shallhave afire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.68. Group E, up to 3 Storeys
+##### 3.2.2.68. Group E, up to 3 Storeys
 
 (1) A building classified as Group E is permitted to conform to Sentence (2) provided (a) it is not more than 3 storeys in building height,and (b) it has a building area not more than the value in Table 3.2.2.68.
 
@@ -927,7 +929,7 @@ Table 3.2.2.68. Maximum Building Area, Group E,up to 3 Storeys Forming Part of S
 (d) loadbearing walls,columns and arches supporting an assembly required to have a fire-resistance rating shall (i) have a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ ,or (ii) be of noncombustible construction, and   
 (e) loadbearing wals, columns and arches supporting a fire separation shallhave afre-resistance rating not less than that required for the fire separation.
 
-#### 3.2.2.69. Group E, up to 3 Storeys, Sprinklered
+##### 3.2.2.69. Group E, up to 3 Storeys, Sprinklered
 
 (1) A building classified as Group E is permitted to conform to Sentence (2) provided   
 (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -941,7 +943,7 @@ Table 3.2.2.68. Maximum Building Area, Group E,up to 3 Storeys Forming Part of S
 (c)loadbearing walls,columns and arches supporting an assembly required to have a fire-resistance rating shall (i) have afire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ or (ii) be of noncombustible construction, and   
 (d) loadbearing wals, columns and arches supporting a fire separation shall have afire-resistance rating not less thai that required for the fire separation.
 
-#### 3.2.2.70. Group E, up to 2 Storeys
+##### 3.2.2.70. Group E, up to 2 Storeys
 
 (1) A building classified as Group E is permitted to conform to Sentence (2) provided (a) it is not more than 2 storeys in building height,and (b) it has a building area not more than the value in Table 3.2.2.70.
 
@@ -954,7 +956,7 @@ construction used singly or in combination, and
 (a)floor assemblies shall be fire separations with a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ ,and   
 (b)loadbearing walls, columns and arches shallhave afire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.71. Group E, up to 2 Storeys, Sprinklered
+##### 3.2.2.71. Group E, up to 2 Storeys, Sprinklered
 
 (1) A building classified as Group E is permitted to conform to Sentence (2) provided   
 (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -965,7 +967,7 @@ construction used singly or in combination, and
 (a)floor assemblies shall be fire separations with a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ ,and   
 (b)loadbearing walls, columns and arches shallhave afire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.72. Group F, Division 1, up to 4 Storeys, Sprinklered
+##### 3.2.2.72. Group F, Division 1, up to 4 Storeys, Sprinklered
 
 (1)Except as permitedby Articles 3..2.73.to3.22.75.,abuilding classified as GroupF,Division1 shallconformto Sentence (2) provided
 
@@ -976,7 +978,7 @@ construction used singly or in combination, and
 ( mezzanines shall have a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ ,and   
 (d) loadbearing walls, columns and arches shallhave a fire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.73. Group F, Division 1, up to 3 Storeys, Sprinklered
+##### 3.2.2.73. Group F, Division 1, up to 3 Storeys, Sprinklered
 
 (1) A building classified as Group F, Division 1 is permitted to conform to Sentence (2) provided   
 (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -987,7 +989,7 @@ construction used singly or in combination, and
 
 (a)floor assemblies shall be fire separations with a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ (b)loadbearing wals,columns and arches shall have afre-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.74. Group F, Division 1, up to 2 Storeys, Sprinklered
+##### 3.2.2.74. Group F, Division 1, up to 2 Storeys, Sprinklered
 
 (1) A building classified as Group F, Division 1 is permitted to conform to Sentence (2) provided   
 (@) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -999,14 +1001,14 @@ construction used singly or in combination, and
 (a) floor assemblies shallbe fire separations and,ifofcombustibleconstruction,shallhave afre-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ ,   
 (b)loadbearing walls, columns and arches supporting an assembly required to have a fire-resistance rating shall (i) have a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ ,or (ii) be of noncombustible construction.
 
-#### 3.2.2.75. Group F, Division 1, One Storey
+##### 3.2.2.75. Group F, Division 1, One Storey
 
 (1) A building classified as GroupF,Division 1 is permitted to be of combustible construction or noncombustible   
 construction used singly or in combination provided   
 (a) it is not more than 1 storey in building height,and   
 (b) it has a building area not more than $8 0 0 ~ \mathrm { m } ^ { 2 }$
 
-#### 3.2.2.76. Group F, Division 2, Any Height, Any Area, Sprinklered
+##### 3.2.2.76. Group F, Division 2, Any Height, Any Area, Sprinklered
 
 r1 (1)Exceptas permittedbyArticles 3.2.2.77.to3.22.81.and3.2.2.93.,abulding clasifiedas GroupF,Division2hall conform to Sentence (2).
 
@@ -1015,7 +1017,7 @@ r1 (1)Exceptas permittedbyArticles 3.2.2.77.to3.22.81.and3.2.2.93.,abulding clas
 () mezzanines shall have a fire-resistance rating not less $^ { 1 \mathrm { h } }$ ,and   
 (d) loadbearing wals, columns and arches shallhave a fire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.77. Group F, Division 2, up to 4 Storeys, Increased Area, Sprinklered
+##### 3.2.2.77. Group F, Division 2, up to 4 Storeys, Increased Area, Sprinklered
 
 (1) A building classified as Group F, Division 2 is permitted to conform to Sentence (2) provided   
 (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -1028,7 +1030,7 @@ r1 (1)Exceptas permittedbyArticles 3.2.2.77.to3.22.81.and3.2.2.93.,abulding clas
 (b) mezzanines shall have a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ and   
 (c) loadbearing wals, columns and arches shallhave afire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.78. Group F, Division 2, up to 3 Storeys
+##### 3.2.2.78. Group F, Division 2, up to 3 Storeys
 
 (1)A building classified as Group F,Division 2 is permited to conform to Sentence (2) provided (a)it is not more than 3 storeys in building height,and   
 (b)it has a building area not more than the value in Table 3.2.2.78.
@@ -1046,7 +1048,7 @@ Table 3.2.2.78. Maximum Building Area, Group F, Division 2,up to 3 Storeys Formi
 
 (e)loadbearing walls, columns and arches supporting afire separation shall have afre-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.79. Group F, Division 2, up to 4 Storeys, Sprinklered
+##### 3.2.2.79. Group F, Division 2, up to 4 Storeys, Sprinklered
 
 (1) A building classified as Group F, Division 2 is permitted to conform to Sentence (2) provided   
 (@) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2), the building is sprinklered throughout,   
@@ -1060,7 +1062,7 @@ Table 3.2.2.78. Maximum Building Area, Group F, Division 2,up to 3 Storeys Formi
 (c) loadbearing walls, columns and arches supporting an assembly required to have a fire-resistance rating shall (i) have a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ ,or (ii) be of noncombustible construction, and   
 (d) loadbearing walls, columns and arches supporting a fire separation shall have afire-resistance rating not less tha that required for the supported assembly.
 
-#### 3.2.2.80. Group F, Division 2, up to 2 Storeys
+##### 3.2.2.80. Group F, Division 2, up to 2 Storeys
 
 (1)A building classified as Group F,Division 2 is permited to conform to Sentence (2) provided (a)it is not more than 2 storeys in building height,and   
 (b)it has a building area not more than the value in Table 3.2.2.80.   
@@ -1073,7 +1075,7 @@ Table 3.2.2.80. Maximum Building Area, Group F, Division 2,up to 2 Storeys Formi
 
 <table><tr><td rowspan="2">No. of Storeys</td><td colspan="3"> Maximum Area, m2</td></tr><tr><td>Facing 1 Street</td><td>Facing 2 Streets</td><td>Facing 3 Streets</td></tr><tr><td>1</td><td>1000</td><td>1250</td><td>1500</td></tr><tr><td>2</td><td>600</td><td>750</td><td>900</td></tr></table>
 
-#### 3.2.2.81. Group F, Division 2, up to 2 Storeys, Sprinklered
+##### 3.2.2.81. Group F, Division 2, up to 2 Storeys, Sprinklered
 
 (1) A building classified as Group F, Division 2 is permitted to conform to Sentence (2) provided (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.28.(2),the building is sprinklered throughout, (b) it is not more than 2 storeys in building height, and
 
@@ -1084,7 +1086,7 @@ Table 3.2.2.80. Maximum Building Area, Group F, Division 2,up to 2 Storeys Formi
 (a) floor assemblies shallbe fire separations and,ifofcombustibleconstruction,shallhave afre-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ ,and   
 (b)loadbearing walls, columns and arches supporting an assembly required to have a fire-resistance rating shall (i) have afire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ ,or (ii) be of noncombustible construction.
 
-#### 3.2.2.82. Group F, Division 3, Any Height, Any Area, Sprinklered
+##### 3.2.2.82. Group F, Division 3, Any Height, Any Area, Sprinklered
 
 (1)Except as permitedby Articles 3..2.83.to3.2.2.93.,a building classified as GroupF,Division3 shallconform to Sentence (2).
 
@@ -1096,7 +1098,7 @@ construction,and
 (d) if the building is not sprinklered,roof assemblies shall have a fire-resistance rating not less than $^ { 1 \mathrm { ~ h ~ } }$ ,and   
 (e) loadbearing walls,columns and arches shallhave a fire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.83. Group F, Division 3, up to 6 Storeys
+##### 3.2.2.83. Group F, Division 3, up to 6 Storeys
 
 (1)A building classified as Group F,Division 3 is permited to conform to Sentence (2) provided (a)it is not more than 6 storeys in building height, and   
 (b) it has a building area not more than the value in Table 3.2.2.83. (2) The building referred to in Sentence (1) shall be of noncombustible construction, and   
@@ -1109,7 +1111,7 @@ Table 3.2.2.83. Maximum Building Area, Group F, Division 3,up to 6 Storeys Formi
 
 <table><tr><td rowspan="2">No. of Storeys</td><td colspan="3">Maximum Area, m2</td></tr><tr><td>Facing 1 Street</td><td>Facing 2 Streets</td><td>Facing 3 Streets</td></tr><tr><td>1</td><td>not lIimited</td><td>not limited</td><td>not limited</td></tr><tr><td>2</td><td>7200</td><td>9000</td><td>10 800</td></tr><tr><td>3</td><td>4 800</td><td>6000</td><td>7200</td></tr><tr><td>4</td><td>3 600</td><td>4 500</td><td>5400</td></tr><tr><td>5</td><td>2 880</td><td>3 600</td><td>4 320</td></tr><tr><td>6</td><td>2400</td><td>3000</td><td>3600</td></tr></table>
 
-#### 3.2.2.84. Group F, Division 3, up to 6 Storeys, Sprinklered
+##### 3.2.2.84. Group F, Division 3, up to 6 Storeys, Sprinklered
 
 (1)A building classified as Group F,Division 3 is permited to conform to Sentence (2) provided (a)except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout, (b) it is not more than 6 storeys in building height,and
 
@@ -1123,7 +1125,7 @@ Table 3.2.2.83. Maximum Building Area, Group F, Division 3,up to 6 Storeys Formi
 (b) mezzanines shall have a fire-resistance rating not less than $^ { 1 \mathrm { h } }$ and   
 (c) loadbearing wals, columns and arches shallhave afire-resistance rating not less than that required for the supported assembly.
 
-#### 3.2.2.85. Group F, Division 3, up to 4 Storeys
+##### 3.2.2.85. Group F, Division 3, up to 4 Storeys
 
 (1)A building classified as Group F,Division 3 is permited to conform to Sentence (2) provided (a)it is not more than 4 storeys in building height, and   
 (b)it has a building area not more than the value in Table 3.2.2.85.   
@@ -1141,7 +1143,7 @@ the roof assembly is constructed asa fire-retardant-treated wood roof system con
 
 (i $2 4 0 0 \mathrm { m } ^ { 2 }$ if facing one street, (i) $3 0 0 0 { \mathrm { m } } ^ { 2 }$ if facing 2 streets, or (ii) $3 6 0 0 \mathrm { m } ^ { 2 }$ if facing 3 streets, and (d)loadbearing wals, columns and arches supporting an assembly required to have a fire-resistance rating shall (i) have a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ or (ii) be of noncombustible construction.
 
-#### 3.2.2.86. Group F, Division 3, up to 4 Storeys, Sprinklered
+##### 3.2.2.86. Group F, Division 3, up to 4 Storeys, Sprinklered
 
 (1) A building classified as Group F, Division 3 is permitted to conform to Sentence (2) provided   
 (a) except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout,   
@@ -1154,7 +1156,7 @@ the roof assembly is constructed asa fire-retardant-treated wood roof system con
 (b) mezzanines shallhave, if of combustible construction, a fire-resistance rating not less than $4 5 ~ \mathrm { m i n }$ ,and   
 (c) loadbearing walls, columns and arches supporting an assembly required to have a fire-resistance rating shall (i) have a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ ,or (ii) be of noncombustible construction.
 
-#### 3.2.2.87. Group F, Division 3, up to 2 Storeys
+##### 3.2.2.87. Group F, Division 3, up to 2 Storeys
 
 (1)A building classified as Group F,Division 3 is permited to conform to Sentence (2) provided (a)it is not more than 2 storeys in building height,and   
 (b)it has a building area not more than the value in Table 3.2.2.87.   
@@ -1167,7 +1169,7 @@ Table 3.2.2.87. Maximum Building Area, Group F, Division 3,up to 2 Storeys Formi
 
 <table><tr><td rowspan="2">No. of Storeys</td><td colspan="3"> Maximum Area, m2</td></tr><tr><td>Facing 1 Street</td><td>Facing 2 Streets</td><td>Facing 3 Streets</td></tr><tr><td>1</td><td>1600</td><td>2000</td><td>2400</td></tr><tr><td>2</td><td>800</td><td>1000</td><td>1200</td></tr></table>
 
-#### 3.2.2.88. Group F, Division 3, up to 2 Storeys, Sprinklered
+##### 3.2.2.88. Group F, Division 3, up to 2 Storeys, Sprinklered
 
 (1) A building classified as Group F, Division 3 is permitted to conform to Sentence (2) provided   
 @ except as permitted by Sentences 3.2.2.7.(1) and 3.2.2.18.(2),the building is sprinklered throughout, it is not more than 2 storeys in building height,and   
@@ -1178,14 +1180,14 @@ Table 3.2.2.87. Maximum Building Area, Group F, Division 3,up to 2 Storeys Formi
 (a) floor assemblies shallbe fire separations and,ifofcombustible construction, shallhave afre-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ ,and   
 (b) loadbearing walls, columns and arches supporting an assembly required to have a fire-resistance rating shall (i) have a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$ or (ii) be of noncombustible construction.
 
-#### 3.2.2.89. Group F, Division 3, One Storey
+##### 3.2.2.89. Group F, Division 3, One Storey
 
 (1)A building classified as GroupF,Division 3 is permited to be of heavy timber construction or noncombustible construction used singly or in combination provided
 
 (a)it is not more than l storey in building height,and   
 (b) it has a building area not more than i $5 6 0 0 \mathrm { m } ^ { 2 }$ if facing one street, (i) $7 0 0 0 { \mathrm { m } } ^ { 2 }$ if facing 2 streets, or (ii) $8 4 0 0 \mathrm { m } ^ { 2 }$ if facing 3 streets.
 
-#### 3.2.2.90. Group F, Division 3, One Storey, Sprinklered
+##### 3.2.2.90. Group F, Division 3, One Storey, Sprinklered
 
 (1)A building classified as Group F,Division 3 is permited to be of heavy timber construction or noncombustible   
 construction used singly or in combination provided   
@@ -1193,7 +1195,7 @@ construction used singly or in combination provided
 (b)it is not more than 1 storey in building height,and   
 (c) it has a building area not more than $1 6 8 0 0 \mathrm { m } ^ { 2 }$
 
-#### 3.2.2.91. Group F, Division 3, One Storey, Any Area, Low Fire Load Occupancy
+##### 3.2.2.91. Group F, Division 3, One Storey, Any Area, Low Fire Load Occupancy
 
 (1) A building classified as Group F,Division 3 is permitted to conform to Sentence (2) provided it is   
 (a) not more than l storey in building height,   
@@ -1201,7 +1203,7 @@ construction used singly or in combination provided
 (c) not limited in building area.   
 (2) The building referred to in Sentence (1) shall be of noncombustible construction.
 
-#### 3.2.2.92. Group F, Division 3, Storage Garages up to 22 m High
+##### 3.2.2.92. Group F, Division 3, Storage Garages up to 22 m High
 
 (1)A building used as a storage garage with allstoreys constructed as open-air storeys and having no other occupancy above it is permitted to have its floor,wall ceiling and roof assemblies constructed without afre-resistance rating provided it is   
 (a) of noncombustible construction,   
@@ -1209,7 +1211,7 @@ construction used singly or in combination provided
 (c) not more than $1 0 0 0 0 \mathrm { m } ^ { 2 }$ in building area,and   
 (d) designed so that every portion of each floor area is within $6 0 \mathrm { m }$ of an exterior wall opening.
 
-#### 3.2.2.93. Encapsulated Mass Timber Construction, Various Occupancies, Heights and Areas, Sprinklered
+##### 3.2.2.93. Encapsulated Mass Timber Construction, Various Occupancies, Heights and Areas, Sprinklered
 
 (1)A building that is clasified as Group A,Division2, Group B,Division 3, Group Cother than a retirement home, Group D, Group E, or Group r, Division 4 or 5,is permiutea to coniorm to sentence (2) proviaea
 
@@ -1246,14 +1248,14 @@ Table 3.2.2.93. Encapsulated Mass Timber Construction, Various Occupancies, Heig
 
 <table><tr><td>Major Occupancy</td><td></td><td>Maximum Height, m</td><td>Maximum Bulin Area,</td><td>Mim Encansuainn</td></tr><tr><td rowspan="3">Group A, Division 2</td><td>18</td><td>76</td><td rowspan="3">7200</td><td>70</td></tr><tr><td>12</td><td>51</td><td>50</td></tr><tr><td>6</td><td>26</td><td>0</td></tr><tr><td rowspan="3">Group B, Division 3</td><td>10</td><td>42</td><td rowspan="3">8000</td><td>70</td></tr><tr><td>6</td><td>26</td><td>50</td></tr><tr><td>4</td><td>17</td><td>0</td></tr><tr><td rowspan="2">Group C</td><td>18</td><td>76</td><td rowspan="2">6000</td><td>70</td></tr><tr><td>8</td><td>34</td><td>0</td></tr><tr><td rowspan="2">Group D</td><td>18</td><td>76</td><td rowspan="2">7200</td><td>70</td></tr><tr><td>9</td><td>38</td><td>0</td></tr><tr><td rowspan="3">Group E</td><td>12</td><td>51</td><td rowspan="3">6000</td><td>70</td></tr><tr><td>8</td><td>34</td><td>50</td></tr><tr><td>6</td><td>26</td><td>0</td></tr><tr><td rowspan="3">Group F, Division 2</td><td>10</td><td>42</td><td rowspan="3">4500</td><td>70</td></tr><tr><td>7</td><td>30</td><td>50</td></tr><tr><td>5</td><td>21</td><td>0</td></tr><tr><td rowspan="3">Group F, Division 3</td><td>12</td><td>51</td><td rowspan="3">7200</td><td>70</td></tr><tr><td>8</td><td>34</td><td>50</td></tr><tr><td>5</td><td>21</td><td>0</td></tr></table>
 
-##### Notes to Table 3.2.2.93.:
+###### Notes to Table 3.2.2.93.:
 
 (1)See Sentences (5)to (7)and Articles 3.2.2.4.to 3.2.2.8.forinformation pertaining to multiple majoroccupancies.   
 (2)Linear interpolation is not permitted in using Table 3.2.2.93.
 
-### 3.2.3. Spatial Separation and Exposure Protection (See Note A-3.2.3.)
+#### 3.2.3. Spatial Separation and Exposure Protection (See Note A-3.2.3.)
 
-#### 3.2.3.1. Limiting Distance and Area of Unprotected Openings
+##### 3.2.3.1. Limiting Distance and Area of Unprotected Openings
 
 (1)Except aspermitedby Articles 3.2.3.10. to3.2.3.12.,the area of unprotected openings inan exposing building face   
 for the applicable limiting distance shall be not more than the value determined in accordance with   
@@ -1343,7 +1345,7 @@ Table 3.2.3.1.-B Unprotected Opening Limits for a Building or Fire Compartment t
 
 <table><tr><td colspan="2">Exposing Building Face</td><td colspan="18">Areaof UnprotectedOpenings forGroupsA,C,D,andF,Division3Occupancies,%</td></tr><tr><td>Maximum Area,</td><td>Ratio</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>Limiting Distance, m</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>mm^1</td><td>(L/H or H/L)(1) Less than 3:1</td><td>0</td><td>88</td><td>121.5</td><td>10 12</td><td>2 2.5 18 29</td><td>3 46</td><td>4 91</td><td>5 100</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10 11</td><td></td><td>1213</td><td>14</td><td>16</td><td>18</td><td>20 25</td><td>30</td><td></td><td></td><td>35404550</td></tr><tr><td>10</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>000 0 0</td><td>11 7 8</td><td>18 9 10</td><td>21 32 14 17</td><td>48 22 25</td><td>3350 68100 33 37</td><td>96100 63 67100</td><td>100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>15 20</td><td>3:1 to 10:1 over 10:1 Less than 3:1 3:1 to 10:1</td><td>0 0 0</td><td>10 7</td><td>9 10</td><td>1526 12 15</td><td>39 18 21</td><td>53 26 30</td><td>87100 49 53</td><td>81100 85100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>over 10:1 Less than 3:1 3:1 to 10:1</td><td>0 0 0</td><td>89 78</td><td>14 89</td><td>11 13</td><td>2333 16 19</td><td>45 23 26</td><td>72100 41 45</td><td>66 70100</td><td>98100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>25</td><td>over 10:1 Less than 3:1</td><td>0 0</td><td>9 778</td><td>89</td><td>1321 11 12</td><td>30 15</td><td>39 20</td><td>6290100 35</td><td>56</td><td>83100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>30</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0 0</td><td>7</td><td>12 8 8</td><td>10 11</td><td>17 192736 13</td><td>23 17</td><td>39 5679100 28</td><td>61 44</td><td>88100 64</td><td>89100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>40</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0</td><td>78 7 7</td><td>11 88</td><td>17 9 10</td><td>15 24</td><td>20 31 1215</td><td>32 4766 24</td><td>48 37</td><td>69 88100 53 72</td><td>93100 96100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>50</td><td>3:1 to 10:1 over10:1 Lessthan 3:1</td><td>0 0 0</td><td>8 7</td><td>10 88</td><td>9</td><td>14 1521 11</td><td>18 28 14</td><td>28 41 21</td><td>41 57 32</td><td>57 76 45 62</td><td>77100 97100 81</td><td>100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>60</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>7 8 7</td><td>10 7</td><td>10 14 89</td><td>13 20 10</td><td>16 25 12</td><td>25 38 18</td><td>36 51 26</td><td>49 66 67 36 48</td><td>85100 62</td><td>85100 79</td><td>98100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>80</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>7 8 77</td><td>89 78</td><td>13 89</td><td>11 17 9</td><td>14 22 11</td><td>21 32 16</td><td>29 44 22</td><td>40 52 56 70 30 40</td><td>51</td><td>6784100 86100 6580</td><td></td><td>97100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>100</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>7 7</td><td>9 7</td><td></td><td>11 12 16 9</td><td>13 20 10</td><td>18 29 1317</td><td>25 39</td><td>34 44 49 61 22 29</td><td>56 74 37</td><td>4656</td><td>6984100 89100</td><td>67</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>150</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>77</td><td>7 8 7</td><td>11 7</td><td>88 10 13 8</td><td>11 17 9</td><td>15 2431 10</td><td>20 13</td><td>26 33 39 48 16 20</td><td>41 57 25</td><td>50 68 30</td><td>60 79 36</td><td>71 91 43</td><td>7 9100 84 100 51 59</td><td>100 68</td><td>87100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>250</td><td>3:1 t0 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>777</td><td>8 7</td><td>7 7</td><td>89 9 11 8</td><td>10 14</td><td>12 19 9</td><td>15 24 11</td><td>19 24 30 36 14 16</td><td>28 43 20</td><td>34 50 2428</td><td>40 57</td><td>47 55 65 73 33 38</td><td>63 82 44</td><td>72 92100 50</td><td>92100 64</td><td>81</td><td>99100</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>350</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>777 7</td><td>7</td><td>7 8</td><td>89 9 10 7 7</td><td>89 12 88</td><td>11 16 9</td><td>13 21 10</td><td>16 19 25 30 12 14</td><td>23 36 16</td><td>27 41 19</td><td>32 47 22</td><td>37 53 25</td><td>42 48 59 66 2933</td><td>55 73 37</td><td>69 88100 47</td><td>85100 59</td><td>71100</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>500</td><td>3:1 to 10:1 over 10:1 Less than 3:1 3:1 to 10:1</td><td>0 0 0 0</td><td>77 77</td><td>7 7 7 7</td><td>7 8 7 7</td><td>8 9 7 7</td><td>11 7 8</td><td>10 14 89</td><td>12 18 9 10</td><td>14 16 22 25 9 10 11 12</td><td>19 12 14</td><td>2225 3034 13 15</td><td>38 14</td><td>29 43 16</td><td>33 37 48 53 1820</td><td>41 58 22</td><td>52 70 27</td><td>63 8296100 33</td><td>76100 39</td><td>58 82</td><td>100</td><td></td><td></td><td></td></tr><tr><td>1000 2000</td><td>over10:1 Less than 3:1 3:1 to 10:1 over 10:1</td><td>0 0 0 0</td><td>7 7 7 7</td><td>7</td><td>7 7 7</td><td>8 8 7 7 7 78 7</td><td>9 7 7 8</td><td>11 7 89</td><td>13</td><td>16 9 12</td><td>1921 9 10 1416</td><td></td><td>17 2427 1011 121314 181921</td><td>19 30 12 2325</td><td>21 3336 1314 1516</td><td>23 26 39 15 17</td><td>31 46 17 20</td><td>37 53 20 23</td><td>43 60 27</td><td>63 82100 2334</td><td>86100 58 49 63</td><td>79</td><td>100</td><td>100</td></tr></table>
 
-##### Notes to Table 3.2.3.1.-B:
+###### Notes to Table 3.2.3.1.-B:
 
 (1)Apply whichever is greater, ${ \mathsf { L } } =$ Length of exposing building face $\mathsf { H } =$ Heightof exposing building face
 
@@ -1351,7 +1353,7 @@ Table 3.2.3.1.-C Unprotected Opening Limits for a Building or Fire Compartment t
 
 <table><tr><td colspan="2">ExposingBuilding Face</td><td colspan="13"></td></tr><tr><td>Maximum</td><td>Ratio</td><td colspan="12">Areaof Unprotected Openings for Groups EandF,Division1and2Occupancies,%</td><td></td><td></td><td>Limiting Distance,m</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td>Area,m2(L/HorH/L) Less than 3:1</td><td>0 0</td><td>1.21.522.53 4</td><td></td><td>9</td><td>152346</td><td>4</td><td>5 77100</td><td>6</td><td>7</td><td>8</td><td>9</td><td></td><td></td><td></td><td></td><td></td><td>10111213141618</td><td></td><td>2025303540455055606570</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>10</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>00 0</td><td>45 4</td><td>5</td><td>162434 7</td><td>11</td><td></td><td>18 58</td><td>91100</td><td>16325379100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>15</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>4 5 4</td><td>558</td><td>8 131926 6</td><td>9</td><td>13</td><td>1318345582100 43 25</td><td>6693100</td><td></td><td>6185100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>20</td><td>3:1 t0 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>4 5 4</td><td>457</td><td>7 11172236</td><td></td><td>11 20</td><td>40 111527436387100 53</td><td></td><td>7499100</td><td></td><td>6992100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>25</td><td>3:1 to 10:1 over 10:1</td><td>0 0</td><td>4 4 4</td><td>456</td><td>67 10152031</td><td>89</td><td></td><td>13223551</td><td>3349 456282100</td><td></td><td>7194100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>30</td><td>Less than 3:1 3:1 t0 10:1 over 10:1</td><td>0 0 0 0</td><td>4 4 4</td><td>446 4</td><td>56 5</td><td>7 9 6</td><td>14</td><td>122030446080100 1014182840547191100</td><td></td><td></td><td></td><td>101828425877100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>40</td><td>Less than 3:1 3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>4 4 4</td><td>45 4</td><td>68 5</td><td>8 12 6</td><td>8 15 23 7 12</td><td>1016243447617897100 33</td><td></td><td></td><td>18263648</td><td>44577289100 61</td><td>223244597694100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>50</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>4 4 4</td><td>4 5</td><td>5 8</td><td>7 11</td><td>9 14 14 21</td><td>20 29</td><td>29 38</td><td></td><td></td><td></td><td>7693100 3850637995100 48617490100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>60</td><td>3:1 to 10:1 over 10:1</td><td>0 0</td><td>4 4 4</td><td></td><td></td><td>5 6</td><td>7 8</td><td>11 10131926344353647792100</td><td></td><td></td><td></td><td></td><td></td><td></td><td>1623314052647894100 121825334354668196100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>80</td><td>Less than 3:1 3:1 to 101 over 10:1</td><td>0 0 0</td><td>4 4</td><td>4 45</td><td>4 56</td><td>5 6 9</td><td>6 7 11</td><td>9 13 1015202633425162 16 22</td><td>18</td><td></td><td>2431</td><td>40 2835435262</td><td>49</td><td>60 73</td><td></td><td>718498100 7486100 8598100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>100</td><td>Less than 3:1 3:1 to 10:1 over 10:1</td><td>0 0 0</td><td>4 4 4 4</td><td>44 4</td><td>4 4 6</td><td>5 5 8</td><td>5 6 10</td><td>8 11 9 14 19</td><td></td><td></td><td></td><td>1520263240 25313744</td><td>13172228354251</td><td>526171</td><td></td><td>81</td><td>48586879100 607081100 92100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>150</td><td>Less than 3:1 3:1 to 101 over 10:1</td><td>0 0 0</td><td>4 4 4</td><td>4 44</td><td>4 4 5</td><td>4 5 7</td><td>5 6 8</td><td>6 8 8 12 16</td><td>20</td><td></td><td></td><td>242934</td><td>39</td><td>4652</td><td></td><td>11141823283340465470 59 67</td><td>101316202530364249567392100 84100</td><td>89100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>250</td><td>Less than 3:1 3:1 to 10:1 over 10:1</td><td>0 0 0 0</td><td>4 4 4</td><td>44 4 4</td><td>4 4 5 4</td><td>4 4 6</td><td>4 5 7</td><td>5 7 6 8 9</td><td>8 10</td><td></td><td>121417</td><td></td><td></td><td></td><td>121518212528323741</td><td>101215182225293444 46</td><td>56</td><td>55 68</td><td>68100 2024273236465770100 81100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>350</td><td>Less than 3:1 3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>4 4 4</td><td>44 4</td><td>44 4</td><td>4 4 5 4</td><td>4 46</td><td>5 6 58 7 10</td><td>7 8 6</td><td>8 7</td><td>8</td><td>1012 1315182123 9</td><td>14 11</td><td>101214161821 26</td><td></td><td>303336</td><td>1619222532 44</td><td>40 2427344352 53</td><td>49</td><td>77100 79100 6290100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>500</td><td>3:1 to 10:1 over 10:1 Less than 3:1</td><td>0 0 0</td><td>4 4 4 4</td><td>4 4 44</td><td>4 4 44 4</td><td>4 5 4</td><td>4 4 5 4</td><td>4 56 5 7 9 4 45</td><td>7 55</td><td>8 56</td><td>9 6</td><td>11 11131517 6</td><td>7</td><td>8</td><td>19212426 9</td><td>1314161821 29 1011</td><td>131416192429 26 35 14</td><td>31 41 16</td><td>36 38 48</td><td>55 57 68</td><td>78100 80100 92100</td><td>2045</td><td></td><td>89100</td><td></td><td></td><td></td><td></td></tr><tr><td>1000 2000</td><td>3:1 to 10:1 over 10:1 Less than 3:1 3:101</td><td>0 0 4 0 4 00</td></table>
 
-##### Notes to Table3.2.3.1.-C:
+###### Notes to Table3.2.3.1.-C:
 
 (1)Apply whichever is greater, ${ \mathsf L } =$ Length of exposing building face $\mathsf { H } =$ Heightof exposing building face
 
@@ -1363,7 +1365,7 @@ Table 3.2.3.1.-E Unprotected Opening Limits for a Building or Fire Compartment t
 
 <table><tr><td>Exposing Building Face</td><td colspan="18">Areaof UnprotectedOpeningforGroupsEandF,Division1and2Occupancies,%</td></tr><tr><td>Maximum Area, mm^1</td><td colspan="18">Limiting Distance,m</td></tr><tr><td></td><td>0</td><td>1.2</td><td>1.5</td><td>2</td><td>2.5</td><td>3 4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td></tr><tr><td>10</td><td>0</td><td>8</td><td>12</td><td>20</td><td>34</td><td>50</td><td>96100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>15</td><td>0</td><td>8</td><td>10</td><td>16</td><td>26</td><td>36</td><td>68100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>20</td><td>0</td><td>8</td><td>10</td><td>14</td><td>22</td><td>30</td><td>54 86</td><td>100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>25</td><td>0</td><td>8</td><td>10</td><td>14</td><td>18</td><td>26</td><td>44</td><td>70100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>30</td><td>0</td><td>8</td><td>8</td><td>12</td><td>18</td><td>24</td><td>40 60</td><td>88</td><td>100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>40</td><td>0</td><td>8</td><td>8</td><td>12</td><td>16</td><td>20</td><td>32 48</td><td>68</td><td>94</td><td>100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>50</td><td>0</td><td>8</td><td>8</td><td>10</td><td>14</td><td>18</td><td>28</td><td>40</td><td>58 76</td><td>100</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>60</td><td>0</td><td>8</td><td>8</td><td>10</td><td>12</td><td>16</td><td>24</td><td>36</td><td>50 66</td><td>86</td><td>100</td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>80</td><td>0</td><td>8</td><td>8</td><td>10</td><td>12</td><td>14</td><td>20</td><td>30</td><td>40</td><td>52 66</td><td>84</td><td>100</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>100</td><td>0</td><td>8</td><td>8</td><td>8</td><td>10</td><td>12</td><td>18</td><td>26</td><td>34</td><td>44 56</td><td>70</td><td>84</td><td>100</td><td></td><td></td><td></td><td></td></tr><tr><td>150</td><td>0</td><td>8</td><td>8</td><td>8</td><td>10</td><td>12</td><td>16</td><td>20</td><td>26</td><td>32</td><td>40 50</td><td>60</td><td>72</td><td>84</td><td>98</td><td>100</td><td></td></tr><tr><td>200ormore</td><td>0</td><td>8</td><td>8</td><td>8</td><td>8</td><td>10</td><td>14</td><td>18</td><td>22</td><td>28</td><td>34 42</td><td>50</td><td>60</td><td>68</td><td>80</td><td>92</td><td>100</td></tr></table>
 
-#### 3.2.3.2. Area of Exposing Building Face
+##### 3.2.3.2. Area of Exposing Building Face
 
 (1)Except as permited by Sentences (2)and(3),the area of an exposing building face shallbe calculated as the total area of exterior wall facing in one direction on any side ofa building measured from the finished ground level to the uppermost ceiling.
 
@@ -1371,20 +1373,20 @@ Table 3.2.3.1.-E Unprotected Opening Limits for a Building or Fire Compartment t
 
 (3)Ina building thatis sprinklered throughout and contains an interconnected floor space,thearea of the exposing buildingface forthe interconnected floorspace is permited tobe determinedbyconsidering each storey asa separate fire compartment notwithstanding openings through the floor assemblies.
 
-#### 3.2.3.3. Wall Enclosing Attic or Roof Space
+##### 3.2.3.3. Wall Enclosing Attic or Roof Space
 
 (1)An exterior wallenclosing an atic or roofspace and located above an exposing building face,shall be constructed in conformance with the requirements for the exposing building face.
 
-#### 3.2.3.4. Reserved
+##### 3.2.3.4. Reserved
 
-#### 3.2.3.5. Wall With Limiting Distance Less Than 1.2 m
+##### 3.2.3.5. Wall With Limiting Distance Less Than 1.2 m
 
 (1) Openings in a wall that has a limiting distance less than $1 . 2 \mathrm { m }$ shall be protected by closures whose fire-protectior.   
 rating is in conformance with the fire-resistance rating required for the wall.
 
 (2) Wired glass or glass block shall not be used for a closure referred to in Sentene (1).
 
-#### 3.2.3.6. Combustible Projections
+##### 3.2.3.6. Combustible Projections
 
 (1)Except forabuilding containing one or two dweling units only,combustible projections on the exteriorof a wall that could expose an adjacent building to fire spread and are more than $1 \textrm { m }$ above ground level, including balconies, platforms, canopies and stairs, shall not be permitted within
 
@@ -1409,7 +1411,7 @@ rating is in conformance with the fire-resistance rating required for the wall.
 
 (6)For buildings of combustible construction, materials installed to provide the required protection of sofits may be covered with a combustible or noncombustible finish material.
 
-#### 3.2.3.7. Construction of Exposing Building Face
+##### 3.2.3.7. Construction of Exposing Building Face
 
 (1)Except as provided by Sentences (3)and(4)and Articles 3.2.3.10. and3.2.3.11., the fire-resistance rating, construction and cladding for exposing building faces ofbuildings or firecompartments ofGroup A,B,C,Dor GroupF, Division 3 occupancy classification shall comply with Table 3.2.3.7.
 
@@ -1417,7 +1419,7 @@ Table 3.2.3.7. Minimum Construction Requirements for Exposing Building Faces For
 
 <table><tr><td>Occupancy Classification of Building or Fire Compartment</td><td>Maximum Areaof Unprotected Openings Permitted,% of Exposing Building Face Area</td><td>Minimum Required Fire-Resistance Rating</td><td>Type of Construction Required</td><td>Type of Cladding Required</td></tr><tr><td rowspan="4">Group A, B, C,D,or Group F, Division 3</td><td>0to 10</td><td>1h</td><td>Noncombustible</td><td>Noncombustible</td></tr><tr><td>&gt; 10 to 25</td><td>1h</td><td>Coo</td><td>Noncombustible</td></tr><tr><td>&gt; 25 to 50</td><td>45min</td><td>Co</td><td>Noncombustible</td></tr><tr><td>&gt; 50to&lt;100</td><td>45 min</td><td>Coo</td><td>NCombustbleor</td></tr><tr><td rowspan="4">Group E,or Group F, Division 1or 2</td><td>0to 10</td><td>2h</td><td>Noncombustible</td><td>Noncombustible</td></tr><tr><td>&gt; 10 to 25</td><td>2h</td><td>Coo</td><td>Noncombustible</td></tr><tr><td>&gt; 25 to 50</td><td>1h</td><td>Como</td><td>Noncombustible</td></tr><tr><td>&gt; 50 to&lt;100</td><td>1h</td><td>Coo</td><td>Combustbleor</td></tr></table>
 
-##### Notes to Table 3.2.3.7.:
+###### Notes to Table 3.2.3.7.:
 
 (1)ThecladdingonGroupCbuildingswithinthscoeofArticle3.51.andonGoupDbuldingswihin thesopeofArticle6. shall be noncombustible or consist of a wallthat satisfies the requirements of Article 3.1.4.8. r1 (2) ThecladdingonbuidingsorpartsthereofconforngtoArtce3..248.3.2.257or3..93.shallconformtortice3..6.rbe noncombustible. (2)Except as provided in Sentences (3) and (4) and Article 3.2.3.10.,thefire-resistance rating,construction and cladding for exposing buildingfacesofbuildings orfire compartments ofGroupEor Group F,Division 1or 2 occupancy classification shall comply with Table 3.2.3.7. (3)Except as provided in Articles3.1.4.8.and 3.1.6.9.,therequirement in Table3.2.3.7.for noncombustiblecladding for buildings or fire compartments where the maximum permited area of unprotected openings is more than $10 \%$ of the exposing buildingface is permited tobe waived for exterior wallassemblies that comply with Article 3.1.5.5.or3.1.5.6. (4)Exceptas providedby Articles 3.1.4.8.and3.1.6.9.,therequirement in Table3.2.3.7.for noncombustiblecladding for buildings or fire compartments where the maximum permitted area of unprotected openings is more than $2 5 \%$ but not more than $50 \%$ of the exposing building face is permitted to be waived where (a)the limiting distance is greater than $5 \mathrm { m }$ , (b) the building or fire compartment and allcombustible attc or roofspaces are sprinklered throughout, (c) the cladding (i)conforms to Subsection 9.27.6.,9.27.7., 9.27.8., 9.27.9. or 9.27.10., (ii) is installed without furring members, or on furring not more than $2 5 \mathrm { m m }$ thick, over gypsum sheathing at least $1 2 . 7 \mathrm { m m }$ thick or over masonry, and (ii) after conditioning in conformance with ASTM D2898,“Standard Practice for Accelerated Weathering of Fire-Retardant-Treated Wood for Fire Testing,” has aflame-spread rating not greater than 25 on the exterior face when tested in accordance with Sentence 3.1.12.1.(1),
 
@@ -1432,7 +1434,7 @@ Table 3.2.3.7. Minimum Construction Requirements for Exposing Building Faces For
 
 (5)The construction requirements forthe exposingbuilding face stated in Sentences (1)and(2)shallbe satisfied before increasing the unprotected opening area as permited by Sentence 3.2.3.12.(1).
 
-#### 3.2.3.8. Protection of Exterior Building Face
+##### 3.2.3.8. Protection of Exterior Building Face
 
 (1)Except as permited by Sentence (3)and in addition to the requirements ofSentences 3.2.3.7.(1)and(2)and where the maximum permited area of unprotected openings is greater than $10 \%$ of the exposing building face, foamed plastic insulation used inan exterior wallofabuilding more than 3storeys in building height shallbe protectedonits exterior surface by
 
@@ -1449,26 +1451,26 @@ Table 3.2.3.7. Minimum Construction Requirements for Exposing Building Faces For
 
 (3)The requirements of Sentence (1) are waived for wall assemblies that comply with the requirements of Article 3.1.5.5. (See Note A-3.1.4.1.(1))
 
-#### 3.2.3.9. Protection of Structural Members
+##### 3.2.3.9. Protection of Structural Members
 
 (1)Structural members, including beams,columns and arches,placed wholly or partly outside the exterior face of a building and are less than $3 \mathrm { m }$ from the property line or the centre line of a public thoroughfare shallbe protected from exterior fire exposure by fire protection having afire-resistance rating not lessthan thatrequired fortheir protection from interior fire exposure,as stated in Articles 3.2.2.20.to 3.2.2.93.,but not less than $^ { 1 \mathrm { h } }$
 
 (2)Structural members of heavy timber construction,including beams,columns and arches,that are placed wholly or partly outside an exterior face of a building and are $3 \mathrm { m }$ or more from the property line or the centre line of a public thoroughfare need not be covered with noncombustible cladding.
 
-#### 3.2.3.10. Unlimited Unprotected Openings
+##### 3.2.3.10. Unlimited Unprotected Openings
 
 (1) An exposing buildingface ina storage garage with allstoreys constructed as open-air storeys is permited to have unlimited unprotected openings provided it has a limiting distance not less than $3 \mathrm { m }$
 
 (2)The exposing building face ofastorey that faces astreet and is at the same levelas the stret is permited to have unlimited unprotected openings if the limiting distance is not less than $9 \mathrm { m }$
 
-#### 3.2.3.11. Low Fire Load, One Storey Building
+##### 3.2.3.11. Low Fire Load, One Storey Building
 
 (1)An exposing building face ofa building of low-hazard industrial occupancy conforming to Article 3.2.2.91. is   
 permitted to be of noncombustible construction without a fire-resistance rating provided   
 (a) it is not a loadbearing wall, and   
 (b) the limiting distance is not less than $3 \mathrm { m }$
 
-#### 3.2.3.12. Area Increase for Unprotected Openings
+##### 3.2.3.12. Area Increase for Unprotected Openings
 
 (1) Except as required by Sentence 3.2.3.7.(5), the maximum area of unprotected openings in any exposing building   
 face of a building that is not sprinklered is permitted to be doubled if the openings are glazed with   
@@ -1476,7 +1478,7 @@ face of a building that is not sprinklered is permitted to be doubled if the ope
 (b)wired glassassemblies conforming to MMAH Supplementary Standard SB-2,“Fire Performance Ratings.”   
 (See Note A-3.2.3.12.(1)) (See A-2.3.15. of SB-2)
 
-#### 3.2.3.13. Protection of Exit Facilities
+##### 3.2.3.13. Protection of Exit Facilities
 
 (1)Except as required by Sentence (3)and as permited by Sentence 3.4.4.3.(1),ifthe planeof an exterior wallof an exit enclosure forms an angle less than $1 3 5 ^ { \circ }$ with the plane of an exterior wall of the building it serves,and an opening in the exterior wallof the exit enclosure could be exposed to fire from an opening in the exterior wallof the building,the openingin either the exterior wallof the exit or the exterior wallofthe building shallbe protected in conformance with the requirements of Sentence (4) where the opening in the exterior wallof the building is within $3 \mathrm { m }$ horizontally and
 
@@ -1492,7 +1494,7 @@ face of a building that is not sprinklered is permitted to be doubled if the ope
 (a) glass block conforming to the requirements of Article 3.1.8.16.,   
 (b) a wired glass assembly conforming to MMAH Supplementary Standard SB-2,“Fire Performance Ratings,”or (c) a closure conforming to the requirements of Subsection 3.1.8.and Articles 3.2.3.1.and 3.2.3.14.
 
-#### 3.2.3.14. Wall Exposed to Another Wall (See Note A-3.2.3.14.)
+##### 3.2.3.14. Wall Exposed to Another Wall (See Note A-3.2.3.14.)
 
 (1)Except as required by Sentences (3)and3.2.3.13.(1)or as permittedby Sentence 3.2.3.19.(5),ifan unprotected opening in an exterior wallofafire compartment is exposed to an unprotected opening in the exterior wallofanother fire compartment, and the planes of the 2 walls are parallel or at an angle less than $1 3 5 ^ { \circ }$ ,measured from the exterior of the building,the unprotected openings in the 2 fire compartments shallbe separated by a distance not less than $\mathrm { D } _ { 0 }$ where
 
@@ -1512,11 +1514,11 @@ $\mathrm { ~ D ~ } =$ the greater required limiting distance for the exposing bu
 (a) unprotected openings of fire compartments on opposite sides of a firewall, and   
 (b) exposure from unprotected openings ofafire compartment that is not protected by an automatic sprinkler system
 
-#### 3.2.3.15. Wall Exposed to Adjoining Roof
+##### 3.2.3.15. Wall Exposed to Adjoining Roof
 
 (1)Except as permited by Sentence 3.2.3.19.(5),ifa wallin a building is exposed toafire hazard from an adjoining roof ofaseparate fire compartment that is not sprinklered in the same building,and the exposed wallcontains windows within 3 storeys vertically and $5 \mathrm { m }$ horizontally of the roof, the roof shall contain no skylights within $5 \mathrm { m }$ of the exposed wall.
 
-#### 3.2.3.16. Protection of Soffits
+##### 3.2.3.16. Protection of Soffits
 
 (1)Except as permittd by Sentences (3)and(4), where there is acommon attic orroofspace above morethantwo suites of residential occupancy or above more than two patients'or residents' sleeping rooms in a Group B,Division 2 or 3 occupancy,and thecommon attc or rofspace projects beyond the exterior wallof the building,the sofit,and any opening in the soffits or other surface of the projection located within $2 5 0 0 ~ \mathrm { m m }$ of a window or door opening, shall be protected by
 
@@ -1533,7 +1535,7 @@ $\mathrm { ~ D ~ } =$ the greater required limiting distance for the exposing bu
 (a) the fire compartments behind the window and door openings are sprinklered in accordance with Article 3.2.5.12., and   
 (b) allrooms, including closets and bathrooms, having openings in the wall beneath the sofit are sprinklered, notwithstanding exceptions permited in the standards referenced in Article3.2.5.12.for the installtion ofautomatic sprinkler systems.
 
-#### 3.2.3.17. Canopy Protection for Vertically Separated Openings
+##### 3.2.3.17. Canopy Protection for Vertically Separated Openings
 
 (1)Except as permitted by Sentences (2)and(3),ifastoreyclassified as a Group EorGroupF,Division 1or2 major occupancy is required to be separated from the storey above by a fire separation,
 
@@ -1544,13 +1546,13 @@ $\mathrm { ~ D ~ } =$ the greater required limiting distance for the exposing bu
 
 (3)Therequirements of Sentences (1)and(2)are permited to be waived if thebuilding is sprinklered throughout.
 
-#### 3.2.3.18. Covered Vehicular Passageway
+##### 3.2.3.18. Covered Vehicular Passageway
 
 (1)A covered vehicular passageway designed as a receiving or shipping area shallbe separated from every building or part of a building adjoining it by a fire separation having a fire-resistance rating not less than $1 . 5 \mathrm { h }$
 
 (2) A covered vehicular passageway constructed below grade shallbe of noncombustible construction.
 
-#### 3.2.3.19. Walkway Between Buildings
+##### 3.2.3.19. Walkway Between Buildings
 
 (1)Except as required by Sentence3.2.3.20.(2),if buildings areconnectedby a walkway,each building shall be separated from the walkway by a fire separation with a fire-resistance rating not less than $4 5 ~ \mathrm { { m i n } }$
 
@@ -1566,7 +1568,7 @@ $\mathrm { ~ D ~ } =$ the greater required limiting distance for the exposing bu
 
 (6)A walkway between buildings shall be not more than $9 \mathrm { m }$ wide
 
-#### 3.2.3.20. Underground Walkway
+##### 3.2.3.20. Underground Walkway
 
 (1) An underground walkway shall not be designed or used for any purpose other than pedestrian travel unless (a) the purpose is permitted, and   
 (b) sprinklers are installed in any space in the walkway containing an occupancy.   
@@ -1579,15 +1581,15 @@ $\mathrm { ~ D ~ } =$ the greater required limiting distance for the exposing bu
 (b) the travel distance from the door of an adjacent room or space to the nearest exit shallbe not more than one and a half imes the least allowable travel distance to an exit for any ofthe adjacent occupancies as permited by Sentence 3.4.2.5.(1).   
 (5) An underground walkway between buildings shall be not more than $9 \mathrm { m }$ wide.
 
-#### 3.2.3.21. Reserved
+##### 3.2.3.21. Reserved
 
-#### 3.2.3.22. Service Lines Under Buildings
+##### 3.2.3.22. Service Lines Under Buildings
 
 (1)A building shallnot beconstructed over an existing buried flammable gas main unless the gas main is encased in a gas-tight conduit in conformance with CAN/CSA-Z662,“Oil and gas pipeline systems.”
 
-### 3.2.4.Fire Alarm and Detection Systems (See Note A-3.2.4.)
+#### 3.2.4. Fire Alarm and Detection Systems (See Note A-3.2.4.)
 
-#### 3.2.4.1. Determination of Requirement for a Fire Alarm System
+##### 3.2.4.1. Determination of Requirement for a Fire Alarm System
 
 (1)Except as permitted in Sentences (2)and(3),a fire alarm system shall be installed in buildings in which an automatic sprinkler system is installed.
 
@@ -1614,7 +1616,7 @@ $\mathrm { ~ D ~ } =$ the greater required limiting distance for the exposing bu
 
 (6)A fire alarm system is not required in a storage garage conforming to Article 3.2.2.92. that is contained in a building that is not sprinklered provided there are no other occupancies in the building.
 
-#### 3.2.4.2. Continuity of Fire Alarm System
+##### 3.2.4.2. Continuity of Fire Alarm System
 
 (1)Except as permittd by Sentence (6), if there areopenings troughafirewall,other than those for piping, tubing, wiring and totally enclosed noncombustible raceways,the requirements in this Subsection shall applyto the floor areas on both sides of the firewall as if they were in the same building.
 
@@ -1628,7 +1630,7 @@ $\mathrm { ~ D ~ } =$ the greater required limiting distance for the exposing bu
 
 (6)Buildings interconnected by walkways permitted in Articles 3.2.3.19.and3.2.3.20.orby vestibules provided in conformance with Article 3.2.6.3.shallbe treated as separate buildings forthe purposeoffire alarm installation required by this Subsection.
 
-#### 3.2.4.3. Types of Fire Alarm Systems
+##### 3.2.4.3. Types of Fire Alarm Systems
 
 (1) A fire alarm system shall be   
 (a) a single-stage system in a Group F, Division 1 occupancy,   
@@ -1636,7 +1638,7 @@ $\mathrm { ~ D ~ } =$ the greater required limiting distance for the exposing bu
 (@) a single-stage system in elementary and secondary schools, except for a special needs facility,and   
 (e) a single- or 2-stage system in all other cases.
 
-#### 3.2.4.4. Description of Fire Alarm Systems
+##### 3.2.4.4. Description of Fire Alarm Systems
 
 (1)A single-stage firealarm system shall upon the operation ofany manual station, waterflow detecting device, orfire detector,cause an alarm signal to sound on allaudible signal devices in the system. (See Note A-3.2.4.4.(1))
 
@@ -1655,13 +1657,13 @@ $\mathrm { ~ D ~ } =$ the greater required limiting distance for the exposing bu
 
 (4)Ifasecond manual station, waterflow detecting device,orfire detector is operated in afire alarm system with zone coding as permitedby Sentence (3),ina zone other than that for which the first alertsignal was sounded,thecoded alert signal for the first zone shall becompleted before thecodedalert signalforthe second zone is repeated notless than 4 times.
 
-#### 3.2.4.5. Installation and Verification of Fire Alarm Systems
+##### 3.2.4.5. Installation and Verification of Fire Alarm Systems
 
 (1)Fire alarm systems,including those with voice communicationcapability where provided,shallbe installed in conformance with CAN/ULC-S524,“Standard for Installation of Fire Alarm Systems.”
 
 (2)Fire alarm systems shallbe verified in conformance with CAN/ULC-S537,“VerificationofFire Alarm Systems,”to ensure satisfactory operation.
 
-#### 3.2.4.6. Silencing of Alarm Signals
+##### 3.2.4.6. Silencing of Alarm Signals
 
 (1)Except as permited by Sentence (3),afire alarm system shallbe designed so that when an alarm signal is actuated, it cannot be silenced automatically before a period of time has elapsed that is not less than
 
@@ -1671,7 +1673,7 @@ $\mathrm { ~ D ~ } =$ the greater required limiting distance for the exposing bu
 
 (3)Except as provided by Clause 3.2.4.2.(3)(a), in a care and treatment occupancy an alert signal is permitted tobe silenced automatically after $1 \mathrm { m i n }$
 
-#### 3.2.4.7. Signals to Fire Department
+##### 3.2.4.7. Signals to Fire Department
 
 (1)A single-stage fire alarm system shallbe designed to notify the fire department in conformance with Sentence (4) that an alarm signal has been initiated in   
 (a)a building of a Group A occupancy having an occupant load more than 300, or   
@@ -1687,7 +1689,7 @@ $\mathrm { ~ D ~ } =$ the greater required limiting distance for the exposing bu
 
 (6)Helicopter landing areas on roofs shallbe provided with telephone extensions or means to notify the fire department.
 
-#### 3.2.4.8. Annunciator and Zone Indication
+##### 3.2.4.8. Annunciator and Zone Indication
 
 (1)Except as permited by Sentences (3) to (5),anannunciator shallbe instaled inclose proximity toa building entrance that faces a stret or an access route for fire department vehicles that complies with Sentence 3.2.5.5.(1).
 
@@ -1720,7 +1722,7 @@ the actuation of the alarm initiating devices in each
 
 (9)In along-term care home,aremote audiovisual fire alarm trouble signal shall be located at the main nursing station.
 
-#### 3.2.4.9. Electrical Supervision
+##### 3.2.4.9. Electrical Supervision
 
 (1)Electrical supervision shall be provided for a fire alarm system.
 
@@ -1744,7 +1746,7 @@ the actuation of the alarm initiating devices in each
 
 (6)Indication of a supervisory signal in accordance with Sentences (3)and (5) shall be transmitted to the fire department in conformance with Sentence 3.2.4.7.(4).
 
-#### 3.2.4.10. Fire Detectors
+##### 3.2.4.10. Fire Detectors
 
 (1)Fire detectors required by this Code shall be connected to the fire alarm system.
 
@@ -1758,7 +1760,7 @@ the actuation of the alarm initiating devices in each
 (g) hazardous classrooms and change rooms in elementary or secondary schools.   
 (3) Fire detectors required by Sentence (2) need not be provided within floor areas that are sprinklered. (4)Fire detectors required by Sentence (2)shall be installed in elevator hoistways and dumbwaiter shafts where a sprinkler system is not installed within the hoistway or shaft.
 
-#### 3.2.4.11. Smoke and Heat Detectors
+##### 3.2.4.11. Smoke and Heat Detectors
 
 (1) If a fire alarm system is installed, smoke detectors shall be installed in   
 (a) each sleeping room and each corridor serving as part of a means of egressfrom sleeping rooms in portions of a building classified as Group B major occupancy,   
@@ -1782,7 +1784,7 @@ the actuation of the alarm initiating devices in each
 
 (7)Smoke detectors required by Sentence (5) may be replaced with fire detectors in Group F occupancies where the smoke detectors may be subjected to false alarms due to the activities within the building.
 
-#### 3.2.4.12. Prevention of Smoke Circulation
+##### 3.2.4.12. Prevention of Smoke Circulation
 
 (1)Ifafire alarm system is installed,an air-handling systemshall bedesigned to prevent the circulationofsmoke upon a signal from a duct-type smoke detector if the air handling system
 
@@ -1790,11 +1792,11 @@ the actuation of the alarm initiating devices in each
 (b) serves more than one suite in a storey, serves more than one fire compartment required by Sentence 3.3.3.5.(2) or Sentence 3.3.4.11.(2), or   
 (d) is not provided with fre dampers as permitted by Sentence 3.1.8.8.(4).
 
-#### 3.2.4.13. Vacuum Cleaning System Shutdown
+##### 3.2.4.13. Vacuum Cleaning System Shutdown
 
 (1) A central vacuum cleaning system serving more than one suite or storey in a building equipped with a fire alarm system shallbe designed to shut down upon actuation of the fire alarm system.
 
-#### 3.2.4.14. Elevator Emergency Return
+##### 3.2.4.14. Elevator Emergency Return
 
 (1)Except as permitted by Sentence (3),in a building having elevators that serve storeys above the first storey and that are equipped withanautomatic emergency recall feature,smoke detectors shallbe installed in te elevatorlobbies on the recallevel sothat whenthese smoke detectors areactuated,the elevators willautomaticallyreturn directlytoanalternate floor level.
 
@@ -1802,7 +1804,7 @@ the actuation of the alarm initiating devices in each
 
 (3)The alternate floorrecallfeature required by Sentence (1) is notrequired if the floor area containing the recallevel is sprinklered throughout.
 
-#### 3.2.4.15. System Monitoring
+##### 3.2.4.15. System Monitoring
 
 (1)An automatic sprinkler system shallbe equipped with waterflow detecting devices and,if anannunciator is required by Article 3.2.4.8., shall be installed so that each device serves   
 (a) not more than one storey,and   
@@ -1810,7 +1812,7 @@ the actuation of the alarm initiating devices in each
 (2)Waterflow detecting devices required by Sentence (1) shallbe connected to the fire alarm system so that, upon its actuation, an alert signal or an alarm signal is initiated.   
 (3)The actuation of each waterflow detecting device required by Sentence (1) shallbe indicated separatelyon the fire alarm system annunciator.
 
-#### 3.2.4.16. Manual Stations
+##### 3.2.4.16. Manual Stations
 
 (1)Except as permited by Sentences (2)and(3), where a fire alarm system is installed,a manual station shall be installed in every floor area near   
 (a)every principal entrance to the building,and   
@@ -1837,7 +1839,7 @@ station is not installed on a floor area in accordance with Sentence (1) or (4),
 
 (9) Key switch activated manual stations are permited in an impeded egres zone and a contained use area in Group B, Division 1 and 2 occupancies.
 
-#### 3.2.4.17. Alert and Alarm Signals
+##### 3.2.4.17. Alert and Alarm Signals
 
 (1)In a 2-stage fire alarm system described in Sentence 3.2.4.4.(2),thesame audible signaldevices are permitted tobe used to sound the alert signals and the alarm signals.
 
@@ -1845,7 +1847,7 @@ station is not installed on a floor area in accordance with Sentence (1) or (4),
 
 (3) Audible signal devices forming part ofa fire alarm or voicecommunication system shallnot be used for playing music or background noise.
 
-#### 3.2.4.18. Audibility of Alarm Systems (See Note A-3.2.4.18.)
+##### 3.2.4.18. Audibility of Alarm Systems (See Note A-3.2.4.18.)
 
 (1)Except as permited by Sentence 3.2.4.19.(2)and except as required by Clause 3.2.4.4.(2)(d),audible signal devices forming part of a fire alarm system shall be installed in a building so that
 
@@ -1899,7 +1901,7 @@ includes a provision for the automatic signal silence within dwelling units, whe
 
 (13) Ifa 2-stage fire alarm system has been installed with an automatic signal silence as described in Sentence(12), the system shall be designed so that any silenced audible signal devices serving dweling units are reactuated whenever an alarm signal is required to be transmitted as part of the second stage. (See Note A-3.2.4.18.(8))
 
-#### 3.2.4.19. Visible Signals
+##### 3.2.4.19. Visible Signals
 
 (1)Except as permitted by Sentence (4), where a fire alarm system is installed, visible signal devices shall be installed in addition to alarm signal devices
 
@@ -1920,7 +1922,7 @@ includes a provision for the automatic signal silence within dwelling units, whe
 (a) a classroom, and   
 (b) a Group B, Division 3 occupancy that contains sleeping accommodation for not more than 10 persons and not more than six occupants require assstance in evacuation in case of an emergency.
 
-#### 3.2.4.20. Smoke Alarms
+##### 3.2.4.20. Smoke Alarms
 
 (1)Except as provided in Article 3.2.4.21.,smoke alarms shallbe installed in accordance with this Article.
 
@@ -1975,7 +1977,7 @@ includes a provision for the automatic signal silence within dwelling units, whe
 
 (20) Smoke alarms required in suites inaretirement home orsmoke detectors permited tobe installed in lieuofsmoke alarms as provided in Sentence(10)shallupon actuation provide an audible and visual signal to staffserving those suites, so that the suite containing the actuated smoke alarm or smoke detector can be easily identified.
 
-#### 3.2.4.21. Residential Fire Warning Systems
+##### 3.2.4.21. Residential Fire Warning Systems
 
 (1)Except where afire alarm system is installedor required ina building,smoke detectors forming partof aresidential fire warning system instaled inconformance with CAN/ULC-S540,“Standard for Residential Fire and Life Safety Warning Systems: Installtion,Inspection,Testing and Maintenance,”are permited tobe installedinlieuofalsmoke alarms required by Article 3.2.4.20., provided that the system is   
 (a) capable of sounding audible signals in accordance with Sentences 3.2.4.20.(12) and (16),   
@@ -1983,7 +1985,7 @@ includes a provision for the automatic signal silence within dwelling units, whe
 (c) powered in accordance with Sentence 3.2.4.20.(9), and   
 (d) provided with a silencing device in accordance with Sentences 3.2.4.20.(14) and (15).
 
-#### 3.2.4.22. Two-Way Voice Communication Systems
+##### 3.2.4.22. Two-Way Voice Communication Systems
 
 (1) A voice communication system required by Subsection 3.2.6., Clause 3.3.2.4.(14)(f) or Sentence 3.3.4.11(12) shall   
 (a) consist of a two-way means of communication with the central alarm and control facility and to the mechanical control centre from each floor area, and   
@@ -2001,7 +2003,7 @@ includes a provision for the automatic signal silence within dwelling units, whe
 (6)Visible signal devices required by Sentence 3.2.4.19.(1) shallcontinue to emit a visible signal while voice instructions are being transmitted.   
 (7)Where the facility is not equipped with staff rained to provide instructions over the loudspeakers,a pre-recorded message shall be provided.
 
-#### 3.2.4.23. One-Way Voice Communication Systems
+##### 3.2.4.23. One-Way Voice Communication Systems
 
 (1)Except for Group B,Division1 and GroupF,Division1 major occupancies, where a fire alarm system is equired under Subsection 3.2.4.,a one-way voice communication system shallbe installed in buildings wherea 2-stage fire alarm system is installed and whose occupant load exceeds 1 000.
 
@@ -2013,9 +2015,9 @@ message shall be provided.
 (4)The voice communication system required by Sentence (1)shall meet the silecing and transmision requirements 0   
 Sentences 3.2.4.22.(2) to (4) and (6).
 
-### 3.2.5.Provisions for Firefighting (See Note A-3)
+#### 3.2.5. Provisions for Firefighting (See Note A-3)
 
-#### 3.2.5.1. Access to Above Grade Storeys
+##### 3.2.5.1. Access to Above Grade Storeys
 
 (1)Except for storeys belowthe first storey,directaccessfor firefighting shallbe provided from the outdoors to every storey that is not sprinklered throughout and whose floor level is less than $2 5 { \mathrm { m } }$ above grade, by at least one unobstructed window or access panel for each $1 5 \mathrm { m }$ of wall in each wall required to face a street by Subsection 3.2.2.
 
@@ -2025,7 +2027,7 @@ Sentences 3.2.4.22.(2) to (4) and (6).
 
 (3)Access panels above the frst storey shallbe readily openable fromboth inside and outside,or the opening shallbe glazed with plain glass.
 
-#### 3.2.5.2. Access to Basements
+##### 3.2.5.2. Access to Basements
 
 (1)Direct accessfrom at least one street shallbe provided from the outdoors ina building that is not sprinklered to each basement having a horizontal dimension more than ${ 2 5 } \mathrm { m }$
 
@@ -2033,7 +2035,7 @@ Sentences 3.2.4.22.(2) to (4) and (6).
 (a) doors, windows or other means that provide an opening not less than $1 \ 1 0 0 \ \mathrm { m m }$ high and $5 5 0 \mathrm { m m }$ wide, with a sill no higher than $9 0 0 \mathrm { m m }$ above the inside floor, or   
 (b) an interior stairway immediately accessible from the outdoors.
 
-#### 3.2.5.3. Roof Access
+##### 3.2.5.3. Roof Access
 
 (1)Ona building more than3 storeys in building height where the slope of the roofis lessthanl in4,all main roof areas shallbe provided with direct access from the floor areas immediately below, either by
 
@@ -2043,13 +2045,13 @@ Sentences 3.2.4.22.(2) to (4) and (6).
 (a) a passage not less than $9 0 0 \mathrm { m m }$ wide by $1 8 0 0 \mathrm { m m }$ high, clear of all obstructions except for necessary horizontal supports not more than $6 0 0 \mathrm { m m }$ above the roof surface, (i)around every roof sign, and (ii) through every roof sign at locations not more than $1 5 ~ \mathrm { m }$ apart, and   
 (b) a clearance of not less than $1 2 0 0 \mathrm { m m }$ between any portion of a roof sign and any opening in the exterior wall face or roof of the building in which it is erected.
 
-#### 3.2.5.4. Access Routes
+##### 3.2.5.4. Access Routes
 
 (1) A building which is more than 3 storeys in building height or more than $6 0 0 \mathrm { m } ^ { 2 }$ in building area shall be provided with access routes for fire department vehicles   
 (a)to the building face having a principal entrance, and   
 (b)to each building face having access openings for firefighting as required by Articles 3.2.5.1.and 3.2.5.2. (See Note A-3.2.5.4.(1))
 
-#### 3.2.5.5. Location of Access Routes
+##### 3.2.5.5. Location of Access Routes
 
 (1)Access routes required by Article 3.2.5.4.shallbe located so that the principal entranceand every access opening required by Articles 3.2.5.1.and 3.2.5.2.are located not less than $3 \mathrm { m }$ and not more than $1 5 \mathrm { m }$ from the closest portion of the access route required for fire department use, measured horizontally from the face ofthe building.
 
@@ -2062,7 +2064,7 @@ Sentences 3.2.4.22.(2) to (4) and (6).
 
 (4)Ifa portion ofa building is completelycutoffrom the remainder ofthe building so that there is no accesst the remainder ofthe building,the access routes required by Sentence (2)shallbe located so that the unobstructed path of travel from the vehicle to one entrance of each portion of the building is not more than $4 5 \mathrm { m }$
 
-#### 3.2.5.6. Access Route Design
+##### 3.2.5.6. Access Route Design
 
 (1)A portion of a roadway or yard provided as a required access route for fire department use shall (a)have a clear width not less than $6 \mathrm { m }$ , unless it can be shown that lesser widths are satisfactory,
 
@@ -2076,11 +2078,11 @@ Sentences 3.2.4.22.(2) to (4) and (6).
 
 (2)For buildings conformingto Article3.2.2.51.or 3.2.2.60., no portionofthe access route described in Sentence 3.2.2.10.(3) shall be more than $2 0 \mathrm { m }$ below the uppermost floor level.
 
-#### 3.2.5.7. Water Supply (See Note A-3.2.5.7.)
+##### 3.2.5.7. Water Supply (See Note A-3.2.5.7.)
 
 (1)Every building shallbe provided with an adequate water supply for firefighting.
 
-#### 3.2.5.8. Standpipe Systems
+##### 3.2.5.8. Standpipe Systems
 
 (1) Except as permitted by Sentence (2), a standpipe system shall be installed in a building that is   
 (a) more than 3 storeys in building height,   
@@ -2100,7 +2102,7 @@ Table 3.2.5.8. Building Limits without Standpipe Systems Forming Part of Sentenc
 
 (d)that conforms to the requirements of Article 3.2.2.50.or Article 3.2.2.52.
 
-#### 3.2.5.9. Standpipe System Design
+##### 3.2.5.9. Standpipe System Design
 
 (1)Except as provided in Sentences (2)to (5),Articles 3.2.5.10.and 3.2.5.11.,and Sentence 3.2.4.9.(2), the design, construction,installtion and testing ofa standpipe system shallconform to NFPA14,“Standard forthe Installation of Standpipe and Hose Systems.”
 
@@ -2114,7 +2116,7 @@ required to be installed in a building is permitted to be less than $6 9 0 \math
 (c) fire protection equipment is available to deliver,by means of the firedepartment connection,the fulldemand flow rate at a residual water pressure of $6 9 0 \mathrm { k P a }$ at the topmost hose connection of the standpipe system. (See Note A3.2.5.9.(4)(c))   
 (5) A fire department connection shall be provided for every standpipe system.
 
-#### 3.2.5.10. Hose Connections
+##### 3.2.5.10. Hose Connections
 
 (1)Hose connectionsshallbe located in exits,in acordance with NFPA14,“Standard for the Instalationof Standpipe and Hose Systems.”
 
@@ -2122,7 +2124,7 @@ required to be installed in a building is permitted to be less than $6 9 0 \math
 (3) Hose connections shallbe provided with sufficient clearance to permit the use of a standard fire department hose key.   
 (4) Except as permitted by Sentence (5), $6 4 \mathrm { m m }$ diam hose connections shall be installed in a standpipe system. (5)Hose connections for $6 4 \mathrm { m m }$ diam hose are not required in a building that is not more than $2 5 ~ \mathrm { m }$ high, measured between grade and the ceiling level of the top storey and in which an automatic sprinkler system is not installed.
 
-#### 3.2.5.11. Hose Stations
+##### 3.2.5.11. Hose Stations
 
 (1) Hose stations for $3 8 \mathrm { m m }$ diam hose shallbe installed for a standpipe system in a building that is not sprinklered throughout.   
 (2)Hose stations for a $3 8 \mathrm { m m }$ diam hose shallbe installed for a standpipe system within every floor area that is not sprinklered throughout. (See Note A-3.2.5.11.(2))   
@@ -2134,7 +2136,7 @@ required to be installed in a building is permitted to be less than $6 9 0 \math
 
 (7)Where a hose station is provided in grain handling and storage facilities in which combustible dusts are produced in quantities or concentrations that create an explosion orfire hazard,fog and fine spray nozzles shallbe used insteadof nozzles that discharge a solid stream of water to prevent combustible dusts from being raised into suspension.
 
-#### 3.2.5.12. Automatic Sprinkler Systems
+##### 3.2.5.12. Automatic Sprinkler Systems
 
 (1)Except as provided by Sentences (2)to (4)and(9),an automatic sprinkler system shallbe designed, constructed, installed and tested in conformance with NFPA13,"Standard for the Installation of Sprinkler Systems.”(See Note A3.2.5.12.(1))
 
@@ -2177,7 +2179,7 @@ i except for a secondary suite, no dwelling unit is located above another dwelli
 
 (10) The sprinkler system described in Sentence (3) shall be provided with a minimum $2 0 \mathrm { { m i n } }$ water supply when installed in a retirement home.
 
-#### 3.2.5.13. Combustible Sprinkler Piping
+##### 3.2.5.13. Combustible Sprinkler Piping
 
 (1)Combustible sprinkler piping shallbe used only for sprinkler systems in residential occupancies and other lighthazard occupancies. (See Note A-3.2.5.13.(1))
 
@@ -2194,7 +2196,7 @@ sprinkler system,and from any other fire compartment,byceilings, wals,or sofits 
 
 (5)Where combustible sprinkler piping has been tested in conformance with ULC/ORD-C199P,"Combustible Piping for Sprinkler Systems,”and has been shown to meethe requirements therein without additional protection,conformance to Sentences (3) and (4) is not required.
 
-#### 3.2.5.14. Sprinklered Service Space
+##### 3.2.5.14. Sprinklered Service Space
 
 (1)An automatic sprinkler system shall be installed ina service spacereferredto inSentence 3.2.1.1.(8)ifflooring for access within the service space is other than catwalks.
 
@@ -2211,12 +2213,12 @@ room
 (@) if all ofthis space is easily accessible by providing accesssections or panels in the raised floor, and   
 (e) if the computer room is more than $2 0 0 0 { \mathrm { m } } ^ { 2 }$ and the annunciator has separate zone indicators of the actuation of smoke detectors located in this space so that the coverage for each zone is not more than $2 0 0 0 \mathrm { m } ^ { 2 }$
 
-#### 3.2.5.15. Fire Department Connections
+##### 3.2.5.15. Fire Department Connections
 
 (1)The fire department connection for a standpipe system shallbe located so that the distance from the fire department connection to a hydrant is not more than $4 5 \mathrm { m }$ and is unobstructed.   
 (2)The fire department connection for anautomatic sprinkler system shallbe located so that the distance from the fire department connection to a hydrant is not more than $4 5 \mathrm { m }$ and is unobstructed.
 
-#### 3.2.5.16. Portable Fire Extinguishers
+##### 3.2.5.16. Portable Fire Extinguishers
 
 (1)Portable extinguishersshall beprovidedand installed inallbuildings, except within dwelling units,inconforance with the provisions of Division B ofthe Fire Code made under the Fire Protection and Prevention Act, 1997.
 
@@ -2224,18 +2226,18 @@ room
 (a)identical keys for all cabinets are located at all supervisory or security stations, or   
 (b) electrical remote release devices are provided and are connected to an emergency power supply.
 
-#### 3.2.5.17. Protection from Freezing
+##### 3.2.5.17. Protection from Freezing
 
 (1)Equipment forming part of a fire protection system shall be protected from freezing if (a)it could be adversely affected by freezing temperatures, and   
 (b)it is located in an unheated area.
 
-#### 3.2.5.18. Fire Pumps
+##### 3.2.5.18. Fire Pumps
 
 (1)Ifafire pump is installed, it shallbe instaled in accordance with therequirements ofNFPA 20,“Standard for the Installation of Stationary Pumps for Fire Protection.” (See Note A-3.2.5.18.(1))
 
-### 3.2.6.Additional Requirements for High Buildings (See Note A-3.2.6.)
+#### 3.2.6. Additional Requirements for High Buildings (See Note A-3.2.6.)
 
-#### 3.2.6.1. Application
+##### 3.2.6.1. Application
 
 (1)Except as provided in Sentence (2), this Subsection applies to a building (a) of Group A, D, E or F major occupancy classification that is more than i $3 6 \mathrm { m }$ high, measured between grade and the floor level of the top storey, or (ii)) $1 8 \mathrm { m }$ high, measured between grade and the floor level of the top storey,and in which the cumulative or total occupant load on or above any storey above grade,other than the first storey,divided by 1.8 times the width in metres of all exit stairs at that storey, exceeds 300,
 
@@ -2246,7 +2248,7 @@ room
 
 (2)Exceptas required by Clause 3.2.6.1.(1)(c), this Subsection applies to a building or part thereof constructed in conformance with Article 3.2.2.57.or 3.2.2.93.in which the floor level of the highest storey is more than $1 8 ~ \mathrm { m }$ above grade.
 
-#### 3.2.6.2. Limits to Smoke Movement
+##### 3.2.6.2. Limits to Smoke Movement
 
 (1)A sprinklered building shall be designed in accordance with Sentences (2)to (6) and MMAH Supplementary Standard SB-4,"Measures forFire Safety in High Buildings,”to limit the danger to occupants and firefighters from exposure to smoke in a building fire.
 
@@ -2266,11 +2268,11 @@ of the stair shaft, that
 
 (7)A building that is not sprinklered shallbe designed in accordance with MMAH Supplementary Standard SB-4, “Measures forFire Safetyin High Buildings,”to limit the danger to occupants andfirefighters from exposure to smoke in a building fire.
 
-#### 3.2.6.3. Connected Buildings
+##### 3.2.6.3. Connected Buildings
 
 (1)Ifa building described in Article 3.2.6.1. is connected to any other building, measures shallbe taken to limit movement of contaminated air from one building into another during a fire. (See Note A-3.2.6.3.(1))
 
-#### 3.2.6.4. Emergency Operation of Elevators
+##### 3.2.6.4. Emergency Operation of Elevators
 
 (1)Manual emergency recall shallbe provided for all elevators serving storeys above the first storey.
 
@@ -2289,7 +2291,7 @@ of the stair shaft, that
 
 (7)Smoke detectors in Sentence (6) shallbe designed as part of the building fire alarm system.
 
-#### 3.2.6.5. Elevator for Use by Firefighters
+##### 3.2.6.5. Elevator for Use by Firefighters
 
 (1)At least one elevator shallbe provided for use by firefighters in conformance with Sentences (2) to (6).
 
@@ -2309,7 +2311,7 @@ is used,each elevator for use by firefighters shall
 (a) be installed in service spaces conforming to Section 3.6.that do not contain other combustible material, or   
 (b) conform to CAN/ULC-S139,“Standard for Fire Test for Circuit Integrity ofFire-Resistive Power, Instrumentation, Control and Data Cables,”including the hose stream application,to provide a circuit integrity rating of not less than 1 h. (See Note A-3.2.6.5.(6)(b))
 
-#### 3.2.6.6. Venting to Aid Firefighting
+##### 3.2.6.6. Venting to Aid Firefighting
 
 (1)Means ofventing each floor area to theoutdoorsshall be provided by windows, wall panels,smoke shafts or,except as provided by Sentence (5), the building exhaust system.
 
@@ -2318,7 +2320,7 @@ is used,each elevator for use by firefighters shall
 (4)Elevator hoistways shallnot be designed for the venting required by Sentence (1).   
 (5)Ina building that is not sprinklered,venting offloor areas required in Sentence (1) shallnotbe provided by the building exhaust system.
 
-#### 3.2.6.7. Central Alarm and Control Facility
+##### 3.2.6.7. Central Alarm and Control Facility
 
 (1)A central alarm and control facility shallbe provided on the storey containing the entrance forfirefighter access referred to in Articles 3.2.5.4.and 3.2.5.5. in a location that
 
@@ -2336,20 +2338,20 @@ is used,each elevator for use by firefighters shall
 
 (g) means to manually actuate alarm signals in the building selectively to any zone or zones, (h)means to silence the alarm signals referred to in Clause (g) in conformance with Sentences 3.2.4.22.(2)and (3), i)means, as appropriate to the measure for fire safety provided in the building, to (i)actuate auxiliary equipment identified in Articles 3.2.6.2., 3.2.6.3.and 3.2.6.( (ii) communicate with a continually staffed auxiliary equipment control centre, )means for two-way communications with every elevator car, (mean to indicate audiblyand visualy,sprinklerand standpipe system supervisory signals andtrouble signals, (n)visual indication that the audible portion of a supervisory signal or a trouble signal has been silenced.
 
-#### 3.2.6.8. Voice Communication System
+##### 3.2.6.8. Voice Communication System
 
 (1) A voice communication system conforming to Article 3.2.4.22. shall be provided in a building if   
 (a) the floor of the top storey is more than $3 6 \mathrm { m }$ above grade,   
 (b) afloor area or part ofafloor area located above the third storey is designed or intended for use as a Group B, Division 2 or 3 occupancy, or   
 (c) afloor area or part of a floor area located more than $1 8 \mathrm { m }$ above grade is designed or intended for use as a retirement home regulated under the Retirement Homes Act, 2010 that is a Group C occupancy.
 
-#### 3.2.6.9. Testing
+##### 3.2.6.9. Testing
 
 (1)The systems for control ofsmoke movement and mechanical venting required byArticles3.2.6.2.and 3.2.6.6.shall be tested to ensure satisfactory operation in accordance with the procedures described in MMAH Supplementary Standard SB-4,“Measures for Fire Safety in High Buildings.”
 
-### 3.2.7. Lighting and Emergency Power Systems
+#### 3.2.7. Lighting and Emergency Power Systems
 
-#### 3.2.7.1. Minimum Lighting Requirements
+##### 3.2.7.1. Minimum Lighting Requirements
 
 (1)An exit,a public corridor,acorridor providing access to exit forthe public,acorridor serving patients orresidents ina Group B,Division2or3occupancy,acoridorsrvingclassrooms,anlectricalequipment room,atransforervault and a hoistway pit shall be equipped to provide illumination to an average level not less than $5 0 \mathrm { l x }$ at floor or tread level and at all points such as angles and intersections at changes of level where there are stairs or ramps.
 
@@ -2365,15 +2367,15 @@ is used,each elevator for use by firefighters shall
 
 (12) Every storage room, dressing room,sanitary facility,service area and corridor serving the areas in Sentence (11) shall be equipped to provide illumination to a level of not less than $3 0 0 1 \mathrm { x }$ measured at the floor level.
 
-#### 3.2.7.2. Recessed Lighting Fixtures
+##### 3.2.7.2. Recessed Lighting Fixtures
 
 (1)A recessed lighting fixture shallnot belocated in an insulated ceiling unless the fixture is designed forthis typeof installation.
 
-#### 3.2.7.3. Emergency Lighting
+##### 3.2.7.3. Emergency Lighting
 
 (1) Emergency lighting shall be provided to an average level of illumination not less than $1 0 1 \mathrm { x }$ at floor or tread level in (@) exits, (b) principal routes providing access to exit in open floor areas and in service rooms, (c) corridors used by the public, (d) cordors serving patients’ or residents’ sleeping rooms in a Group B, Division 2 or3 occupancy, (e) reserved, (f) corridors serving classrooms, (g) underground walkways, (h) public corridors, (i) floor areas or parts of thereof where the public may congregate (i) in Group A, Division 1 occupancies, or (ii) in Group A,Divisions 2 and 3 occupancies having an occupant load of 60 or more, i floor areas or parts of thereof in day care centres where persons are cared for, (k) food preparation areas in commercial kitchens, (1) washrooms with fixtures for public use, (m) locations where doors are equipped with an electromagnetic lock as described in Clauses 3.4.6.16.(5)(k), (n) universal washrooms required by Article 3.8.3.12.and universal shower rooms required by Article 3.8.3.13., (0) principal routes providing accessto exit in afloor area that is not subdivided into rooms or suites ofrooms served by corridors in a business and personal services occupancy,a mercantile occupancy or an industrial occupancy,and (p) internal corridors or aisles serving as principal routes to exits in a business and personal services occupancy, a mercantile occupancy or an industrial occupancy that is subdivided into rooms or suites ofrooms,and is not served by a public corridor. (2)Emergency lighting to provide an average level of illumination of not less than $1 0 1 \mathrm { x }$ at floor or catwalk level shall be included (a) in a service space referred to in Sentence 3.2.1.1.(8), and (b) on a shelf and rack storage system,in locations described in Sentence 3.16.1.5.(2). (3) The minimum value of the illumination required by Sentences (1) and (2) shall not be less than 1 lx. (4)In addition to therequirements of Sentences (1) to (3), the installtionofbattry-operated emergencylighting in health care facilities shall conform to theappropriate requirements ofCSA Z32,“Electricalsafety and essential electrical systems in health care facilities." 3.2.7.4. Emergency Power for Lighting
 
-#### 3.2.7.4 Emergency Power for Lighting
+##### 3.2.7.4 Emergency Power for Lighting
 
 (1) An emergency power supply shall be   
 (a) provided to maintain the emergency lighting required by this Subsection from a power source such as battries or generators that will continue to supply power in the event that the regular power supply to the building is interrupted, and   
@@ -2383,23 +2385,23 @@ is used,each elevator for use by firefighters shall
 
 (2)If self-contained emergency lighting units are used,they shallconform to CSA C22.2 No.141,"Emergency lightig equipment.”
 
-#### 3.2.7.5. Emergency Power Supply Installation
+##### 3.2.7.5. Emergency Power Supply Installation
 
 (1)Except as required by Articles 3.2.7.6.and3.2.7.7.,an emergency electrical power supply system shal be installed in conformance with CSA C282,"Emergency electrical power supply for buildings.” (See Sentence 3.2.7.8.(1) for emergency electrical power supply for voice communication systems.)
 
 (2)Every emergency power supply shallbe equipped with an emergency audible and visual trouble indication.
 
-#### 3.2.7.6. Emergency Power for Hospitals
+##### 3.2.7.6. Emergency Power for Hospitals
 
 (1)Except as required by Article 3.2.7.7., an emergency electrical power supply system for emergency equipment required by this Part for health care facilities shallbe installed in conformance with CSA Z32,“Electrical safety and essential electrical systems in health care facilities.” (See Note A-3.2.7.6.(1))
 
-#### 3.2.7.7. Fuel Supply Shut-Off Valves and Exhaust Pipes
+##### 3.2.7.7. Fuel Supply Shut-Off Valves and Exhaust Pipes
 
 (1)Ifaliquid or gas fuel-fired engine or turbine for an emergency electric power supply is dependent on a fuel supply from outside thebuilding,the fuelsupply shallbe provided with a suitably-identified separate shut-off valveoutside the building.
 
 (2) Where pipes for exhaust gases from emergency power systems penetrate required fre separations,they shall be enclosed in aseparate service space having afire-resistance rating equal to that of the penetrated floor assemblybutnot less than $4 5 ~ \mathrm { { m i n } }$
 
-#### 3.2.7.8. Emergency Power for Fire Alarm Systems
+##### 3.2.7.8. Emergency Power for Fire Alarm Systems
 
 (1)Fire alarm systems, including those incorporating a voice communication system, shallbe provided with an emergency power supply conforming to Sentences (2) to (4).
 
@@ -2414,7 +2416,7 @@ is used,each elevator for use by firefighters shall
 
 (4)The emergency power supply required by Sentence (1)shallbe designed so that, in the event of a failure of the normal power source,there is an immediate automatic transfer to emergency power with no loss of information.
 
-#### 3.2.7.9. Emergency Power for Building Services
+##### 3.2.7.9. Emergency Power for Building Services
 
 (1)An emergency power supply capable of operating under a fulload for not less than $^ { 2 \mathrm { h } }$ shall be provided by an emergency generator for
 
@@ -2433,7 +2435,7 @@ is used,each elevator for use by firefighters shall
 
 (4)The emergency power supply required by Clause (1)(b)for the equipment that supplies water for fire suppression need not be provided for sprinkler systems conforming to NFPA13D,"Standard forthe Installtionof Sprinkler Systems in One- and Two-Family Dwellings and Manufactured Homes."
 
-#### 3.2.7.10. Protection of Electrical Conductors
+##### 3.2.7.10. Protection of Electrical Conductors
 
 (1)The protection of electrical and emergency conductors referred to in Clauses (a) to (c) shallconform to the requirements stated in Sentences (2) to (11):
 
@@ -2468,9 +2470,9 @@ extend from the source of emergency power to
 
 (11) Conductors leading from a distribution panel to emergency lighting units located on other storeys shallbe protected in accordance with Sentence (2)between the distributionpaneland the floor area where the emergency lighting units are located.
 
-### 3.2.8. Mezzanines and Openings Through Floor Assemblies
+#### 3.2.8. Mezzanines and Openings Through Floor Assemblies
 
-#### 3.2.8.1. Application
+##### 3.2.8.1. Application
 
 (1)Except as permittedby Article3.2.8.2.and Sentence3.3.4.2.(3), the portions ofa floor area or a mezznine that do not terminate at an exterior wall, a firewall or a vertical shaft shall
 
@@ -2480,7 +2482,7 @@ extend from the source of emergency power to
 
 (3) A floor area containing sleeping rooms in a building of Group B,Division 2 major occupancy shallnot be constructed as part of an interconnected floor space.
 
-#### 3.2.8.2. Exceptions to Special Protection
+##### 3.2.8.2. Exceptions to Special Protection
 
 (1)A mezzanine need not terminate ata verticalfire separation nor be protected in conformance with the requirements   
 of Articles 3.2.8.3. to 3.2.8.8. provided the mezzanine   
@@ -2504,13 +2506,13 @@ of Articles 3.2.8.3. to 3.2.8.8. provided the mezzanine
 
 e2 (6) An interconnected floor space need not conform to the requirements of Articles 3.2.8.3.to 3.2.8.8. provided (a) it consists of the first storey and the storey next above or below it, but not both, (b) it is sprinklered throughout or, where the building area is not more than one-half of the area permitted by Subsection 3.2.2., the openings through the floor are used only for stairways, escalators or moving walks,and (See Note A-3.2.8.2.(6)(b)) (c)it contains only Group A,Division 1,2 or 3,GroupD, Group E,or GroupF,Division 2 or3 majoroccupancies. (See Note A-3.2.8.2.(6)(c))
 
-#### 3.2.8.3. Sprinklers
+##### 3.2.8.3. Sprinklers
 
 (1) A building containing an interconnected floor space shall be sprinklered throughout.
 
 (2)Except for large floor openings as defined in NFPA13,“Standard for the Instalation of Sprinkler Systems,”closely spaced sprinklers and associated draft stops shallbe installed around floor openings in conformance with NFPA 13.
 
-#### 3.2.8.4. Vestibules
+##### 3.2.8.4. Vestibules
 
 (1)Anexit opening intoan interconnected floor space shall be protected at each opening into the interconnected floor space by a vestibule
 
@@ -2522,36 +2524,36 @@ e2 (6) An interconnected floor space need not conform to the requirements of Art
 
 (3)If an elevator hoistway opens into an interconnected floor space and into storeys above the interconnected floor space,eithertheelevator doors opening into the interconnectedfloor space orthe elevatordoors opening intothe storeys above the interconnected floor space shall be protected by vestibules conforming to Sentence (1).
 
-#### 3.2.8.5. Protected Floor Space
+##### 3.2.8.5. Protected Floor Space
 
 (1) A protected floor space used to satisfy the requirements of Clause 3.4.3.2.(6)(b) shall   
 (a) be separated from the interconnected floor space by afire separation having a fire-resistance rating not less than that required for the floor assembly of the storey in which it is located,   
 (b) have all openings in the vertical fire separation between a protected floor space and the adjacent interconnected floor space protected by vestibules conforming to Sentence 3.2.8.4.(1), and   
 (c) be designed so that it is not necessary to enter the interconnected floor space to reach an exit.
 
-#### 3.2.8.6. Draft Stops
+##### 3.2.8.6. Draft Stops
 
 (1)A draft stop shallbe provided at each floor level within an interconnected floor space,immediately adjacent to and surrounding the opening,and shall be not less than $5 0 0 \mathrm { m m }$ deep measured from ceiling level down to the underside of the draft stop.
 
-#### 3.2.8.7. Mechanical Exhaust System
+##### 3.2.8.7. Mechanical Exhaust System
 
 (1) A mechanical exhaust system shallbe provided to remove air from an interconnected floor space at arate of 4 air changes per hour. (See Note A-3.2.8.7.(1))
 
 (2)The mechanical exhaust system required by Sentence (1)shallbe actuated by a switch located on the storey containng the entrance forfirefighter accessreferred to inArticles3.2.5.4.and3.2.5.5.near the annunciatorforthe fire alarm system.
 
-#### 3.2.8.8. Combustible Content Limits
+##### 3.2.8.8. Combustible Content Limits
 
 (1)An interconnected floor space shallbe designed so thatthecombustible contents,excluding interior finishes,in those parts of a floor area in which the ceiling is more than $8 \mathrm { m }$ above the floor, are limited to not more than $1 6 \mathrm { g }$ of combustible material for each cubic metre of volume of the interconnected floor space.
 
-### 3.2.9. Testing of Integrated Fire Protection and Life Safety Systems
+#### 3.2.9. Testing of Integrated Fire Protection and Life Safety Systems
 
-#### 3.2.9.1. Testing
+##### 3.2.9.1. Testing
 
 (1)Where fire protection and life safety systems, and systems with fire protection and life safety functions, are integrated with each other,the systems shall be tested as a whole in accordance with CAN/ULC-S1O0l,“Standard for Integrated Systems Testing ofFire Protection and Life Safety Systems”,to verifythat they have been properly integrated. (See Note A-3.2.9.1.(1))
 
-### Division A Compliance, Objectives and Functional Statements
+# Division A Compliance, Objectives and Functional Statements
 
-#### Part 1 Compliance
+## Part 1 Compliance
 
 1.1. General   
 1.1.1. Applicatio. .f. th.s .d. 3   
@@ -2571,9 +2573,7 @@ Organizations
 1.5.1. Referenced Documents.. 33   
 1.5.2. Organizations.. 34
 
-#### Part 1 Compliance
-
-#### Section 1.1 General
+### Section 1.1 General
 
 #### 1.1.1. Application of this Code
 
@@ -2581,11 +2581,11 @@ Organizations
 
 e1 (1) This Code applies to the construction, demolition, change of use and occupancy of buildings. (2)This Code applies to both site-built and factory-constructed buildings. (See Note A-1.1.1.1.(2))
 
-#### Section 1.2. Compliance
+### Section 1.2. Compliance
 
 #### 1.2.1. Compliance with this Code
 
-#### 1.2.1.1. Compliance with this Code
+##### 1.2.1.1. Compliance with this Code
 
 (1) Compliance with this Code shall be achieved by   
 (a) complying with the applicable acceptable solutions in Division B (See Note A-1.2.1.1.(1)(a)), or   
@@ -2593,19 +2593,19 @@ e1 (1) This Code applies to the construction, demolition, change of use and occu
 
 (2)For the purposes ofClause (1)(b), the level of performance in respect ofa functional statement refers to the performance ofthe functional statement as trelates to theobjective with whichitis asociated in MMAH Supplementary Standard SA-1,“Objectives and Functional Statements Attributed to the Acceptable Solutions."
 
-#### 1.2.2.Materials, Appliances, Systems and Equipment
+#### 1.2.2. Materials, Appliances, Systems and Equipment
 
 1.2.2.1. Characteristics of Materials, Appliances, Systems and Equipment
 
 (1)All materials,appliances,systems and equipment installed to meet the requirements of this Code shallpossess the necessary characteristics to perform their intended functions when installed in a building.
 
-#### 1.2.2.2. Reserved
+##### 1.2.2.2. Reserved
 
-#### 1.2.2.3. Used Materials, Appliances and Equipment
+##### 1.2.2.3. Used Materials, Appliances and Equipment
 
 (1)Unlessotherwisespecified,recycled materials in building products may beused,andused materials,appliances and equipment are permited to be reused when they meet the requirements of this Code for new materials and are satisfactory for the intended use.
 
-#### Section 1.3. Divisions A, B and C of this Code
+### Section 1.3. Divisions A, B and C of this Code
 
 #### 1.3.1.General
 
@@ -2617,31 +2617,31 @@ e1 (1) This Code applies to the construction, demolition, change of use and occu
 
 (1) Division B contains the acceptable solutions of this Code.
 
-#### 1.3.1.3. Scope of Division C
+##### 1.3.1.3. Scope of Division C
 
 (1)Division C contains the administrative provisions of this Code.
 
-#### 1.3.1.4. Internal Cross-References
+##### 1.3.1.4. Internal Cross-References
 
 (1)Where the Division ofa referenced provision is not specified in this Code,it shall mean that the referenced provision is in the same Division as the referencing provision.
 
-#### 1.3.2. Application of Division A
+##### 1.3.2. Application of Division A
 
-#### 1.3.2.1. Application of Parts 1, 2 and 3
+##### 1.3.2.1. Application of Parts 1, 2 and 3
 
 (1)Parts 1,2 and 3 of Division A apply to all buildings covered in this Code. (See Article 1.1.1.1.)
 
 1.3.3.Application of Division B (See Note A-1.3.3.)
 
-#### 1.3.3.1. Application of Parts 1, 7 and 12
+##### 1.3.3.1. Application of Parts 1, 7 and 12
 
 (1)Part 1 of Division B applies to all buildings covered in this Code. (See Article 1.1.1.1.) (2)Subject to Article 1.3.3.3B.,Parts 7and 12 of Division B apply to all buildings covered in this Code.
 
-#### 1.3.3.1A. Application of Part 2
+##### 1.3.3.1A. Application of Part 2
 
 (1)Part 2 of Division B applies to all farm buildings covered in this Code.
 
-#### 1.3.3.2. Application of Parts 3, 4, 5 and 6
+##### 1.3.3.2. Application of Parts 3, 4, 5 and 6
 
 (1)Subjectto Articles 1.3.3.1A.,1.3.3.3B.,Parts 3,4,5,and 6ofDivision Bapplytoallbuildings described in Article 1.1.1.1. and
 
@@ -2671,11 +2671,11 @@ e1 (1) This Code applies to the construction, demolition, change of use and occu
 
 (6) Section 3.17. of Division B applies to demountable stages and demountable support structures.
 
-#### 1.3.3.2A. Application of Part 8
+##### 1.3.3.2A. Application of Part 8
 
 (1)Subject to Article 1.3.3.3B.,Part 8ofDivision Bapplies to the design,construction,operationand maintenance of all sewage systems and to the construction of buildings in the vicinity of sewage systems.
 
-#### 1.3.3.3. Application of Part 9
+##### 1.3.3.3. Application of Part 9
 
 (1)Subjectto Article1.3.33B.,Part 9ofDivision Bapplies toallbuldings described inArticle1.1.1.1.of3 storeys or less in building height, having a building area not exceeding $6 0 0 \mathrm { m } ^ { 2 }$ ,and used for major occupancies classified as (a) reserved,   
 (b) Group C,residential occupancies other than buildings used for retirement homes,(See Note A-9.1.1.1.(1) of Division B)   
@@ -2683,23 +2683,23 @@ e1 (1) This Code applies to the construction, demolition, change of use and occu
 @ Group E, mercantile occupancies, or   
 (e) Group F,Divisions 2 and 3,medium- and low-hazard industrial occupancies.
 
-#### 1.3.3.3A. Application of Part 10
+##### 1.3.3.3A. Application of Part 10
 
 (1)Part 10 of Division B applies to existing buildings requiring a permit under section 10 of the Act.
 
-#### 1.3.3.3B. Application of Part 11
+##### 1.3.3.3B. Application of Part 11
 
 (1).Except as provided in Sentence (2), Part 11ofDivision B appies to the design and construction of existing buildings,or parts of existing buildings,that have been in existence for at least five years.
 
 (2)Ifa building has been in existenceforatleast five years but includes an adition that has been in existence for less than five years,Part 11 of Division B applies to the entire building.
 
-#### 1.3.3.3C. Existing Buildings (See Note A-1.3.3.3C.)
+##### 1.3.3.3C. Existing Buildings (See Note A-1.3.3.3C.)
 
 (1)Except as provided in Section 3.18.of Division B,Section 9.41.of Division Band Part 11 of Division B,if an existing building is extended or is subject to material alteration or repair,this Code applies only to the design and construction of the extensions and those parts of the building that are subject to the material alteration or repair.
 
 (2)Ifan existing previously occupied building is moved from its original location to be installed elsewhere, or is dismantled at its original location and moved to be reconstituted elsewhere,this Code applies only to changes to the design and construction of the building required as a result of moving the building.
 
-#### 1.3.3.4. Building Size Determination
+##### 1.3.3.4. Building Size Determination
 
 (1)Whereafirewalldivides a building,each portionofthe building that is divided shall be considered as a separate building, except for the purposes of
 
@@ -2714,7 +2714,7 @@ e1 (1) This Code applies to the construction, demolition, change of use and occu
 
 (3)The vertical fire separation referred to in Sentence (2)may terminate at the floor asembly immediately above a basement provided the basement conforms to Article 3.2.1.2. of Division B.
 
-#### 1.3.3.5. Designated Structures
+##### 1.3.3.5. Designated Structures
 
 (l)The folowing structures are designated for the purposes of clause (d)of the definition of building in subsection 1 (1) of the Act:
 
@@ -2732,15 +2732,15 @@ i an outdoor public spa,
 
 #### 1.3.4. Application of Division C
 
-#### 1.3.4.1. Application of Parts 1, 2 and 3
+##### 1.3.4.1. Application of Parts 1, 2 and 3
 
 (1)Parts 1 and 2 of Division C apply to allbuildings covered in this Code. (See Article 1.1.1.1.) (2) Part 3 prescribes qualifications of persons for the purpose of Section 15.11 of the Act.
 
-#### Section 1.4. Terms and Abbreviations
+### Section 1.4. Terms and Abbreviations
 
 #### 1.4.1. Definitions of Words and Phrases
 
-#### 1.4.1.1. Non-defined Terms
+##### 1.4.1.1. Non-defined Terms
 
 (1)Words and phrasesused in this Code that are not included in the listof definitions inArticles1.4.1.2.,1.4.1.3.and 1.4.1.4.and are not defined inanother provision of this Code shallhave the meanings that arecommonlyassigned to them in the context in which they are used,taking into account the specialized use of terms by the various trades and professions to which the terminology applies.
 
@@ -2750,7 +2750,7 @@ i an outdoor public spa,
 
 (4)Where alternative solutions arereferred to in this Code,they shallbe the alternative solutions mentioned in Clause 1.2.1.1.(1)(b).
 
-#### 1.4.1.2. Defined Terms
+##### 1.4.1.2. Defined Terms
 
 (1) The words and terms in italics in this Code shall have the following meanings:   
 (a) the same meaning as in subsection 1(1) of the Act, if not defined in Clause (b) or (c),   
@@ -3735,7 +3735,7 @@ Yoke vent means a vent pipe that is connected at its lower endtoa soil or waste 
 
 (2)Wherea word or term that is defined in Sentence (1)isused,it shallberead as ifithas the same meaningas inthat Sentence, unless the context requires otherwise.
 
-#### 1.4.1.3. Definition of Applicable Law
+##### 1.4.1.3. Definition of Applicable Law
 
 (1)For the purposes of clause 8(2)(a) of the Act, applicable law means,   
 (a) the statutory requirements in the following provisions with respect to the following maters: (i)section 3 ofthe Building Transit Faster Act, 2O20 with respect to the issuance of a permit under that section, (ii)section 14 ofOntario Regulation 137/15 (General) made under the Child Care and Early Years Act, 2014 with respect to the approval of plans for anew building to be erected or an existing building to be used,altered or renovated for use as a child care centre or for alterations or renovations to be made to premises used by a child care centre, (ii) section 114 of the City of Toronto Act, 2006 with respect to the approval bythe City of Toronto or the Ontario Land Tribunal of plans and drawings, (iv) section 59 of the Clean Water Act, 2006 with respect to the issuance of a notice by the risk management official for the construction ofa building, (v) section 28 of the Conservation Authorities Act with respect to the prohibition of development activities, (vi) sections 28.1, 28.1.1 and 28.1.2 of the Conservation Authorities Act with respect to a permit issued for the Construction ofa building or structure or for any change to a building or structure that would increase its size, alter its use or increase the number of dwelling units, (vii)section 194ofthe Education Act with respecttothe approvalofthe Minister forthe demolitionofa building, (vii) section 17.2 of the Environmental Assessment Act with respect to the approval of the Minister or the Ontario Land Tribunal to proceed with a project, (ix) section 46 of the Environmental Protection Act with respect to the approval of the Minister to use land or land covered by water that has been used for the disposal of waste, (x) section 47.3 of the Environmental Protection Act with respect to the isuance ofa renewable energy approval, (xi) section 168.3.1 of the Environmental Protection Act with respect to the construction ofa building to be used in connection with a change of use of a property, (xii) paragraph 2 of subsection 168.6(1) of the Environmental Protection Act if acertificate of property use has been issued in respect of the property under subsection 168.6(1) of that Act, (xii)section 14 of the Milk Act with respectto the permit fromthe Director forthe construction or alteration of any building intended for use as a plant, (xiv) section 11.1 ofOntario Regulation 267/03 (General), made under the Nutrient Management Act, 2002, with respect to a proposed building or structure to house farm animals or store nutrients if that Regulation requires the preparation and approval of a nutrient management strategy before construction of the proposed building or structure, (xv) subsection 30(2)of the Ontario Heritage Act with respect to a consent of the council of a municipality to the alteration or demolition of a building where the council of the municipality has given a notice of intent to designate the building under subsection 29 (3) of that Act, (xvi) section 33 of the Ontario Heritage Act with respect to the consent of the council of a municipality for the alteration of property, (xvii) section 34 of the Ontario Heritage Act with respect to the consent of the council of a municipality for the demolition of a building, (xvii) section 34.5 of the Ontario Heritage Act with respect to the consent of the Minister to the alteration or demolition of a designated building, (xix) subsection 34.7(2)of the Ontario Heritage Act with respect to a consent of the Minister to the alteration or demolition ofa building where the Minister has given a notice of intent to designate the building under section 34.6 of that Act, (xx) section 42 of the Ontario Heritage Act with respect to the permit given by the council of a municipality for the erectionaltrationormolitionofablding, (xxi) section 17.4 of the Ontario New Home Warranties Plan Act with respect to the provision of a confirmation by the Registrar for the construction of a residential condominium conversion project, (xxii) section 14 of the Ontario Planning and Development Act, 1994 with respect to any conflict between a development plan made under that Act anda zoning by-lawthat affects the proposed building or structure, (xxii) section 37 of the Planning Act (A) with respect to the payment of money or making arrangements satisfactory to the council of a municipality for the payment of money, where the payment is required by a community benefits charge by-law passed under subsection 37(2) of the Planning Act, and
@@ -3762,13 +3762,13 @@ Yoke vent means a vent pipe that is connected at its lower endtoa soil or waste 
 
 (2)For the purposes of clause 10(2)(a)of the Act,applicable law meansany general or special Act,and allregulations and by-laws enacted under them that prohibit the proposed use of the building unlessthe Act,regulationor by-law is complied with.
 
-#### 1.4.1.4. Other Definitions for the Purposes of the Act
+##### 1.4.1.4. Other Definitions for the Purposes of the Act
 
 (1)For thepurposes ofte Act,architect,asconstructed plans and profesional engineer have thesame meaning as tha set out in Clause 1.4.1.2.(1)(c).
 
 #### 1.4.2. Symbols and Other Abbreviations
 
-#### 1.4.2.1. Symbols and Other Abbreviations
+##### 1.4.2.1. Symbols and Other Abbreviations
 
 (1)In this Code,asymbol or abbreviation listed in Column 1 ofTable 1.4.2.1.has the meaning listed opposite it in Column 2.
 
@@ -3784,55 +3784,55 @@ Table 1.4.2.1. (Cont'd) Symbols and Abbreviations Forming Part of Sentence 1.4.2
 
 <table><tr><td>Symbol or Abbreviation</td><td>Meaning</td></tr><tr><td>o.c.</td><td>on centre</td></tr><tr><td>OSB</td><td>oriented strandboard</td></tr><tr><td>Pa</td><td>pascal(s)</td></tr><tr><td>PB</td><td>polybutylene</td></tr><tr><td>PE</td><td>polyethylene</td></tr><tr><td>PE/AL/PE</td><td>polyethylene/aluminum/polyethylene</td></tr><tr><td>PEX</td><td>crosslinked polyethylene</td></tr><tr><td>PEX/AL/PEX</td><td>crosslinked polyethylene/aluminum/crosslinked polyethylene</td></tr><tr><td>PVC</td><td>poly (vinyl chloride)</td></tr><tr><td>R</td><td>thermal resistance value (imperial unit)</td></tr><tr><td>RSI</td><td>thermal resistance, International System of Units</td></tr><tr><td>s</td><td>second(s)</td></tr><tr><td>temp.</td><td>temperature</td></tr><tr><td>T&amp;G</td><td>tongue and groove</td></tr><tr><td>V</td><td>volt(s)</td></tr><tr><td>W</td><td>watt(s)</td></tr><tr><td>wt</td><td>weight</td></tr><tr><td>%</td><td>percent</td></tr><tr><td>ug</td><td>microgram(s)</td></tr><tr><td>um</td><td>micron</td></tr><tr><td>U-value</td><td>overall thermal transmittance</td></tr></table>
 
-#### Section 1.5. Referenced Documents and Organizations
+### Section 1.5. Referenced Documents and Organizations
 
 #### 1.5.1. Referenced Documents
 
-#### 1.5.1.1. Application of Referenced Documents
+##### 1.5.1.1. Application of Referenced Documents
 
 (1)The provisions ofdocuments referenced in this Code,and of any documents referenced within those documents,   
 apply only to the extent that they relate to   
 (a)buildings,and   
 (b)the objectives andfunctional statements atributed to the applicable acceptable solutions in Division B where the documents are referenced. (See Note A-1.5.1.1.(1))
 
-#### 1.5.1.2. Conflicting Requirements
+##### 1.5.1.2. Conflicting Requirements
 
 (1)Incase ofconflict between the provisions of this Code and those ofa referenced document, the provisions of this Code shall govern.
 
-#### 1.5.1.3. Applicable Editions
+##### 1.5.1.3. Applicable Editions
 
 (1)Where documents are referenced in this Code,they shallbe the editions designated in Subsection 1.3.1.of Division B.
 
 #### 1.5.2. Organizations
 
-#### 1.5.2.1. Abbreviations of Proper Names
+##### 1.5.2.1. Abbreviations of Proper Names
 
 (1)The abbreviations of proper names in this Code shallhave the meanings assigned to them in Article 1.3.2.1.of Division B.
 
-#### Part 2 Objectives
+### Part 2 Objectives
 
 2.1. Application   
 2.1.1. Application..   
 2.2. Objectives   
 2.2.1. Objectives..... 3
 
-#### Part 2 Objectives
+## Part 2 Objectives
 
-#### Section 2.1. Application
+### Section 2.1. Application
 
 #### 2.1.1. Application
 
-#### 2.1.1.1. Application
+##### 2.1.1.1. Application
 
 (1)This Part applies to all buildings covered in this Code. (See Article 1.1.1.1.)
 
-#### 2.1.1.2. Application of Objectives
+##### 2.1.1.2. Application of Objectives
 
 (1)The objectives described in this Part apply   
 (a)to all buildings covered in this Code,and (See Article 1.1.1.1.)   
 (b)only to the extent that they relate to compliance with this Code as required in Article 1.2.1.1.
 
-#### Section 2.2. Objectives
+### Section 2.2. Objectives
 
 #### 2.2.1. Objectives
 
@@ -4113,36 +4113,3 @@ F140 To facilitate the reuse and material alteration and repair of existing buil
 F150 To limit excessive emissions of greenhouse gases into the air.   
 F151 To limit the excessive release of contaminants, other than greenhouse gases, into the air.
 
-### **Form Questions Reference**
-
-This is a complete list of all official form questions. Your goal is to resolve them one by one.  
-Form Questions Reference:  
-| Section | Description | OBC Reference |  
-| :--- | :--- | :--- |  
-| 3.01 | Project Type | [Division A] 1.3.3.2. |  
-| 3.02 | Major Occupancy Classification | 3.1.2. |  
-| 3.03 | Superimposed Major Occupancies | 3.2.2.7. |  
-| 3.04 | Building Area (m2) | [Division A] 1.4.1.2. |  
-| 3.05 | Gross Area (m2) | [Division A] 1.4.1.2. |  
-| 3.06 | Mezzanine Area (m2) | 3.2.1.1. |  
-| 3.07 | Building Height (Storeys and meters) | [Division A] 1.4.1.2. & 3.2.1.1. |  
-| 3.08 | High Building | 3.2.6. |  
-| 3.09 | Number of Streets/Firefighter Access | 3.2.2.10. & 3.2.5. |  
-| 3.10 | Building Group/Div Classification | 3.2.2.20.-93. & 3.2.2. |  
-| 3.11 | Sprinkler System | 3.2.1.5., 3.2.2.18., .21., .22., .29., 3.2.4.1., 3.2.4.9., 3.2.4.15., and 3.2.5.12. to .14. |  
-| 3.12 | Standpipe System | 3.2.5.8.-11. |  
-| 3.13 | Fire Alarm System | 3.2.4. |  
-| 3.14 | Water Service/Supply is Adequate | 3.2.5.7. |  
-| 3.15 | Construction Type/Heavy Timber Construction | 3.2.2.20.-93. & 3.1.6. & 3.1.4.6., 7. & 3.2.2.16. |  
-| 3.16 | Importance Category | 4.1.2.1.(3) & T4.1.2.1. |  
-| 3.17 | Seismic Category | 4.1.8.4.(1), T-4.1.8.5.-B, & 4.1.8.18. |  
-| 3.18 | Occupant Load | 3.1.17. |  
-| 3.19 | Barrier-free Design | 3.8. |  
-| 3.20 | Barrier-free Entrances & Hazardous Substances | 3.8.1.2. & 3.3.1.2. |  
-| 3.21 | Required Fire Resistance Ratings (Horizontal Assembly) | 3.2.2.20.-93, 3.2.1.2, 3.2.1.4., 3.2.2.15., & 3.3.2.1. |  
-| 3.22a, b | Spatial Separation | 3.2.3. |  
-| 3.23a, b | Plumbing Fixture Requirements | 3.7.4., 3.8.2.3., & Tables 3.8.2.3.A and 3.8.2.3.B |  
-| 3.24 | Energy Efficiency | 12.2.1.2., SB-1 Table 2, SB-3, 5.8.1.2.(2), 5.8.1.4., & 5.8.1.5. |  
-| 3.25 | Sound Transmission Design | 5.9.1.2. |  
-| 3.26 | Alternative Solution | [Division A] 1.2.1.1. |  
-| 3.27 | Notes | [Division C] 2.1. |
