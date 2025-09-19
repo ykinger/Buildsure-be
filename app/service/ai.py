@@ -38,72 +38,64 @@ def lm(msg):
 ###############################################################################
 
 messages = [
-    # (
-    #     "system",
-    #     """
-    #     You are an expert AI assistant specializing in the Ontario Building Code (OBC).
-    #     Your purpose is to help architects accurately and efficiently complete a standardized building compliance form, known as code data matrix.
-    #     The user interacting with you is not familiar with technical terms. You need to ask questions in simplified form to get closer to the answer for
-    #     the question from code data matrix that you are tasked to find the answer to.
-    #     The user will provide answers to you to the best they can until you get to a definitive answer for the form question you are tasked with.
-    #     You have tools at your disposal to retreive relevant sections of the OBC in case you need a reference.
-    #     Your interactions with the user is limited to tools you have, do not ask questions that require anything outside those tools.
-    #     For example, if you nee to ask a question turn it into form of multiple choice questions only.
 
-    #     You are currently finding the answer to <question-number>3.02</question-number> <question-title>Major Occupancy Classification</question-title>.
-    #     If you do have the answer to the question, present it for verification.
-    #     If you need additional information, use the tools available to you to get the information you need.
-    #     """
-    # ),
-    # (
-    #     "human",
-    #     """
-    #     Identify each of the major occupancy group in the building and describe their use. (e.g. D - Business and
-    #     Personal Services / Medical Clinic). Refer to OBC 3.1.2. and to Appendix A to the building code for multiple
-    #     major occupancies. Refer also to Hazard Index tables 11.2.1.1.B – 11.2.1.1.N in Part 11 of the building code
-    #     and A-3.1.2.1 (1) of Appendix A to the building code for assistance in determining or classifying major
-    #     occupancies.
-    #     """
-    # ),
     (
         "system",
-        "exclusively use tool_call for getting information"
+        """
+        You are an AI agent designed to help a non-expert user fill out the 'Ontario Building Code Data Matrix'.
+        Your task is to break down complex questions from the form into simpler, more user-friendly questions.
+
+        Your knowledge base is limited to the content provided in this prompt.
+        Using these information, ask questions to gather the information needed to complete a specific section of the form.
+
+        your questions must meet the following criteria:
+
+        - The question must be in simple, non-technical language.
+        - You are limited to asking multiple choice questions or questions with a numeric value as answer.
+        """
     ),
     (
         "system",
         """
-        You are an AI assistant expert at reading the Ontario Building Code (OBC) and understaidng it, helping the user to fill a form with
-        questions that could be answered by referring to specific sections of OBC, known as "Code Data Matrix".
-        The user filling this form is a non-technical user not familiar with technical terminology require required to fully understand the OBC.
-        You are provided with a list of clarifying questions related to current main form question from code data matrix that will help figure out
-        the answer to form question.
-        The user is not able to type their answer. They are interacting with you through a restricted user interface that is only capable of interactions using
-        the tools provided to you (tool_call).
-        If you find the information sufficient to answer the form question, provide the answer. If not, use the tools available to you to ask questions.
-        You can retreive sections of OBC to refer to, and ask questions to the user to get more clarification.
-        - Exclusively use tool_call for your interactions.
-        - Always make sure you have relevant sections of OBC before starting the analysis
+        Currently you are interacting with the user to gather required information to answer the following part of the form:
+
+        Question number: {number}
+        Original title in the Code Data Matrix Form: {original_title}
+        Equivalent of the title in a more comrehensive, question like tone: {question}
+        """
+    ),
+    (
+        "system",
+        """
+        Here is a guide specifically about how to answer the form question you are working on:
+
+        <question_guide>
+        {guide}
+        </question_guide>
+        """
+    ),
+    (
+        "system",
+        """
+        Here are the relevant parts of Ontario Building Code for your reference:
+
+        <obc_sections>
+        {sections}
+        </obc_sections>
+        """
+    ),
+    (
+        "system",
+        """
+        If you need any other section of OBC, ask for it and I will provide.
         """
     ),
     (
         "human",
         """
-        Help me answer form question <number>3.02</number> <title>Major Occupancy Group</title>
-        
-        In order to do so, dentify each of the major occupancy group in the building and describe their use. (e.g. D - Business and
-        Personal Services / Medical Clinic). Refer to OBC 3.1.2. and to Appendix A to the building code for multiple
-        major occupancies. Refer also to Hazard Index tables 11.2.1.1.B - 11.2.1.1.N in Part 11 of the building code
-        and A-3.1.2.1 (1) of Appendix A to the building code for assistance in determining or classifying major
-        occupancies.
-
-        Limit your questions to the tools availabel to use.
+        If you have enough information to answer the form question, provide me the answer. Otherwise, ask your next question and I will provide the answer.
         """
     ),
-    # (
-    #     "human",
-    #     "ask me a multiple choice question to test your access to tools"
-    # ),
-
 ]
 
 # Initial invocation of AI
