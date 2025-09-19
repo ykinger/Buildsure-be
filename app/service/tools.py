@@ -1,5 +1,6 @@
 from langchain_core.tools import tool                                                                                                                                     
 import logging
+from random import randint
 
 @tool
 def ask_multiple_choice_question(question_text: str, options: list[str]) -> str:
@@ -15,7 +16,11 @@ def ask_multiple_choice_question(question_text: str, options: list[str]) -> str:
     Returns:
         str: The user's selected answer (one of the options).
     """
-    logging.info("Was called to ask %s with options %s", question_text, options)
+    logging.info("[MCQ] %s %s", question_text, options)
+    ret = input("Enter your answer: ")
+    # ret = options[randint(0, len(options)-1)]
+    logging.info("Choosing %s", ret)
+    return ret
 
 @tool
 def ask_numeric_question(question_text: str) -> float:
@@ -31,7 +36,8 @@ def ask_numeric_question(question_text: str) -> float:
     Returns:
         float: The user's numeric answer.
     """
-    pass
+    logging.info("[numeric] Question %s", question_text)
+    return 1.0
 
 @tool
 def retrieve_obc_section(section: str) -> str:
@@ -50,12 +56,24 @@ def retrieve_obc_section(section: str) -> str:
     except:
         return "I could not find the section you requested"
 
+@tool
+def provide_final_answer(answer: str) -> str:
+    """
+    Let user know this is the final answer to form question and there will be no more
+    questions regarding this specific form question.
+
+    Args:
+        answer (str): The final answer to be used by user to fill the form question
+    """
+    logging.info("[Final] Answer: %s", answer)
+    return "User was informed of final answer"
 
 
 DEFINED_TOOLS = {
     "ask_numeric_question": ask_numeric_question,
     "ask_multiple_choice_question": ask_multiple_choice_question,
     "retrieve_obc_section": retrieve_obc_section,
+    "provide_final_answer": provide_final_answer,
 }
 
 sections = {
