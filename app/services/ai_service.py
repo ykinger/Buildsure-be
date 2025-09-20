@@ -43,7 +43,7 @@ class AIService:
     async def generate_question(
         self,
         section_number: int,
-        guideline_chunks: List[Dict[str, Any]],
+        ontario_chunks: List[Dict[str, Any]],
         form_questions_and_answers: List[str] = None,
         clarifying_questions_and_answers: List[str] = None
     ) -> Dict[str, Any]:
@@ -52,7 +52,7 @@ class AIService:
         
         Args:
             section_number: The current section number
-            guideline_chunks: Relevant Ontario Building Code chunks
+            ontario_chunks: Relevant Ontario Building Code chunks
             form_questions_and_answers: Previously answered form questions
             clarifying_questions_and_answers: Previous clarifying Q&As
             
@@ -71,9 +71,9 @@ class AIService:
                 clarifying_questions_and_answers=clarifying_qa
             )
             
-            # Add guideline context to the prompt
-            guideline_context = self._format_guideline_chunks(guideline_chunks)
-            enhanced_prompt = f"{prompt_text}\n\n### Relevant Ontario Building Code Sections:\n{guideline_context}"
+            # Add ontario chunks context to the prompt
+            ontario_context = self._format_ontario_chunks(ontario_chunks)
+            enhanced_prompt = f"{prompt_text}\n\n### Relevant Ontario Building Code Sections:\n{ontario_context}"
             
             # Create the chat prompt template
             chat_prompt = ChatPromptTemplate.from_messages([
@@ -108,7 +108,7 @@ class AIService:
         current_question: str,
         current_answer: str,
         previous_answers: List[Dict[str, Any]],
-        guideline_chunks: List[Dict[str, Any]]
+        ontario_chunks: List[Dict[str, Any]]
     ) -> Dict[str, Any]:
         """
         Process the current answer and determine next step: ask another question or generate draft.
@@ -118,7 +118,7 @@ class AIService:
             current_question: The question that was just answered
             current_answer: The answer provided by the user
             previous_answers: List of previous Q&A pairs for this section
-            guideline_chunks: Relevant Ontario Building Code chunks
+            ontario_chunks: Relevant Ontario Building Code chunks
             
         Returns:
             Dict containing either next_question or draft_output
@@ -130,8 +130,8 @@ class AIService:
             # Add current Q&A to context
             current_qa = f"Q: {current_question}\nA: {current_answer}"
             
-            # Format guideline context
-            guideline_context = self._format_guideline_chunks(guideline_chunks)
+            # Format ontario chunks context
+            ontario_context = self._format_ontario_chunks(ontario_chunks)
             
             # Create decision prompt
             decision_prompt = f"""
@@ -146,7 +146,7 @@ Current Q&A:
 {current_qa}
 
 Relevant Building Code Sections:
-{guideline_context}
+{ontario_context}
 
 Instructions:
 1. If more information is needed, respond with: QUESTION: [your next question]
@@ -262,8 +262,8 @@ Consider that we need sufficient detail to create a comprehensive building permi
             logger.error(f"LLM call failed: {str(e)}")
             raise
     
-    def _format_guideline_chunks(self, chunks: List[Dict[str, Any]]) -> str:
-        """Format guideline chunks for inclusion in the prompt."""
+    def _format_ontario_chunks(self, chunks: List[Dict[str, Any]]) -> str:
+        """Format ontario chunks for inclusion in the prompt."""
         if not chunks:
             return "No specific building code sections available."
         

@@ -10,7 +10,7 @@ from sqlalchemy.orm import selectinload
 
 from app.models.project import Project
 from app.models.section import Section, SectionStatus
-from app.models.guideline_chunk import GuidelineChunk
+from app.models.ontario_chunk import OntarioChunk
 from app.models.answer import Answer
 from app.services.ai_service import AIService
 
@@ -52,15 +52,15 @@ class SectionService:
             # Step 2: Update section status to 'in_progress'
             await self._update_section_status(section, SectionStatus.IN_PROGRESS, db)
             
-            # Step 3: Retrieve relevant guideline chunks
-            guideline_chunks = await self._get_relevant_guidelines(
+            # Step 3: Retrieve relevant ontario chunks
+            ontario_chunks = await self._get_relevant_guidelines(
                 section_number, db
             )
             
             # Step 4: Generate the first question using AI
             question_data = await self.ai_service.generate_question(
                 section_number=section_number,
-                guideline_chunks=guideline_chunks,
+                ontario_chunks=ontario_chunks,
                 form_questions_and_answers=[],  # Empty for first question
                 clarifying_questions_and_answers=[]  # Empty for first question
             )
@@ -71,7 +71,7 @@ class SectionService:
                 "section_number": section_number,
                 "section_status": SectionStatus.IN_PROGRESS.value,
                 "question": question_data,
-                "guidelines_found": len(guideline_chunks),
+                "guidelines_found": len(ontario_chunks),
                 "message": f"Section {section_number} started successfully"
             }
             
@@ -180,7 +180,7 @@ class SectionService:
         limit: int = 10
     ) -> List[Dict[str, Any]]:
         """
-        Retrieve relevant guideline chunks for the given section.
+        Retrieve relevant OBC chunks for the given section.
         
         Args:
             section_number: The section number
@@ -188,36 +188,37 @@ class SectionService:
             limit: Maximum number of chunks to retrieve
             
         Returns:
-            List of guideline chunk dictionaries
+            List of OBC chunk dictionaries
         """
         try:
-            # Query for guideline chunks that might be relevant to this section
-            # For now, we'll get a general set of chunks
-            # In the future, this could be enhanced with semantic search or section mapping
+            # Query for OBC chunks that might be relevant to this section
+            # Get articles from Division B (Acceptable Solutions) as they contain the most detailed guidance
             
             result = await db.execute(
-                select(GuidelineChunk)
-                .order_by(GuidelineChunk.section_reference)
+                select(OntarioChunk)
+                .where(OntarioChunk.division == "Division B")
+                .where(OntarioChunk.chunk_type == "article")
+                .order_by(OntarioChunk.reference)
                 .limit(limit)
             )
             chunks = result.scalars().all()
             
-            # Convert to dictionaries for AI service
+            # Convert to dictionaries for AI service (matching expected format)
             guideline_data = []
             for chunk in chunks:
                 guideline_data.append({
-                    "section_reference": chunk.section_reference,
-                    "section_title": chunk.section_title,
-                    "section_level": chunk.section_level,
-                    "chunk_text": chunk.chunk_text
+                    "section_reference": chunk.reference,
+                    "section_title": chunk.title,
+                    "section_level": 4,  # Articles are level 4 in hierarchy
+                    "chunk_text": chunk.content
                 })
             
-            logger.debug(f"Retrieved {len(guideline_data)} guideline chunks for section {section_number}")
+            logger.debug(f"Retrieved {len(guideline_data)} OBC chunks for section {section_number}")
             return guideline_data
             
         except Exception as e:
-            logger.error(f"Error retrieving guidelines for section {section_number}: {str(e)}")
-            # Return empty list if guideline retrieval fails
+            logger.error(f"Error retrieving OBC chunks for section {section_number}: {str(e)}")
+            # Return empty list if retrieval fails
             return []
     
     async def get_section_status(
@@ -303,8 +304,8 @@ class SectionService:
             # Step 3: Retrieve all previous answers for this section
             previous_answers = await self._get_section_answers(section.id, db)
             
-            # Step 4: Get relevant guideline chunks
-            guideline_chunks = await self._get_relevant_guidelines(
+            # Step 4: Get relevant ontario chunks
+            ontario_chunks = await self._get_relevant_guidelines(
                 section_number, db
             )
             
@@ -314,7 +315,7 @@ class SectionService:
                 current_question=question_text,
                 current_answer=answer_text,
                 previous_answers=previous_answers,
-                guideline_chunks=guideline_chunks
+                ontario_chunks=ontario_chunks
             )
             
             # Step 6: Handle the AI result

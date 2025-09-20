@@ -18,8 +18,13 @@ class OntarioChunk(Base):
         nullable=False
     )
     reference = Column(
-        String(20), 
+        String(30), 
         nullable=False,
+        index=True
+    )
+    division = Column(
+        String(50),
+        nullable=True,
         index=True
     )
     part = Column(
@@ -42,6 +47,15 @@ class OntarioChunk(Base):
         nullable=True,
         index=True
     )
+    chunk_type = Column(
+        String(20),
+        nullable=False,
+        index=True
+    )
+    title = Column(
+        String(200),
+        nullable=True
+    )
     content = Column(
         Text, 
         nullable=False
@@ -53,4 +67,4 @@ class OntarioChunk(Base):
     )
 
     def __repr__(self) -> str:
-        return f"<OntarioChunk(id={self.id}, reference='{self.reference}', content='{self.content[:50]}...')>"
+        return f"<OntarioChunk(id={self.id}, reference='{self.reference}', type='{self.chunk_type}', content='{self.content[:50]}...')>"
