@@ -1,0 +1,31 @@
+{
+    "type": "question",
+    "data": {
+        "type": "mcq",
+        "question": question_text, // string
+        "answer_options": options // list of strings
+    }
+}
+
+{
+    "type": "question",
+    "data": {
+        "type": "numeric",
+        "question": question_text // string
+    }
+}
+
+{
+    "type": "question",
+    "data": {
+        "type": "free_form_text",
+        "question": question_text // string
+    }
+}
+
+{
+    "type": "form_answer",
+    "data": {
+        "answer": answer
+    }
+}
