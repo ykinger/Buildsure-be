@@ -254,7 +254,6 @@ class SectionService:
                 "project_id": project_id,
                 "section_number": section_number,
                 "status": section.status.value,
-                "user_input": section.user_input,
                 "draft_output": section.draft_output,
                 "final_output": section.final_output,
                 "created_at": section.created_at.isoformat() if section.created_at else None,

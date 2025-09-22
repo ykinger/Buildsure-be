@@ -908,6 +908,171 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /api/v1/sections/projects/{project_id}/sections/{section_number}/start:
+    post:
+      summary: Start section with AI question generation
+      description: |
+        Start a section by generating the first AI-powered question.
+        
+        This endpoint:
+        1. Validates that the section matches the project's current_section
+        2. Updates the section status to 'in_progress'
+        3. Retrieves relevant Ontario Building Code chunks for this section
+        4. Calls AI service to generate the first contextual question
+        5. Returns the generated question structure
+      tags:
+        - Sections
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: section_number
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Section started successfully with generated question
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SectionStartResponse'
+        '400':
+          description: Bad request (validation errors)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Project or section not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/sections/projects/{project_id}/sections/{section_number}/answer:
+    post:
+      summary: Submit answer and get next question or draft
+      description: |
+        Submit an answer for a section question and receive either the next question or a draft section.
+        
+        This endpoint:
+        1. Accepts question_text and answer_text
+        2. Saves both in the answers table
+        3. Retrieves all previous answers and relevant building code chunks
+        4. Calls AI service to determine next step (question or draft)
+        5. Returns either next_question or draft_output
+      tags:
+        - Sections
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: section_number
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnswerCreate'
+      responses:
+        '200':
+          description: Answer processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SectionAnswerResponse'
+        '400':
+          description: Bad request (validation errors)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Project or section not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/sections/projects/{project_id}/sections/{section_number}/confirm:
+    post:
+      summary: Confirm section completion
+      description: |
+        Confirm a section by finalizing its output and updating project progress.
+        
+        This endpoint:
+        1. Validates that the section is in_progress and matches current_section
+        2. Saves draft_output as final_output
+        3. Marks section as completed
+        4. Increments project's completed_sections and advances current_section
+        5. If all sections completed, marks project as completed
+      tags:
+        - Sections
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: section_number
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Section confirmed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SectionConfirmResponse'
+        '400':
+          description: Bad request (validation errors)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Project or section not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
 components:
   schemas:
     # Organization Schemas
@@ -922,6 +1087,7 @@ components:
           example: "Acme Corporation"
         description:
           type: string
+          nullable: true
           example: "A leading technology company"
 
     OrganizationCreate:
@@ -1257,12 +1423,6 @@ components:
           example: 1
         status:
           $ref: '#/components/schemas/SectionStatus'
-        user_input:
-          type: object
-          nullable: true
-          example:
-            requirements: "Build a login system"
-            specifications: "Use OAuth 2.0"
         draft_output:
           type: object
           nullable: true
@@ -1297,12 +1457,6 @@ components:
           example: 1
         status:
           $ref: '#/components/schemas/SectionStatus'
-        user_input:
-          type: object
-          nullable: true
-          example:
-            requirements: "Build a login system"
-            specifications: "Use OAuth 2.0"
         draft_output:
           type: object
           nullable: true
@@ -1439,6 +1593,132 @@ components:
               section_number: 2
               final_output: null
               completed: false
+
+    # Answer Schemas
+    AnswerCreate:
+      type: object
+      required:
+        - question_text
+        - answer_text
+      properties:
+        question_text:
+          type: string
+          example: "What is the building height?"
+        answer_text:
+          type: string
+          example: "The building is 3 stories tall"
+
+    SectionAnswerResponse:
+      type: object
+      required:
+        - section_id
+        - section_number
+        - status
+        - message
+        - answers_count
+      properties:
+        section_id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174003"
+        section_number:
+          type: integer
+          minimum: 1
+          example: 1
+        status:
+          $ref: '#/components/schemas/SectionStatus'
+        next_question:
+          type: string
+          nullable: true
+          example: "What is the intended use of the building?"
+        draft_output:
+          type: object
+          nullable: true
+          example:
+            code: "// Building analysis code"
+            documentation: "Building requirements documentation"
+        message:
+          type: string
+          example: "Answer processed successfully"
+        answers_count:
+          type: integer
+          example: 3
+
+    SectionStartResponse:
+      type: object
+      required:
+        - section_id
+        - section_number
+        - status
+        - question
+        - question_type
+      properties:
+        section_id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174003"
+        section_number:
+          type: integer
+          minimum: 1
+          example: 1
+        status:
+          $ref: '#/components/schemas/SectionStatus'
+        question:
+          type: string
+          example: "What is the primary use of this building?"
+        question_type:
+          type: string
+          default: "initial"
+          example: "initial"
+
+    SectionConfirmResponse:
+      type: object
+      required:
+        - section_id
+        - section_number
+        - status
+        - project_id
+        - project_status
+        - completed_sections
+        - total_sections
+        - current_section
+        - message
+      properties:
+        section_id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174003"
+        section_number:
+          type: integer
+          minimum: 1
+          example: 1
+        status:
+          $ref: '#/components/schemas/SectionStatus'
+        final_output:
+          type: object
+          nullable: true
+          example:
+            deliverable: "Complete building analysis"
+            files: ["analysis.pdf", "requirements.md"]
+        project_id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174002"
+        project_status:
+          type: string
+          example: "in_progress"
+        completed_sections:
+          type: integer
+          example: 1
+        total_sections:
+          type: integer
+          example: 5
+        current_section:
+          type: integer
+          example: 2
+        message:
+          type: string
+          example: "Section confirmed successfully"
 
     # Error Schema
     ErrorResponse:

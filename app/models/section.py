@@ -42,7 +42,6 @@ class Section(Base):
         nullable=False, 
         default=SectionStatus.PENDING
     )
-    user_input = Column(JSON, nullable=True)
     draft_output = Column(JSON, nullable=True)
     final_output = Column(JSON, nullable=True)
     created_at = Column(

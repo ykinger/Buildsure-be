@@ -11,7 +11,6 @@ class SectionBase(BaseModel):
     """Base section schema with common fields"""
     section_number: int
     status: SectionStatus = SectionStatus.PENDING
-    user_input: Optional[Dict[str, Any]] = None
     draft_output: Optional[Dict[str, Any]] = None
     final_output: Optional[Dict[str, Any]] = None
 
@@ -25,7 +24,6 @@ class SectionUpdate(BaseModel):
     """Schema for updating a section"""
     section_number: Optional[int] = None
     status: Optional[SectionStatus] = None
-    user_input: Optional[Dict[str, Any]] = None
     draft_output: Optional[Dict[str, Any]] = None
     final_output: Optional[Dict[str, Any]] = None
     project_id: Optional[str] = None
