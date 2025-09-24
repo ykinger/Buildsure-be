@@ -17,6 +17,7 @@ if TYPE_CHECKING:
 
 class SectionStatus(enum.Enum):
     PENDING = "pending"
+    READY_TO_START = "ready_to_start"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
 

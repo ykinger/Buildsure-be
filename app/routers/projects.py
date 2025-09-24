@@ -114,10 +114,12 @@ async def create_project(
     # Create 27 sections using bulk insert
     sections = []
     for section_number in range(1, 28):  # 1 to 27
+        # Set section 1 as READY_TO_START, others as PENDING
+        status = SectionStatus.READY_TO_START if section_number == 1 else SectionStatus.PENDING
         sections.append(Section(
             project_id=project.id,
             section_number=section_number,
-            status=SectionStatus.PENDING
+            status=status
         ))
     
     db.add_all(sections)

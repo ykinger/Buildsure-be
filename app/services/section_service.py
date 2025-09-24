@@ -127,22 +127,26 @@ class SectionService:
                 f"Section {section_number} not found for project {project_id}"
             )
         
-        # Validate that this section matches the project's current section
-        if project.current_section != section_number:
-            raise ValueError(
-                f"Cannot start section {section_number}. "
-                f"Current section is {project.current_section}"
-            )
-        
-        # Check if section is already in progress or completed
-        if section.status == SectionStatus.IN_PROGRESS:
-            raise ValueError(
-                f"Section {section_number} is already in progress"
-            )
-        elif section.status == SectionStatus.COMPLETED:
-            raise ValueError(
-                f"Section {section_number} is already completed"
-            )
+        # Check if section is in the correct state to be started
+        if section.status != SectionStatus.READY_TO_START:
+            if section.status == SectionStatus.PENDING:
+                raise ValueError(
+                    f"Section {section_number} is not ready to start. "
+                    f"Complete the previous section first."
+                )
+            elif section.status == SectionStatus.IN_PROGRESS:
+                raise ValueError(
+                    f"Section {section_number} is already in progress"
+                )
+            elif section.status == SectionStatus.COMPLETED:
+                raise ValueError(
+                    f"Section {section_number} is already completed"
+                )
+            else:
+                raise ValueError(
+                    f"Section {section_number} cannot be started. "
+                    f"Current status: {section.status.value}"
+                )
         
         return project, section
     
@@ -682,6 +686,21 @@ class SectionService:
             
             # Advance current section
             project.current_section += 1
+            
+            # Set the next section to READY_TO_START if it exists and is currently PENDING
+            if project.current_section <= project.total_sections:
+                next_section_result = await db.execute(
+                    select(Section).where(
+                        Section.project_id == project.id,
+                        Section.section_number == project.current_section
+                    )
+                )
+                next_section = next_section_result.scalar_one_or_none()
+                
+                if next_section and next_section.status == SectionStatus.PENDING:
+                    next_section.status = SectionStatus.READY_TO_START
+                    db.add(next_section)
+                    logger.debug(f"Set section {project.current_section} to READY_TO_START")
             
             # Check if all sections are completed
             if project.completed_sections >= project.total_sections:
