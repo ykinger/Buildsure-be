@@ -12,9 +12,10 @@ import math
 from io import BytesIO
 
 from app.database import get_async_db
-from app.models.project import Project
+from app.models.project import Project, ProjectStatus
 from app.models.organization import Organization
 from app.models.user import User
+from app.models.section import Section, SectionStatus
 from app.schemas.project import (
     ProjectCreate,
     ProjectUpdate,
@@ -98,8 +99,28 @@ async def create_project(
     if not user_result.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="User not found or doesn't belong to the organization")
     
-    project = Project(**project_data.model_dump())
+    # Create project with hardcoded total_sections=27
+    project_dict = project_data.model_dump()
+    project_dict.update({
+        'total_sections': 27,
+        'current_section': 0,
+        'completed_sections': 0,
+        'status': ProjectStatus.NOT_STARTED
+    })
+    project = Project(**project_dict)
     db.add(project)
+    await db.flush()  # Flush to get the project ID
+    
+    # Create 27 sections using bulk insert
+    sections = []
+    for section_number in range(1, 28):  # 1 to 27
+        sections.append(Section(
+            project_id=project.id,
+            section_number=section_number,
+            status=SectionStatus.PENDING
+        ))
+    
+    db.add_all(sections)
     await db.commit()
     await db.refresh(project)
     

@@ -13,12 +13,14 @@ class ProjectBase(BaseModel):
     description: Optional[str] = None
     status: ProjectStatus = ProjectStatus.NOT_STARTED
     current_section: int = 0
-    total_sections: int = 0
+    total_sections: int = 27
     completed_sections: int = 0
 
 
-class ProjectCreate(ProjectBase):
+class ProjectCreate(BaseModel):
     """Schema for creating a project"""
+    name: str
+    description: Optional[str] = None
     org_id: str
     user_id: str
 

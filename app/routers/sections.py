@@ -2,7 +2,7 @@
 Sections Router
 FastAPI router for section CRUD operations.
 """
-from typing import List, Optional
+from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
@@ -30,17 +30,13 @@ router = APIRouter(prefix="/api/v1/sections", tags=["sections"])
 async def list_sections(
     page: int = Query(1, ge=1, description="Page number"),
     size: int = Query(10, ge=1, le=100, description="Page size"),
-    project_id: Optional[str] = Query(None, description="Filter by project ID"),
+    project_id: str = Query(..., description="Project ID to filter sections"),
     db: AsyncSession = Depends(get_async_db)
 ):
-    """List sections with pagination and optional project filtering"""
+    """List sections with pagination filtered by project ID"""
     # Build query
-    query = select(Section)
-    count_query = select(func.count(Section.id))
-    
-    if project_id:
-        query = query.where(Section.project_id == project_id)
-        count_query = count_query.where(Section.project_id == project_id)
+    query = select(Section).where(Section.project_id == project_id)
+    count_query = select(func.count(Section.id)).where(Section.project_id == project_id)
     
     # Get total count
     count_result = await db.execute(count_query)
