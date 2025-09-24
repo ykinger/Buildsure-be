@@ -8,6 +8,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 import math
+import json
+
+from pydantic import BaseModel
 
 from app.database import get_async_db
 from app.models.section import Section
@@ -22,8 +25,30 @@ from app.schemas.section import (
 )
 from app.schemas.answer import AnswerCreate, SectionAnswerResponse
 from app.services.section_service import SectionService
+from app.service.ai import what_to_pass_to_user, clear_chat_history
+
+import logging
+
+class RequestAnswer(BaseModel):
+    answer: str
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 router = APIRouter(prefix="/api/v1/sections", tags=["sections"])
+
+@router.get("/poc/{id}/clear")
+def get_clear(id: str):
+    clear_chat_history(id)
+    response = what_to_pass_to_user(id)
+    return response
+
+@router.post("/poc/{id}/next")
+def post_next(id: str, answer: RequestAnswer):
+    ai_response = what_to_pass_to_user(id, answer.answer)
+    if ai_response["type"] == "final_answer":
+        logging.info("AI Found the final answer, now we need to move to next section")
+    return ai_response
 
 
 @router.get("/", response_model=SectionListResponse)
@@ -35,17 +60,21 @@ async def list_sections(
 ):
     """List sections with pagination filtered by project ID"""
     # Build query
-    query = select(Section).where(Section.project_id == project_id)
-    count_query = select(func.count(Section.id)).where(Section.project_id == project_id)
-    
+    query = select(Section)
+    count_query = select(func.count(Section.id))
+
+    if project_id:
+        query = query.where(Section.project_id == project_id)
+        count_query = count_query.where(Section.project_id == project_id)
+
     # Get total count
     count_result = await db.execute(count_query)
     total = count_result.scalar()
-    
+
     # Calculate pagination
     offset = (page - 1) * size
     pages = math.ceil(total / size) if total > 0 else 1
-    
+
     # Get sections
     result = await db.execute(
         query
@@ -54,7 +83,7 @@ async def list_sections(
         .order_by(Section.form_section_number.asc())
     )
     sections = result.scalars().all()
-    
+
     return SectionListResponse(
         items=[SectionResponse.model_validate(section) for section in sections],
         total=total,
@@ -76,7 +105,7 @@ async def create_section(
     )
     if not project_result.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Project not found")
-    
+
     # Check if section number already exists for this project
     existing_section = await db.execute(
         select(Section).where(
@@ -86,12 +115,12 @@ async def create_section(
     )
     if existing_section.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Section number already exists for this project")
-    
+
     section = Section(**section_data.model_dump())
     db.add(section)
     await db.commit()
     await db.refresh(section)
-    
+
     return SectionResponse.model_validate(section)
 
 
@@ -105,10 +134,10 @@ async def get_section(
         select(Section).where(Section.id == section_id)
     )
     section = result.scalar_one_or_none()
-    
+
     if not section:
         raise HTTPException(status_code=404, detail="Section not found")
-    
+
     return SectionResponse.model_validate(section)
 
 
@@ -123,12 +152,12 @@ async def update_section(
         select(Section).where(Section.id == section_id)
     )
     section = result.scalar_one_or_none()
-    
+
     if not section:
         raise HTTPException(status_code=404, detail="Section not found")
-    
+
     update_data = section_data.model_dump(exclude_unset=True)
-    
+
     # Verify project exists if project_id is being updated
     if "project_id" in update_data:
         project_result = await db.execute(
@@ -136,9 +165,9 @@ async def update_section(
         )
         if not project_result.scalar_one_or_none():
             raise HTTPException(status_code=400, detail="Project not found")
-    
-    # Check if form section number already exists for the project (excluding current section)
-    if "form_section_number" in update_data:
+
+    # Check if section number already exists for the project (excluding current section)
+    if "section_number" in update_data:
         project_id = update_data.get("project_id", section.project_id)
         existing_result = await db.execute(
             select(Section).where(
@@ -147,16 +176,16 @@ async def update_section(
                 Section.id != section_id
             )
         )
-        if existing_result.scalar_one_or_none():
-            raise HTTPException(status_code=400, detail="Form section number already exists for this project")
-    
+        if existing_section.scalar_one_or_none():
+            raise HTTPException(status_code=400, detail="Section number already exists for this project")
+
     # Update fields
     for field, value in update_data.items():
         setattr(section, field, value)
-    
+
     await db.commit()
     await db.refresh(section)
-    
+
     return SectionResponse.model_validate(section)
 
 
@@ -170,10 +199,10 @@ async def delete_section(
         select(Section).where(Section.id == section_id)
     )
     section = result.scalar_one_or_none()
-    
+
     if not section:
         raise HTTPException(status_code=404, detail="Section not found")
-    
+
     await db.delete(section)
     await db.commit()
 
@@ -185,7 +214,7 @@ async def start_section(
 ):
     """
     Start a section by generating the first question.
-    
+
     This endpoint:
     1. Validates that the section exists and has READY_TO_START status
     2. Updates the section status to 'in_progress'
@@ -195,8 +224,8 @@ async def start_section(
     """
     try:
         section_service = SectionService()
-        result = await section_service.start_section(section_id, db)
-        
+        result = await section_service.start_section(project_id, section_number, db)
+
         return SectionStartResponse(
             section_id=result["section_id"],
             section_number=result["section_number"],
@@ -204,7 +233,7 @@ async def start_section(
             question=result["question"],
             question_type="initial"
         )
-        
+
     except ValueError as e:
         # Business logic validation errors
         raise HTTPException(status_code=400, detail=str(e))
@@ -227,7 +256,7 @@ async def list_sections_by_project(
     )
     if not project_result.scalar_one_or_none():
         raise HTTPException(status_code=404, detail="Project not found")
-    
+
     return await list_sections(page=page, size=size, project_id=project_id, db=db)
 
 
@@ -240,7 +269,7 @@ async def submit_section_answer(
 ):
     """
     Submit an answer for a section question.
-    
+
     This endpoint:
     1. Accepts question_text and answer_text
     2. Saves both in answers table
@@ -257,9 +286,9 @@ async def submit_section_answer(
             answer_text=answer_data.answer_text,
             db=db
         )
-        
+
         return SectionAnswerResponse(**result)
-        
+
     except ValueError as e:
         # Business logic validation errors
         raise HTTPException(status_code=400, detail=str(e))
@@ -276,7 +305,7 @@ async def confirm_section(
 ):
     """
     Confirm a section by finalizing its output and updating project progress.
-    
+
     This endpoint:
     1. Validates that the section is in_progress and matches current_section
     2. Saves draft_output as final_output
@@ -287,9 +316,9 @@ async def confirm_section(
     try:
         section_service = SectionService()
         result = await section_service.confirm_section(project_id, section_number, db)
-        
+
         return SectionConfirmResponse(**result)
-        
+
     except ValueError as e:
         # Business logic validation errors
         raise HTTPException(status_code=400, detail=str(e))

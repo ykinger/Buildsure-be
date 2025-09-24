@@ -1,0 +1,468 @@
+[
+  {
+    "guide": "Confirm the building code and version to which the project is designed by noting the regulation for the issued building code and the last code amendment regulation.",
+    "number": "3.00",
+    "title": "Building Code Version",
+    "question": "What is the regulation for the building code and the last code amendment regulation?",
+    "obc_reference": [
+      {
+        "part": "A",
+        "section": "O. Reg. 163/24"
+      },
+      {
+        "part": "A",
+        "section": "O. Reg. 447/24"
+      }
+    ]
+  },
+  {
+    "guide": "Identify the Project type as either New Construction, Addition, Renovation, Addition and Renovation, or Change of Use. Provide a brief description of the project: (e.g. construction of two-storey addition to the east face)",
+    "number": "3.01",
+    "title": "Project Type",
+    "question": "What is the project type (e.g., new construction, addition, renovation, etc.)? What is a brief description of the project?",
+    "obc_reference": [
+      {
+        "part": "A",
+        "section": "1.3.3.2"
+      }
+    ]
+  },
+  {
+    "guide": "Identify each of the major occupancy group in the building and describe their use. (e.g. D - Business and Personal Services / Medical Clinic). Refer to OBC 3.1.2. and to Appendix A to the building code for multiple major occupancies. Refer also to Hazard Index tables 11.2.1.1.B – 11.2.1.1.N in Part 11 of the building code and A-3.1.2.1 (1) of Appendix A to the building code for assistance in determining or classifying major occupancies.",
+    "number": "3.02",
+    "title": "Major Occupancy Classification",
+    "question": "What are the major occupancy groups in the building? What is their use?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "3.1.2"
+      }
+    ]
+  },
+  {
+    "guide": "Indicate if the building is designed with superimposed major occupancies. If Yes, provide a brief description. (e.g. Three stories of Group C – Residential, superimposed over one storey of Group E - Retail).",
+    "number": "3.03",
+    "title": "Superimposed Major Occupancies",
+    "question": "Are there superimposed major occupancies in the building? If yes, what is a brief description?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "3.2.2.7"
+      }
+    ]
+  },
+  {
+    "guide": "Indicate the building area for existing and new portions of the building and provide a total. Provide a simple description of the areas (e.g. existing building, east addition). If a portion of the building is to be demolished, enter in the Existing column only that portion which is to remain, such that the total of the new and existing is the area of the final project. Refer to building code definitions for building area and gross floor area.",
+    "number": "3.04",
+    "title": "Building Area (m²)",
+    "question": "What are the existing and new building areas in m²? What is the total building area?",
+    "obc_reference": [
+      {
+        "part": "A",
+        "section": "1.4.1.2"
+      }
+    ]
+  },
+  {
+    "guide": "Indicate the gross floor area for existing and new portions of the building and provide a total. Provide a simple description of the areas (e.g. existing building, east addition). If a portion of the building is to be demolished, enter in the Existing column only that portion which is to remain, such that the total of the new and existing is the gross floor area of the final project. Refer to OBC definitions for building area and gross floor area.",
+    "number": "3.05",
+    "title": "Gross Area (m²)",
+    "question": "What are the existing and new gross floor areas in m²? What is the total gross floor area?",
+    "obc_reference": [
+      {
+        "part": "A",
+        "section": "1.4.1.2"
+      }
+    ]
+  },
+  {
+    "guide": "Note whether there are mezzanines, how many, where and their areas. Provide a simple description of the areas (e.g. existing building, east addition). If a portion of a mezzanine is to be demolished, enter in the Existing column only that portion which is to remain, such that the total of the new and existing is the area of the final mezzanine. Refer to OBC definitions for mezzanine. If there are no mezzanines, enter N/A.",
+    "number": "3.06",
+    "title": "Mezzanine Area",
+    "question": "What are the existing and new mezzanine areas in m²? What is the total mezzanine area?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "3.2.1.1"
+      }
+    ]
+  },
+  {
+    "guide": "Enter the number of storeys above and below grade, and the building height as defined.",
+    "number": "3.07",
+    "title": "Building Height",
+    "question": "How many storeys are there above and below grade? What is the building height above grade in meters?",
+    "obc_reference": [
+      {
+        "part": "A",
+        "section": "1.4.1.2"
+      },
+      {
+        "part": "B",
+        "section": "3.2.1.1"
+      }
+    ]
+  },
+  {
+    "guide": "Check the appropriate “Yes” or “No” box in regard to whether the building is a high building as defined.",
+    "number": "3.08",
+    "title": "High Building",
+    "question": "Is the building a \"high building\" as defined by the code?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "3.2.6"
+      }
+    ]
+  },
+  {
+    "guide": "Enter number of streets and fire access routes.",
+    "number": "3.09",
+    "title": "Number of Streets/Firefighter access",
+    "question": "What is the number of streets and fire access routes?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "3.2.2.10"
+      },
+      {
+        "part": "B",
+        "section": "3.2.5"
+      }
+    ]
+  },
+  {
+    "guide": "Identify the classification of the building according to 3.2.2. Building Size and Construction Relative to Occupancy. A building may have different major occupancies but it is generally given one classification with the most restrictive occupancy governing. However, superimposed occupancies may be separately classified. List occupancies in the same order as in 3.02.",
+    "number": "3.10",
+    "title": "Building Group/Div Classification",
+    "question": "What is the building's classification based on its size and construction relative to its occupancy?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "3.2.2.20"
+      },
+      {
+        "part": "B",
+        "section": "3.2.2.93"
+      },
+      {
+        "part": "B",
+        "section": "3.2.2"
+      }
+    ]
+  },
+  {
+    "guide": "Obtain information from engineers and check the appropriate boxes.",
+    "number": "3.11",
+    "title": "Sprinkler System",
+    "question": "Is a sprinkler system required, not required, or provided? If provided, does it cover the entire building, selected compartments, selected floor areas, or the basement?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "3.2.1.5"
+      },
+      {
+        "part": "B",
+        "section": "3.2.2.18"
+      },
+      {
+        "part": "B",
+        "section": "3.2.2.21"
+      },
+      {
+        "part": "B",
+        "section": "3.2.2.22"
+      },
+      {
+        "part": "B",
+        "section": "3.2.2.29"
+      },
+      {
+        "part": "B",
+        "section": "3.2.4.1"
+      },
+      {
+        "part": "B",
+        "section": "3.2.4.9"
+      },
+      {
+        "part": "B",
+        "section": "3.2.4.15"
+      },
+      {
+        "part": "B",
+        "section": "3.2.5.12"
+      },
+      {
+        "part": "B",
+        "section": "3.2.5.13"
+      },
+      {
+        "part": "B",
+        "section": "3.2.5.14"
+      }
+    ]
+  },
+  {
+    "guide": "Obtain information from engineers and check the appropriate boxes.",
+    "number": "3.12",
+    "title": "Standpipe System",
+    "question": "Is a standpipe system required or not required?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "3.2.5.8"
+      },
+      {
+        "part": "B",
+        "section": "3.2.5.11"
+      }
+    ]
+  },
+  {
+    "guide": "Obtain information from engineers and check the appropriate boxes.",
+    "number": "3.13",
+    "title": "Fire Alarm System",
+    "question": "Is a fire alarm system required or not required? What type is provided (e.g., single stage, two stage, or none)?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "3.2.4"
+      }
+    ]
+  },
+  {
+    "guide": "Obtain information from engineers and check the appropriate boxes.",
+    "number": "3.14",
+    "title": "Water Service/Supply is Adequate",
+    "question": "Is the water service/supply adequate?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "3.2.5.7"
+      }
+    ]
+  },
+  {
+    "guide": "Identify the project construction restrictions (“combustible permitted”, “non-combustible required”, “encapsulated mass timber”) (refer to Building Classification). Indicate the actual construction (“combustible”, “non-combustible”, “combustible & non-combustible in combination”, “encapsulated mass timber”, “encapsulated mass timber & non-combustible in combination”) and whether heavy timber construction is used.",
+    "number": "3.15",
+    "title": "Construction Type",
+    "question": "What are the construction restrictions for the project (e.g., combustible permitted, non-combustible required, etc.)? What is the actual construction type (e.g., combustible, non-combustible, etc.)? Is heavy timber construction used?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "3.2.2.20"
+      },
+      {
+        "part": "B",
+        "section": "3.2.2.93"
+      },
+      {
+        "part": "B",
+        "section": "3.1.6"
+      }
+    ]
+  },
+  {
+    "guide": "Check the appropriate box for Importance Category and refer to PT.35 Importance Category and Seismic Restraint for completion of this section of the building code data matrix. Obtain information as required from a structural and geotechnical engineer.",
+    "number": "3.16",
+    "title": "Importance Category",
+    "question": "What is the building's importance category (e.g., low, normal, high, post-disaster)?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "4.1.2.1"
+      },
+      {
+        "part": "B",
+        "section": "T4.1.2.1"
+      }
+    ]
+  },
+  {
+    "guide": "If using the workbook, take advantage of the Seismic Supplement tab. Pertinent information from this tab appears on the Part 3 tab. Provide the seismic category, calculated in accordance with Part 4. In order to establish the seismic category, obtain information on the importance factor for earthquake loads and effects (based on the importance category) and the 5% spectral response acceleration values for the relevant periods. Identify the use of seismic isolation and supplemental energy dissipation systems. Identify if seismic design is required for elements of structures, non-structural components, and equipment.",
+    "number": "3.17",
+    "title": "Seismic Category",
+    "question": "What is the seismic category and site class? Is seismic design required for certain components?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "4.1.8.4"
+      },
+      {
+        "part": "B",
+        "section": "T-4.1.8.5-B"
+      },
+      {
+        "part": "B",
+        "section": "4.1.8.18"
+      }
+    ]
+  },
+  {
+    "guide": "Provide design information as to the occupancy and occupant load per floor area and the method of calculation. Note whether the design requires a posted occupant load limit.",
+    "number": "3.18",
+    "title": "Occupant Load",
+    "question": "What is the occupant load per floor level/area? What is the basis for the occupant load calculation? Is a posted occupant load limit required?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "3.1.17"
+      }
+    ]
+  },
+  {
+    "guide": "Identify if the building requires barrier-free design, and if not, state the reason for the exception. State the number of barrier-free entrances and provide an explanation if needed.",
+    "number": "3.19",
+    "title": "Barrier-free Design",
+    "question": "Is barrier-free design required? If not, what is the explanation for the exception?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "3.8"
+      }
+    ]
+  },
+  {
+    "guide": "Check appropriate box in regard to hazardous substances to be found in connection with any of the occupancies in the project.",
+    "number": "3.20",
+    "title": "Hazardous Substances",
+    "question": "Are there hazardous substances in connection with any of the occupancies?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "3.3.1.2"
+      }
+    ]
+  },
+  {
+    "guide": "Enter in the spaces provided, the fire resistance rating required for horizontal assemblies (e.g. floors, roofs and mezzanines), as well as the supporting members for these. Indicate where non-combustible construction is used in lieu of ratings (where permitted). Note that the fire resistance ratings required may change for different major occupancies. If the table in the matrix will not accommodate all the information, prepare a separate table and/or schematic plan and cross reference accordingly. Indicate the listed design numbers (e.g. ULC, cUL, MMAH SB-2) for the horizontal assemblies and their supporting members in an appropriate location in the construction documents, such as a building assemblies schedule where the designations can be more readily associated with a location or construction type.",
+    "number": "3.21",
+    "title": "Required Fire Resistance Ratings",
+    "question": "What are the required fire resistance ratings for horizontal assemblies and their supporting members?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "3.2.2.20-93"
+      },
+      {
+        "part": "B",
+        "section": "3.2.1.2"
+      },
+      {
+        "part": "B",
+        "section": "3.2.1.4"
+      },
+      {
+        "part": "B",
+        "section": "3.2.2.15"
+      },
+      {
+        "part": "B",
+        "section": "3.3.2.1"
+      }
+    ]
+  },
+  {
+    "guide": "Provide the spatial separation information in the appropriate columns for each building face/compartment as applicable. Provide a description of the exposing building face (e.g. “West Elevation”, “North Wall, Fire Compartment 1”) and identify them on the drawings using the same terminology. Provide the area of unprotected openings, required fire resistance rating, construction type (“combustible permitted”, “non-combustible required”, “encapsulated mass timber”) and cladding type (“combustible permitted”, “non-combustible required”).",
+    "number": "3.22a/b",
+    "alternate_number": "3.22",
+    "title": "Spatial Separation",
+    "question": "For each exposing building face, what is the area in m², percent of unprotected openings, and required fire resistance rating? What is the construction and cladding type?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "3.2.3"
+      }
+    ]
+  },
+  {
+    "guide": "Provide design information as to the occupancy, occupant load male/female ratio, and water closets required and provided. Add plumbing fixture calculations either on the same drawing sheet as the matrix or separately, confirming that the number of plumbing fixtures provided is not less than required by the occupant loads for the various occupancies. It may be necessary to provide a breakdown of the various occupancies in order to provide the required information with clarity. Adapt the matrix to clearly describe the project. Where there is an occupancy change under Part 11, Section 3.7 applies and may require an adjustment of the required number of plumbing fixtures due to the change in occupancy or specific use within an occupancy. Account appropriately for any barrier-free requirements and unisex or universal washrooms.",
+    "number": "3.23a/b",
+    "alternate_number": "3.23",
+    "title": "Plumbing Fixture Requirements",
+    "question": "What is the male-to-female ratio for the occupant load? What is the number of water closets required and provided? How many barrier-free and universal washrooms are required and provided?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "3.7.4"
+      },
+      {
+        "part": "B",
+        "section": "3.8.2.3"
+      },
+      {
+        "part": "B",
+        "section": "3.8.2.3.A"
+      },
+      {
+        "part": "B",
+        "section": "3.8.2.3.B"
+      }
+    ]
+  },
+  {
+    "guide": "State the Compliance Path utilized in the design and indicate both the Climatic Zone and design degree days below 18 C.",
+    "number": "3.24",
+    "title": "Energy Efficiency",
+    "question": "What is the compliance path, climate zone, and degree days below 18°C?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "12.2.1.2"
+      },
+      {
+        "part": "B",
+        "section": "SB-1"
+      }
+    ]
+  },
+  {
+    "guide": "Indicate whether there is more than 1 dwelling unit in the building, and if so, which compliance option was chosen.",
+    "number": "3.25",
+    "title": "Sound Transmission Design",
+    "question": "Is there more than one dwelling unit per building? If yes, which option was implemented?",
+    "obc_reference": [
+      {
+        "part": "B",
+        "section": "SB-3"
+      },
+      {
+        "part": "B",
+        "section": "5.8.1.2"
+      },
+      {
+        "part": "B",
+        "section": "5.8.1.4"
+      },
+      {
+        "part": "B",
+        "section": "5.8.1.5"
+      }
+    ]
+  },
+  {
+    "guide": "Identify any alternative solutions relied on for the design, and enter other related information including references to reports or studies that, in your professional judgment, will assist in acceptance of the alternative solution.",
+    "number": "3.26",
+    "title": "Alternative Solutions",
+    "question": "Are any alternative solutions being relied on for the design?",
+    "obc_reference": [
+      {
+        "part": "A",
+        "section": "1.2.1.1"
+      }
+    ]
+  },
+  {
+    "guide": "Identify any other information that, in your professional judgment, will assist in expediting issuance of the building permit.",
+    "number": "3.27",
+    "title": "Notes",
+    "question": "Are there any other notes that will assist in expediting the building permit issuance?",
+    "obc_reference": [
+      {
+        "part": "C",
+        "section": "2.1"
+      }
+    ]
+  }
+]

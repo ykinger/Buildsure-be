@@ -1,10 +1,36 @@
 #! ./env/bin/python
 import os
 import logging
+import json
+import asyncio
+from pathlib import Path
+
+from dotenv import load_dotenv
+
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.tools import tool
-from dotenv import load_dotenv
-from .tools import DEFINED_TOOLS
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, BaseMessage, ToolMessage
+from langchain_core.prompts import PromptTemplate
+
+from app.service.tools import DEFINED_TOOLS, get_form_section_info, set_history
+from app.database import get_db, get_async_db
+from app.services.obc_query_service import OBCQueryService
+
+async def _get_async_obc_content(section):
+    async for db in get_async_db():
+        obc = OBCQueryService(db)
+        section["sections"] = []
+        for x in section["obc_reference"]:
+            x["content"] = await obc.find_by_reference(x["section"])
+            section["sections"].append(x["content"])
+        return section
+
+def get_obc_content(section):
+    return asyncio.run(_get_async_obc_content(section))
+from langchain.globals import set_debug
+
+set_debug(True)
 
 # Load environment variables
 load_dotenv()
@@ -25,91 +51,26 @@ llm = ChatGoogleGenerativeAI(
 # Bind tools and force LLM to use tools only
 llm = llm.bind_tools(list(DEFINED_TOOLS.values()), tool_choice="any")
 
-def lm(msg):
-    try:
-        lm.invocation = lm.invocation + 1
-    except Exception:
-        lm.invocation = 1
-    logging.info("[msg %d] %s", lm.invocation, msg.content)
-
-
 #########################################################################
 #                Use these hardcode values for testing                  #
 #########################################################################
 
 form_question = {
     "number": "3.02",
-    "original_title": "Major Occupancy Classification",
+    "title": "Major Occupancy Classification",
     "question": "What are the major occupancy groups in the building? What is their use?",
     "guide": "Identify each of the major occupancy group in the building and describe their use. (e.g. D - Business and Personal Services / Medical Clinic). Refer to OBC 3.1.2. and to Appendix A to the building code for multiple major occupancies. Refer also to Hazard Index tables 11.2.1.1.B – 11.2.1.1.N in Part 11 of the building code and A-3.1.2.1 (1) of Appendix A to the building code for assistance in determining or classifying major occupancies."
 }
-
-sections = "\n".join([
-    """
-# 3.1.2. Classification of Buildings or Parts of Buildings by Major Occupancy (See Note A-3.1.2.)
-
-#### 3.1.2.1. Classification of Buildings
-
-**(1)** Except as permitted by Articles 3.1.2.3. to 3.1.2.7., every *building* or part thereof shall be classified according to its *major occupancy* as belonging to one of the Groups or Divisions described in Table 3.1.2.1. (See Note A-3.1.2.1.(1))
-
-**(2)** A *building* intended for use by more than one *major occupancy* shall be classified according to all *major occupancies* for which it is used or intended to be used.
-
-| Group | Division | Description of Major Occupancies                                                       |
-|-------|----------|----------------------------------------------------------------------------------------|
-| A     | 1        | Assembly occupancies<br>intended for the production and viewing of the performing arts |
-| A     | 2        | Assembly occupancies<br>not elsewhere classified in Group A                            |
-| A     | 3        | Assembly occupancies<br>of the arena type                                              |
-| A     | 4        | Assembly occupancies<br>in which occupants are gathered in the open air                |
-| B     | 1        | Detention occupancies                                                                  |
-| B     | 2        | Care and treatment occupancies                                                         |
-| B     | 3        | Care occupancies                                                                       |
-| C     |          | Residential occupancies                                                                |
-| D     |          | Business and personal services occupancies                                             |
-| E     |          | Mercantile occupancies                                                                 |
-| F     | 1        | High-hazard industrial occupancies                                                     |
-| F     | 2        | Medium-hazard industrial occupancies                                                   |
-| F     | 3        | Low-hazard industrial occupancies                                                      |
-
-#### **Table 3.1.2.1. Major Occupancy Classification** Forming Part of Sentences 3.1.2.1.(1), 3.1.2.2.(1) and 3.11.2.1.(3)
-
-#### 3.1.2.2. Occupancies of the Same Classification
-
-**(1)** Any *building* is deemed to be occupied by a single *major occupancy*, notwithstanding its use for more than one *major occupancy*, provided that all *occupancies* are classified as belonging to the same Group classification or, where the Group is divided into Divisions, as belonging to the same Division classification described in Table 3.1.2.1.
-
-#### 3.1.2.3. Arena-Type Buildings
-
-**(1)** An arena-type *building* intended for occasional use for trade shows and similar exhibition purposes shall be classified as Group A, Division 3 *occupancy*. **e1**
-
-#### 3.1.2.4. Police Stations
-
-**(1)** A police station with detention quarters is permitted to be classified as a Group B, Division 2 *major occupancy* provided the station is not more than 1 *storey* in *building height* and 600 m<sup>2</sup> in *building area*.
-
-### 3.1.2.5. Group B, Division 3 Occupancies
-
-**(1)** Group B, Division 3 *occupancies* are permitted to be classified as Group C *major occupancies* within the application of Part 3 provided
-
-- (a) the occupants live as a single housekeeping unit in a *suite* with sleeping accommodation for not more than 10 persons, and
-- (b) not more than two occupants require assistance in evacuation in case of an emergency.
-
-### 3.1.2.6. Storage of Combustible Fibres
-
-**(1)** *Buildings* or parts of thereof used for the storage of baled *combustible fibres* shall be classified as *medium-hazard industrial occupancies*.
-
-### 3.1.2.7. Restaurants
-
-**(1)** A restaurant is permitted to be classified as a Group E *major occupancy* within the application of Part 3 provided the restaurant is designed to accommodate not more than 30 persons consuming food or drink.
-    """
-])
 
 #########################################################################
 #                    Do not modify these templates                      #
 #########################################################################
 
-messages = [
-
+prompt_template = ChatPromptTemplate([
     (
         "system",
         """
+        <your_role_and_purpose>
         You are an AI agent designed to help a non-expert user fill out the 'Ontario Building Code Data Matrix'.
         Your task is to break down complex questions from the form into simpler, more user-friendly questions.
 
@@ -119,86 +80,123 @@ messages = [
         your questions must meet the following criteria:
 
         - The question must be in simple, non-technical language.
-        - Aim to simplify questions for the user, for example instead of directly asking about a technical term "major occupancy", ask the user what kind of building this is, and provide sensible non-technical options that will help you map the answer to the technical term. 
+        - Aim to simplify questions for the user, for example instead of directly asking about a technical term "major occupancy", ask the user what kind of building this is, and provide sensible non-technical options that will help you map the answer to the technical term.
         - When possible, provide examples to help the user understand your question or suggested options better.
         - You are limited to asking multiple choice questions or questions with a numeric value as answer.
-        """.format(**form_question,sections=sections)
-    ),
-    (
-        "system",
-        """
+        </your_role_and_purpose>
+        ---
+        <current_task>
         Currently you are interacting with the user to gather required information to answer the following part of the form:
 
-        Question number: {number}
-        Original title in the Code Data Matrix Form: {original_title}
-        Equivalent of the title in a more comrehensive, question like tone: {question}
-        """.format(**form_question,sections=sections)
-    ),
-    (
-        "system",
-        """
+        Section number: {number}
+        Original title in the Code Data Matrix Form: {title}
+        The question you are trying to answer: {question}
+        </current_task>
+        ---
+        <additional_helpful_information>
         Here is a guide specifically about how to answer the form question you are working on:
 
-        <question_guide>
-        {guide}
-        </question_guide>
-        """.format(**form_question,sections=sections)
-    ),
-    (
-        "system",
-        """
+            <question_guide>
+            {guide}
+            </question_guide>
+
         Here are the relevant parts of Ontario Building Code for your reference:
 
-        <obc_sections>
-        {sections}
-        </obc_sections>
-        """.format(**form_question,sections=sections)
-    ),
-    (
-        "system",
-        """
+            <obc_sections>
+            {sections}
+            </obc_sections>
+
+        </additional_helpful_information>
+        ---
         If you need any other section of OBC, ask for it and I will provide.
-        """.format(**form_question,sections=sections)
+        """
     ),
     (
         "human",
         """
-        If you have enough information to answer the form question, provide me the answer. Otherwise, ask your next question and I will provide the answer.
-        """.format(**form_question,sections=sections)
+        If you have enough information to answer the form question, provide me the answer. Otherwise, ask your next question and I will respond to you.
+        """
     ),
-]
+    MessagesPlaceholder("history")
+])
 
 # How many times we invoke LLM after fulfilling its tool calling request
-tool_calling_quota = 10 
+tool_calling_quota = 10
 
-# Initial invocation of AI
+# Define history storage directory
+HISTORY_DIR = Path("storage/history")
 
-while tool_calling_quota > 0:
 
-    # Invoke
-    ai_msg = llm.invoke(messages)
-    lm(ai_msg)
-    messages.append(ai_msg)
+MESSAGE_TYPES = {
+    "human": HumanMessage,
+    "ai": AIMessage,
+    "system": SystemMessage,
+    "tool": ToolMessage
+}
 
-    # Do what AI wanted us (handle tool calling, if any)
-    if len(ai_msg.tool_calls) > 0 :
-        logging.info(f"I received %d tool call"%len(ai_msg.tool_calls))
-        for tool_call in ai_msg.tool_calls:
-            logging.info("Running %s",tool_call["name"].lower())
-            selected_tool = DEFINED_TOOLS[tool_call["name"].lower()]
-            tool_msg = selected_tool.invoke(tool_call)
-            messages.append(tool_msg)
+# Let exceptions bubble for now
+# Save chat history to a json file
+def save_chat_history(num: str, history: list[BaseMessage]):
+    file_path = HISTORY_DIR / f"{num}.json"
+    serializable_history = []
+    for msg in history:
+        serializable_history.append({"type": msg.type, "content": msg.content})
+    with open(file_path, "w") as f:
+        json.dump(serializable_history, f, indent=4)
+    logging.info(f"Chat history for section {num} saved to {file_path}")
 
-            # if LLM is providing final answer, we're done
-            if tool_call["name"].lower() == "provide_final_answer":
-                # TODO: Bad practice, used to terminate the loop in case LLM returned final answer
-                tool_calling_quota = 0
-                continue
-        tool_calling_quota -= 1
-    else:
-        logging.info("There were no tool calls")
-        continue
-else:
-    logging.info("Exhausted tool calling quota")
+def clear_chat_history(num: str):
+    logging.info(f"Clearing history for section {num}")
+    save_chat_history(num, [])
 
-lm(ai_msg)
+# Let exceptions bubble for now
+# Reconstruct Langchain message objects
+def load_chat_history(id: str) -> list[BaseMessage]:
+    file_path = HISTORY_DIR / f"{id}.json"
+    if not file_path.exists():
+        logging.error(f"No chat history found for section {id} at {file_path}")
+        return []
+    with open(file_path, "r") as f:
+        loaded_history = json.load(f)
+
+    return [
+        MESSAGE_TYPES[msg["type"]](**msg)
+        for msg in loaded_history
+    ]
+
+def what_to_pass_to_user(num: str, human_answer:str = None) -> str:
+    current_section = get_form_section_info(num)
+    get_obc_content(current_section)
+
+    history = load_chat_history(num)
+    if human_answer is None and history != [] and history[len(history)-1].type == "ai":
+        raise Exception("last message was from AI, a human message is needed next")
+    set_history(history)
+    if human_answer is not None:
+        history.append(HumanMessage(human_answer))
+    prompt = prompt_template.invoke({**current_section, "history": history})
+    ai_msg = llm.invoke(prompt)
+
+    if len(ai_msg.tool_calls) == 0 :
+        return {
+            "status": "error",
+            "message": "no request for calling tools"
+        }
+    if len(ai_msg.tool_calls) > 1 :
+        return {
+            "status": "error",
+            "message": "too many tools requested"
+        }
+
+    tool_call = ai_msg.tool_calls[0]
+    logging.info("Running %s",tool_call["name"].lower())
+    selected_tool = DEFINED_TOOLS[tool_call["name"].lower()]
+    tool_msg = selected_tool.invoke(tool_call)
+    save_chat_history(num, history) # Save history after tool call
+    return json.loads(tool_msg.content)
+
+# what_to_pass_to_user("3.02")
+# what_to_pass_to_user("3.02", "Industrial (e.g., factories, warehouses)")
+# what_to_pass_to_user("3.02", "No")
+# what_to_pass_to_user("3.02", "Yes")
+# logging.info("Done")

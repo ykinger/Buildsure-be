@@ -1,9 +1,80 @@
-from langchain_core.tools import tool                                                                                                                                     
+
+from langchain_core.tools import tool
 import logging
 import json
+import sys
+import os
+from pydantic import BaseModel, Field
+from typing import Literal
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, BaseMessage, ToolMessage
+
+history = None
+def set_history(h):
+    global history
+    history = h
+
+# Add the project root to Python path so we can import app modules
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+
+QUESTIONS_PATH = os.path.dirname(__file__) + "/../../storage/data/form.json"
+
+# Pydantic models for return types
+class MCQData(BaseModel):
+    """Data structure for a multiple-choice question."""
+    type: Literal["mcq"] = "mcq"
+    question: str
+    answer_options: list[str]
+
+class MultipleChoiceQuestionResponse(BaseModel):
+    """
+    Represents a structured response for asking a multiple-choice question to the user.
+    Use this when the AI needs to ask a question and provide predefined options for the user to choose from.
+    """
+    type: Literal["question"] = "question"
+    data: MCQData
+
+class NumericQuestionData(BaseModel):
+    """Data structure for a numeric question."""
+    type: Literal["numeric"] = "numeric"
+    question: str
+
+class NumericQuestionResponse(BaseModel):
+    """
+    Represents a structured response for presenting a numeric question to the user.
+    The AI can ask for validation of user input based on defined criteria,
+    including minimum and maximum allowed values, and units.
+    """
+    type: Literal["question"] = "question"
+    data: NumericQuestionData
+
+class FreeTextQuestionData(BaseModel):
+    """Data structure for a free-form text question."""
+    type: Literal["free_form_text"] = "free_form_text"
+    question: str
+
+class FreeTextQuestionResponse(BaseModel):
+    """
+    Represents a structured response for presenting a free-form text question to the user.
+    Use this when the AI needs to ask a question that requires a free-form text answer.
+    """
+    type: Literal["question"] = "question"
+    data: FreeTextQuestionData
+
+class FinalAnswerData(BaseModel):
+    """Data structure for providing a final answer to a form question."""
+    answer: str
+
+class FinalAnswerResponse(BaseModel):
+    """
+    Represents a structured response to let the user know this is the final answer
+    to a form question and there will be no more questions regarding this specific form question.
+    """
+    type: Literal["answer"] = "answer"
+    data: FinalAnswerData
+
 
 @tool
-def ask_multiple_choice_question(question_text: str, options: list[str]) -> str:
+def ask_multiple_choice_question(question_text: str, options: list[str]) -> MultipleChoiceQuestionResponse:
     """
     Ask a multiple-choice question to the user and receives their answer.
     Use this when you have a question to the user and you are able to define
@@ -14,21 +85,15 @@ def ask_multiple_choice_question(question_text: str, options: list[str]) -> str:
         options (list[str]): A list of possible answer choices.
 
     Returns:
-        str: The user's selected answer (one of the options).
+        MultipleChoiceQuestionResponse: The user's selected answer (one of the options).
     """
     logging.info("[MCQ] %s %s", question_text, options)
-    ret = {
-        "type": "question",
-        "data": {
-            "type": "mcq",
-            "question": question_text,
-            "answer_options": options
-        }
-    }
-    return json.dumps(ret)
+    mcq_data = MCQData(question=question_text, answer_options=options)
+    history.append(AIMessage(question_text))
+    return MultipleChoiceQuestionResponse(data=mcq_data).model_dump()
 
 @tool
-def ask_numeric_question(question_text: str) -> float:
+def ask_numeric_question(question_text: str) -> NumericQuestionResponse:
     """
     Presents a numeric question to the user and receives their answer.
 
@@ -39,38 +104,28 @@ def ask_numeric_question(question_text: str) -> float:
         question_text (str): The text of the numeric question.
 
     Returns:
-        float: The user's numeric answer.
+        NumericQuestionResponse: The user's numeric answer.
     """
-    ret = {
-        "type": "question",
-        "data": {
-            "type": "numeric",
-            "question": question_text
-        }
-    }
-    return json.dumps(ret)
+    numeric_data = NumericQuestionData(question=question_text)
+    history.append(AIMessage(question_text))
+    return NumericQuestionResponse(data=numeric_data).model_dump()
 
 @tool
-def ask_free_text_question(question_text: str) -> float:
+def ask_free_text_question(question_text: str) -> FreeTextQuestionResponse:
     """
     Presents a free form text question to the user.
 
-    This question is 
+    This question is
 
     Args:
         question_text (str): The text of the free-form question.
 
     Returns:
-        str: The user's answer to the question.
+        FreeTextQuestionResponse: The user's answer to the question.
     """
-    ret = {
-        "type": "question",
-        "data": {
-            "type": "free_form_text",
-            "question": question_text
-        }
-    }
-    return json.dumps(ret)
+    free_text_data = FreeTextQuestionData(question=question_text)
+    history.append(AIMessage(question_text))
+    return FreeTextQuestionResponse(data=free_text_data).model_dump()
 
 @tool
 def retrieve_obc_section(section: str) -> str:
@@ -84,13 +139,10 @@ def retrieve_obc_section(section: str) -> str:
         str: The content of the OBC section.
     """
     logging.info("Asked to retreive section %s", section)
-    try:
-        return sections[section]
-    except:
-        return "I could not find the section you requested"
+    return "NOT IMPLEMENTED YET - I cannot return OBC section as of now"
 
 @tool
-def provide_final_answer(answer: str) -> str:
+def provide_final_answer(answer: str) -> FinalAnswerResponse:
     """
     Let user know this is the final answer to form question and there will be no more
     questions regarding this specific form question.
@@ -99,22 +151,35 @@ def provide_final_answer(answer: str) -> str:
         answer (str): The final answer to be used by user to fill the form question
     """
     logging.info("[Final] Answer: %s", answer)
-    ret = {
-        "type": "form_answer",
-        "data": {
-            "answer": answer
-        }
-    }
-    return json.dumps(ret)
+    final_answer_data = FinalAnswerData(answer=answer)
+    history.append(AIMessage(answer))
+    return FinalAnswerResponse(data=final_answer_data).model_dump()
 
+def get_form_section_info(number: str) -> dict:
+    """
+    Provides basic form section information, including:
+    - Of the section in the form
+    - The question AI should seek the answer to
+    - A guide on where in OBC to look for relevant information
+    -
+    """
+    if number < "3.00" or number > "3.26":
+        return None
+    for section in json.loads(open(QUESTIONS_PATH).read()):
+        if section["number"] == number:
+            return section
 
 DEFINED_TOOLS = {
-    "ask_numeric_question": ask_numeric_question,
+    "ask_free_text_question": ask_free_text_question,
     "ask_multiple_choice_question": ask_multiple_choice_question,
-    "retrieve_obc_section": retrieve_obc_section,
+    "ask_numeric_question": ask_numeric_question,
     "provide_final_answer": provide_final_answer,
+    "retrieve_obc_section": retrieve_obc_section,
 }
 
-sections = {
-    "section number" : "section text"
-}
+ACCEPTABLE_RESPONSE_TYPES = [
+    FreeTextQuestionResponse,
+    MultipleChoiceQuestionResponse,
+    NumericQuestionResponse,
+    FinalAnswerResponse
+]
