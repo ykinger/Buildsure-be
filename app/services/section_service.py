@@ -24,16 +24,14 @@ class SectionService:
     
     async def start_section(
         self,
-        project_id: str,
-        section_number: int,
+        section_id: str,
         db: AsyncSession
     ) -> Dict[str, Any]:
         """
         Start a section by validating, updating status, and generating the first question.
         
         Args:
-            project_id: The project ID
-            section_number: The section number to start
+            section_id: The section ID to start
             db: Database session
             
         Returns:
@@ -45,21 +43,19 @@ class SectionService:
         """
         try:
             # Step 1: Validate the section can be started
-            project, section = await self._validate_section_start(
-                project_id, section_number, db
-            )
+            section = await self._validate_section_start(section_id, db)
             
             # Step 2: Update section status to 'in_progress'
             await self._update_section_status(section, SectionStatus.IN_PROGRESS, db)
             
             # Step 3: Retrieve relevant ontario chunks
             ontario_chunks = await self._get_relevant_guidelines(
-                section_number, db
+                section.section_number, db
             )
             
             # Step 4: Generate the first question using AI
             question_data = await self.ai_service.generate_question(
-                section_number=section_number,
+                section_number=section.section_number,
                 ontario_chunks=ontario_chunks,
                 form_questions_and_answers=[],  # Empty for first question
                 clarifying_questions_and_answers=[]  # Empty for first question
@@ -67,88 +63,72 @@ class SectionService:
             
             # Step 5: Prepare the response
             response = {
-                "project_id": project_id,
-                "section_number": section_number,
-                "section_status": SectionStatus.IN_PROGRESS.value,
+                "section_id": section.id,
+                "section_number": section.section_number,
+                "status": SectionStatus.IN_PROGRESS.value,
                 "question": question_data,
                 "guidelines_found": len(ontario_chunks),
-                "message": f"Section {section_number} started successfully"
+                "message": f"Section {section.section_number} started successfully"
             }
             
-            logger.info(f"Successfully started section {section_number} for project {project_id}")
+            logger.info(f"Successfully started section {section.section_number} (ID: {section.id})")
             return response
             
         except Exception as e:
-            logger.error(f"Error starting section {section_number} for project {project_id}: {str(e)}")
+            logger.error(f"Error starting section {section_id}: {str(e)}")
             # Rollback any changes if needed
             await db.rollback()
             raise
     
     async def _validate_section_start(
         self,
-        project_id: str,
-        section_number: int,
+        section_id: str,
         db: AsyncSession
-    ) -> tuple[Project, Section]:
+    ) -> Section:
         """
         Validate that the section can be started.
         
         Args:
-            project_id: The project ID
-            section_number: The section number
+            section_id: The section ID
             db: Database session
             
         Returns:
-            Tuple of (project, section)
+            The section object
             
         Raises:
             ValueError: If validation fails
         """
-        # Check if project exists
-        project_result = await db.execute(
-            select(Project).where(Project.id == project_id)
-        )
-        project = project_result.scalar_one_or_none()
-        
-        if not project:
-            raise ValueError(f"Project with ID {project_id} not found")
-        
-        # Check if section exists for this project
+        # Check if section exists
         section_result = await db.execute(
-            select(Section).where(
-                Section.project_id == project_id,
-                Section.section_number == section_number
-            )
+            select(Section).where(Section.id == section_id)
         )
         section = section_result.scalar_one_or_none()
         
         if not section:
-            raise ValueError(
-                f"Section {section_number} not found for project {project_id}"
-            )
+            raise ValueError(f"Section with ID {section_id} not found")
         
         # Check if section is in the correct state to be started
         if section.status != SectionStatus.READY_TO_START:
             if section.status == SectionStatus.PENDING:
                 raise ValueError(
-                    f"Section {section_number} is not ready to start. "
+                    f"Section {section.section_number} is not ready to start. "
                     f"Complete the previous section first."
                 )
             elif section.status == SectionStatus.IN_PROGRESS:
                 raise ValueError(
-                    f"Section {section_number} is already in progress"
+                    f"Section {section.section_number} is already in progress"
                 )
             elif section.status == SectionStatus.COMPLETED:
                 raise ValueError(
-                    f"Section {section_number} is already completed"
+                    f"Section {section.section_number} is already completed"
                 )
             else:
                 raise ValueError(
-                    f"Section {section_number} cannot be started. "
+                    f"Section {section.section_number} cannot be started. "
                     f"Current status: {section.status.value}"
                 )
         
-        return project, section
+        return section
     
     async def _update_section_status(
         self,

@@ -178,17 +178,16 @@ async def delete_section(
     await db.commit()
 
 
-@router.post("/projects/{project_id}/sections/{section_number}/start", response_model=SectionStartResponse)
+@router.post("/{section_id}/start", response_model=SectionStartResponse)
 async def start_section(
-    project_id: str,
-    section_number: int,
+    section_id: str,
     db: AsyncSession = Depends(get_async_db)
 ):
     """
     Start a section by generating the first question.
     
     This endpoint:
-    1. Validates that the section matches the project's current_section
+    1. Validates that the section exists and has READY_TO_START status
     2. Updates the section status to 'in_progress'
     3. Retrieves relevant guideline chunks for this section
     4. Calls LangChain with prompt template to generate the first question
@@ -196,7 +195,7 @@ async def start_section(
     """
     try:
         section_service = SectionService()
-        result = await section_service.start_section(project_id, section_number, db)
+        result = await section_service.start_section(section_id, db)
         
         return SectionStartResponse(
             section_id=result["section_id"],
