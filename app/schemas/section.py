@@ -9,7 +9,7 @@ from app.models.section import SectionStatus
 
 class SectionBase(BaseModel):
     """Base section schema with common fields"""
-    section_number: int
+    form_section_number: str
     status: SectionStatus = SectionStatus.PENDING
     draft_output: Optional[Dict[str, Any]] = None
     final_output: Optional[Dict[str, Any]] = None
@@ -22,7 +22,7 @@ class SectionCreate(SectionBase):
 
 class SectionUpdate(BaseModel):
     """Schema for updating a section"""
-    section_number: Optional[int] = None
+    form_section_number: Optional[str] = None
     status: Optional[SectionStatus] = None
     draft_output: Optional[Dict[str, Any]] = None
     final_output: Optional[Dict[str, Any]] = None
@@ -53,7 +53,7 @@ class SectionListResponse(BaseModel):
 class SectionStartResponse(BaseModel):
     """Schema for section start response with generated question"""
     section_id: str
-    section_number: int
+    form_section_number: str
     status: SectionStatus
     question: str
     question_type: str = "initial"
@@ -64,14 +64,14 @@ class SectionStartResponse(BaseModel):
 class SectionConfirmResponse(BaseModel):
     """Schema for section confirmation response"""
     section_id: str
-    section_number: int
+    form_section_number: str
     status: SectionStatus
     final_output: Optional[Dict[str, Any]] = None
     project_id: str
     project_status: str
     completed_sections: int
     total_sections: int
-    current_section: int
+    current_section: str
     message: str
     
     model_config = ConfigDict(from_attributes=True)

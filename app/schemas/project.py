@@ -12,7 +12,7 @@ class ProjectBase(BaseModel):
     name: str
     description: Optional[str] = None
     status: ProjectStatus = ProjectStatus.NOT_STARTED
-    current_section: int = 0
+    current_section: str = "3.01"
     total_sections: int = 27
     completed_sections: int = 0
 
@@ -30,7 +30,7 @@ class ProjectUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     status: Optional[ProjectStatus] = None
-    current_section: Optional[int] = None
+    current_section: Optional[str] = None
     total_sections: Optional[int] = None
     completed_sections: Optional[int] = None
     org_id: Optional[str] = None
@@ -61,7 +61,7 @@ class ProjectListResponse(BaseModel):
 
 class SectionReportData(BaseModel):
     """Schema for individual section data in project report"""
-    section_number: int
+    form_section_number: str
     final_output: Optional[Dict[str, Any]] = None
     completed: bool = False
 

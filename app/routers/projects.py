@@ -103,7 +103,7 @@ async def create_project(
     project_dict = project_data.model_dump()
     project_dict.update({
         'total_sections': 27,
-        'current_section': 0,
+        'current_section': '3.01',
         'completed_sections': 0,
         'status': ProjectStatus.NOT_STARTED
     })
@@ -116,9 +116,10 @@ async def create_project(
     for section_number in range(1, 28):  # 1 to 27
         # Set section 1 as READY_TO_START, others as PENDING
         status = SectionStatus.READY_TO_START if section_number == 1 else SectionStatus.PENDING
+        form_section_number = f"3.{section_number:02d}"
         sections.append(Section(
             project_id=project.id,
-            section_number=section_number,
+            form_section_number=form_section_number,
             status=status
         ))
     

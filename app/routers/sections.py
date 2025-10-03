@@ -51,7 +51,7 @@ async def list_sections(
         query
         .offset(offset)
         .limit(size)
-        .order_by(Section.section_number.asc())
+        .order_by(Section.form_section_number.asc())
     )
     sections = result.scalars().all()
     
@@ -137,18 +137,18 @@ async def update_section(
         if not project_result.scalar_one_or_none():
             raise HTTPException(status_code=400, detail="Project not found")
     
-    # Check if section number already exists for the project (excluding current section)
-    if "section_number" in update_data:
+    # Check if form section number already exists for the project (excluding current section)
+    if "form_section_number" in update_data:
         project_id = update_data.get("project_id", section.project_id)
-        existing_section = await db.execute(
+        existing_result = await db.execute(
             select(Section).where(
                 Section.project_id == project_id,
-                Section.section_number == update_data["section_number"],
+                Section.form_section_number == update_data["form_section_number"],
                 Section.id != section_id
             )
         )
-        if existing_section.scalar_one_or_none():
-            raise HTTPException(status_code=400, detail="Section number already exists for this project")
+        if existing_result.scalar_one_or_none():
+            raise HTTPException(status_code=400, detail="Form section number already exists for this project")
     
     # Update fields
     for field, value in update_data.items():

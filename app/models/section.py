@@ -37,7 +37,7 @@ class Section(Base):
         nullable=False,
         index=True
     )
-    section_number = Column(Integer, nullable=False)
+    form_section_number = Column(String, nullable=False)
     status = Column(
         Enum(SectionStatus), 
         nullable=False, 
@@ -70,4 +70,4 @@ class Section(Base):
     )
 
     def __repr__(self) -> str:
-        return f"<Section(id={self.id}, project_id={self.project_id}, section_number={self.section_number}, status='{self.status.value}')>"
+        return f"<Section(id={self.id}, project_id={self.project_id}, form_section_number={self.form_section_number}, status='{self.status.value}')>"

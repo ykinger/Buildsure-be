@@ -51,7 +51,7 @@ class Project(Base):
         nullable=False, 
         default=ProjectStatus.NOT_STARTED
     )
-    current_section = Column(Integer, nullable=False, default=0)
+    current_section = Column(String, nullable=False, default="3.01")
     total_sections = Column(Integer, nullable=False, default=0)
     completed_sections = Column(Integer, nullable=False, default=0)
     created_at = Column(
@@ -79,7 +79,7 @@ class Project(Base):
         "Section", 
         back_populates="project",
         cascade="all, delete-orphan",
-        order_by="Section.section_number"
+        order_by="Section.form_section_number"
     )
 
     def __repr__(self) -> str:

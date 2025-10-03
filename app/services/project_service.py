@@ -118,7 +118,7 @@ class ProjectService:
                     Section.project_id == project_id,
                     Section.status == SectionStatus.COMPLETED
                 )
-                .order_by(Section.section_number)
+                .order_by(Section.form_section_number)
             )
             sections = result.scalars().all()
             
@@ -146,25 +146,26 @@ class ProjectService:
         """
         sections_data = {}
         
-        # Create a mapping of section numbers to completed sections
-        completed_map = {section.section_number: section for section in completed_sections}
+        # Create a mapping of form section numbers to completed sections
+        completed_map = {section.form_section_number: section for section in completed_sections}
         
-        # Generate data for all sections (1 to total_sections)
+        # Generate data for all sections (3.01 to 3.27)
         for section_num in range(1, total_sections + 1):
+            form_section_num = f"3.{section_num:02d}"
             section_key = f"section_{section_num}"
             
-            if section_num in completed_map:
+            if form_section_num in completed_map:
                 # Section is completed
-                completed_section = completed_map[section_num]
+                completed_section = completed_map[form_section_num]
                 sections_data[section_key] = SectionReportData(
-                    section_number=section_num,
+                    form_section_number=form_section_num,
                     final_output=completed_section.final_output,
                     completed=True
                 )
             else:
                 # Section is not completed
                 sections_data[section_key] = SectionReportData(
-                    section_number=section_num,
+                    form_section_number=form_section_num,
                     final_output=None,
                     completed=False
                 )

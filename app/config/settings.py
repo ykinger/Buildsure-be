@@ -36,13 +36,13 @@ class Settings(BaseSettings):
     )
     
     # Google Gemini AI Configuration
-    google_api_key: Optional[str] = Field(
+    gemini_api_key: Optional[str] = Field(
         default=None,
-        env="GOOGLE_API_KEY",
-        description="Google API key for Gemini LLM"
+        env="GEMINI_API_KEY",
+        description="Gemini API key for Gemini LLM"
     )
     gemini_model: str = Field(
-        default="gemini-1.5-flash",
+        default="gemini-2.5-flash",
         env="GEMINI_MODEL",
         description="Gemini model to use"
     )

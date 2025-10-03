@@ -10,7 +10,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.schema import HumanMessage, SystemMessage
 from langchain.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
 
-from app.config.settings import settings
+from app.config.settings import Settings, settings
 from app.utils.prompt_builder import PromptBuilder
 
 logger = logging.getLogger(__name__)
@@ -19,7 +19,7 @@ class AIService:
     """Service for AI-powered question generation using Google Gemini."""
     
     def __init__(self):
-        self.settings = settings
+        self.settings: Settings = settings
         self.llm = None
         self.prompt_builder = PromptBuilder("assets/prompt-parts")
         self._initialize_llm()
@@ -29,8 +29,8 @@ class AIService:
         try:
             # Initialize Google Gemini LLM
             self.llm = ChatGoogleGenerativeAI(
-                model="gemini-pro",
-                google_api_key=self.settings.google_api_key,
+                model=self.settings.gemini_model,
+                google_api_key=self.settings.gemini_api_key,
                 temperature=self.settings.gemini_temperature,
                 max_tokens=self.settings.gemini_max_tokens,
                 timeout=self.settings.ai_timeout_seconds

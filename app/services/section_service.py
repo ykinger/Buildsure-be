@@ -64,14 +64,14 @@ class SectionService:
             # Step 5: Prepare the response
             response = {
                 "section_id": section.id,
-                "section_number": section.section_number,
+                "form_section_number": section.form_section_number,
                 "status": SectionStatus.IN_PROGRESS.value,
                 "question": question_data,
                 "guidelines_found": len(ontario_chunks),
-                "message": f"Section {section.section_number} started successfully"
+                "message": f"Section {section.form_section_number} started successfully"
             }
             
-            logger.info(f"Successfully started section {section.section_number} (ID: {section.id})")
+            logger.info(f"Successfully started section {section.form_section_number} (ID: {section.id})")
             return response
             
         except Exception as e:
@@ -111,20 +111,20 @@ class SectionService:
         if section.status != SectionStatus.READY_TO_START:
             if section.status == SectionStatus.PENDING:
                 raise ValueError(
-                    f"Section {section.section_number} is not ready to start. "
+                    f"Section {section.form_section_number} is not ready to start. "
                     f"Complete the previous section first."
                 )
             elif section.status == SectionStatus.IN_PROGRESS:
                 raise ValueError(
-                    f"Section {section.section_number} is already in progress"
+                    f"Section {section.form_section_number} is already in progress"
                 )
             elif section.status == SectionStatus.COMPLETED:
                 raise ValueError(
-                    f"Section {section.section_number} is already completed"
+                    f"Section {section.form_section_number} is already completed"
                 )
             else:
                 raise ValueError(
-                    f"Section {section.section_number} cannot be started. "
+                    f"Section {section.form_section_number} cannot be started. "
                     f"Current status: {section.status.value}"
                 )
         
@@ -150,7 +150,7 @@ class SectionService:
             await db.commit()
             await db.refresh(section)
             
-            logger.debug(f"Updated section {section.section_number} status to {new_status.value}")
+            logger.debug(f"Updated section {section.form_section_number} status to {new_status.value}")
             
         except Exception as e:
             await db.rollback()
