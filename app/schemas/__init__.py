@@ -29,10 +29,15 @@ from .section import (
     SectionResponse,
     SectionListResponse
 )
+from .conversation import (
+    ConversationCreate,
+    ConversationRead
+)
 
 __all__ = [
     "OrganizationBase", "OrganizationCreate", "OrganizationUpdate", "OrganizationResponse", "OrganizationListResponse",
     "UserBase", "UserCreate", "UserUpdate", "UserResponse", "UserListResponse",
     "ProjectBase", "ProjectCreate", "ProjectUpdate", "ProjectResponse", "ProjectListResponse",
-    "SectionBase", "SectionCreate", "SectionUpdate", "SectionResponse", "SectionListResponse"
+    "SectionBase", "SectionCreate", "SectionUpdate", "SectionResponse", "SectionListResponse",
+    "ConversationCreate", "ConversationRead"
 ]
