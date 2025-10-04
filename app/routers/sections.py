@@ -25,7 +25,7 @@ from app.schemas.section import (
 )
 from app.schemas.answer import AnswerCreate, SectionAnswerResponse
 from app.services.section_service import SectionService
-from app.service.ai import what_to_pass_to_user, clear_chat_history
+from app.services.ai_service import AIService
 
 import logging
 
@@ -39,8 +39,9 @@ router = APIRouter(prefix="/api/v1/sections", tags=["sections"])
 
 @router.get("/poc/{id}/clear")
 def get_clear(id: str):
-    clear_chat_history(id)
-    response = what_to_pass_to_user(id)
+    ai_service = AIService()
+    ai_service.clear_chat_history(id)
+    response = ai_service.what_to_pass_to_user(id)
     return response
 
 @router.post("/poc/{id}/next")
@@ -50,7 +51,8 @@ async def post_next(id: str, answer: RequestAnswer, db: AsyncSession = Depends(g
     result = await db.execute(select_stmt)
     section = result.scalar_one_or_none()
     section_number = section.form_section_number if section else "unknown"
-    ai_response = await what_to_pass_to_user(section_number, answer.answer)
+    ai_service = AIService()
+    ai_response = ai_service.what_to_pass_to_user(section_number, answer.answer)
 
     if ai_response["type"] == "final_answer":
         logging.info("AI Found the final answer, now we need to move to next section")
@@ -233,7 +235,8 @@ async def start_section(
     result = await db.execute(select_stmt)
     section = result.scalar_one_or_none()
     section_number = section.form_section_number if section else "unknown"
-    ai_response = await what_to_pass_to_user(section_number)
+    ai_service = AIService()
+    ai_response = ai_service.what_to_pass_to_user(section_number)
 
     if ai_response["type"] == "final_answer":
         logging.info("AI Found the final answer, now we need to move to next section")

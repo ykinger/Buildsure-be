@@ -1,17 +1,34 @@
 """
 AI Service Module
 Handles LangChain integration with Google Gemini for question generation.
+Merged functionality from app/service/ai.py
 """
-import logging
-from typing import Dict, List, Optional, Any
-from pathlib import Path
-import asyncio
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.schema import HumanMessage, SystemMessage
-from langchain.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
 
+import logging
+import json
+import asyncio
+from pathlib import Path
+from typing import Dict, List, Optional, Any
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.tools import tool
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder, SystemMessagePromptTemplate, HumanMessagePromptTemplate
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, BaseMessage, ToolMessage
+from langchain_core.prompts import PromptTemplate
+from langchain.schema import HumanMessage, SystemMessage
+from langchain.globals import set_debug
+
+from app.service.tools import DEFINED_TOOLS, get_form_section_info, set_history
+from app.database import get_db, get_async_db
+from app.services.obc_query_service import OBCQueryService
 from app.config.settings import Settings, settings
 from app.utils.prompt_builder import PromptBuilder
+
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+# Enable debug mode
+set_debug(True)
 
 logger = logging.getLogger(__name__)
 
@@ -22,23 +39,209 @@ class AIService:
         self.settings: Settings = settings
         self.llm = None
         self.prompt_builder = PromptBuilder("assets/prompt-parts")
+        
+        # Constants from ai.py
+        self.tool_calling_quota = 10
+        self.HISTORY_DIR = Path("storage/history")
+        
+        # Message types mapping
+        self.MESSAGE_TYPES = {
+            "human": HumanMessage,
+            "ai": AIMessage,
+            "system": SystemMessage,
+            "tool": ToolMessage
+        }
+        
+        # Hardcoded form question for testing
+        self.form_question = {
+            "number": "3.02",
+            "title": "Major Occupancy Classification",
+            "question": "What are the major occupancy groups in the building? What is their use?",
+            "guide": "Identify each of the major occupancy group in the building and describe their use. (e.g. D - Business and Personal Services / Medical Clinic). Refer to OBC 3.1.2. and to Appendix A to the building code for multiple major occupancies. Refer also to Hazard Index tables 11.2.1.1.B – 11.2.1.1.N in Part 11 of the building code and A-3.1.2.1 (1) of Appendix A to the building code for assistance in determining or classifying major occupancies."
+        }
+        
+        # Prompt template from ai.py
+        self.prompt_template = ChatPromptTemplate([
+            (
+                "system",
+                """
+                <your_role_and_purpose>
+                You are an AI agent designed to help a non-expert user fill out the 'Ontario Building Code Data Matrix'.
+                Your task is to break down complex questions from the form into simpler, more user-friendly questions.
+
+                Your knowledge base is limited to the content provided in this prompt.
+                Using these information, ask questions to gather the information needed to complete a specific section of the form.
+
+                your questions must meet the following criteria:
+
+                - The question must be in simple, non-technical language.
+                - Aim to simplify questions for the user, for example instead of directly asking about a technical term "major occupancy", ask the user what kind of building this is, and provide sensible non-technical options that will help you map the answer to the technical term.
+                - When possible, provide examples to help the user understand your question or suggested options better.
+                - You are limited to asking multiple choice questions or questions with a numeric value as answer.
+                </your_role_and_purpose>
+                ---
+                <current_task>
+                Currently you are interacting with the user to gather required information to answer the following part of the form:
+
+                Section number: {number}
+                Original title in the Code Data Matrix Form: {title}
+                The question you are trying to answer: {question}
+                </current_task>
+                ---
+                <additional_helpful_information>
+                Here is a guide specifically about how to answer the form question you are working on:
+
+                    <question_guide>
+                    {guide}
+                    </question_guide>
+
+                Here are the relevant parts of Ontario Building Code for your reference:
+
+                    <obc_sections>
+                    {sections}
+                    </obc_sections>
+
+                </additional_helpful_information>
+                ---
+                If you need any other section of OBC, ask for it and I will provide.
+                """
+            ),
+            (
+                "human",
+                """
+                If you have enough information to answer the form question, provide me the answer. Otherwise, ask your next question and I will respond to you.
+                """
+            ),
+            MessagesPlaceholder("history")
+        ])
+        
         self._initialize_llm()
     
     def _initialize_llm(self):
-        """Initialize the Google Gemini LLM client."""
+        """Initialize the Google Gemini LLM client with tools binding."""
         try:
+            # Use settings for all configuration
+            model_name = self.settings.gemini_model
+            temperature = self.settings.gemini_temperature
+            max_tokens = self.settings.gemini_max_tokens
+            api_key = self.settings.gemini_api_key
+            
             # Initialize Google Gemini LLM
             self.llm = ChatGoogleGenerativeAI(
-                model=self.settings.gemini_model,
-                google_api_key=self.settings.gemini_api_key,
-                temperature=self.settings.gemini_temperature,
-                max_tokens=self.settings.gemini_max_tokens,
+                model=model_name,
+                temperature=temperature,
+                max_tokens=max_tokens,
+                google_api_key=api_key,
                 timeout=self.settings.ai_timeout_seconds
             )
-            logger.info("Google Gemini LLM initialized successfully")
+            
+            # Bind tools and force LLM to use tools only (from ai.py approach)
+            self.llm = self.llm.bind_tools(list(DEFINED_TOOLS.values()), tool_choice="any")
+            
+            logging.info("Google Gemini LLM initialized successfully with tools")
         except Exception as e:
-            logger.error(f"Failed to initialize Google Gemini LLM: {str(e)}")
+            logging.error(f"Failed to initialize Google Gemini LLM: {str(e)}")
             raise
+    
+    async def _get_async_obc_content(self, section):
+        """Get OBC content asynchronously."""
+        async for db in get_async_db():
+            obc = OBCQueryService(db)
+            section["sections"] = []
+            for x in section["obc_reference"]:
+                x["content"] = await obc.find_by_reference(x["section"])
+                section["sections"].append(x["content"])
+            return section
+
+    def get_obc_content(self, section):
+        """Get OBC content synchronously."""
+        return asyncio.run(self._get_async_obc_content(section))
+
+    def save_chat_history(self, num: str, history: list[BaseMessage]):
+        """Save chat history to a json file."""
+        file_path = self.HISTORY_DIR / f"{num}.json"
+        serializable_history = []
+        for msg in history:
+            serializable_history.append({"type": msg.type, "content": msg.content})
+        
+        # Ensure directory exists
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        with open(file_path, "w") as f:
+            json.dump(serializable_history, f, indent=4)
+        logging.info(f"Chat history for section {num} saved to {file_path}")
+
+    def clear_chat_history(self, num: str):
+        """Clear chat history for a section."""
+        logging.info(f"Clearing history for section {num}")
+        self.save_chat_history(num, [])
+
+    def load_chat_history(self, id: str) -> list[BaseMessage]:
+        """Reconstruct Langchain message objects from saved history."""
+        file_path = self.HISTORY_DIR / f"{id}.json"
+        if not file_path.exists():
+            logging.error(f"No chat history found for section {id} at {file_path}")
+            return []
+        
+        try:
+            with open(file_path, "r") as f:
+                loaded_history = json.load(f)
+
+            return [
+                self.MESSAGE_TYPES[msg["type"]](**msg)
+                for msg in loaded_history
+            ]
+        except Exception as e:
+            logging.error(f"Error loading chat history for {id}: {str(e)}")
+            return []
+
+    def what_to_pass_to_user(self, num: str, human_answer: str = None) -> str:
+        """Main function to interact with user - converted from ai.py."""
+        try:
+            current_section = get_form_section_info(num)
+            if not current_section:
+                return {
+                    "status": "error",
+                    "message": f"Section {num} not found"
+                }
+                
+            self.get_obc_content(current_section)
+
+            history = self.load_chat_history(num)
+            if human_answer is None and history != [] and history[len(history)-1].type == "ai":
+                raise Exception("last message was from AI, a human message is needed next")
+                
+            set_history(history)
+            if human_answer is not None:
+                history.append(HumanMessage(human_answer))
+                
+            prompt = self.prompt_template.invoke({**current_section, "history": history})
+            ai_msg = self.llm.invoke(prompt)
+
+            if len(ai_msg.tool_calls) == 0:
+                return {
+                    "status": "error",
+                    "message": "no request for calling tools"
+                }
+            if len(ai_msg.tool_calls) > 1:
+                return {
+                    "status": "error", 
+                    "message": "too many tools requested"
+                }
+
+            tool_call = ai_msg.tool_calls[0]
+            logging.info("Running %s", tool_call["name"].lower())
+            selected_tool = DEFINED_TOOLS[tool_call["name"].lower()]
+            tool_msg = selected_tool.invoke(tool_call)
+            self.save_chat_history(num, history)  # Save history after tool call
+            return json.loads(tool_msg.content)
+            
+        except Exception as e:
+            logging.error(f"Error in what_to_pass_to_user: {str(e)}")
+            return {
+                "status": "error",
+                "message": str(e)
+            }
     
     async def generate_question(
         self,
