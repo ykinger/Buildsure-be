@@ -20,7 +20,7 @@ class SectionService:
     """Service for managing section operations and business logic."""
     
     def __init__(self):
-        self.ai_service = AIService()
+        pass  # No longer instantiate AIService here
     
     async def start_section(
         self,
@@ -54,7 +54,8 @@ class SectionService:
             )
             
             # Step 4: Generate the first question using AI
-            question_data = await self.ai_service.generate_question(
+            ai_service = AIService(db)
+            question_data = await ai_service.generate_question(
                 section_number=section.section_number,
                 ontario_chunks=ontario_chunks,
                 form_questions_and_answers=[],  # Empty for first question
@@ -293,7 +294,8 @@ class SectionService:
             )
             
             # Step 5: Call AI service to determine next step
-            ai_result = await self.ai_service.process_answer_and_generate_next(
+            ai_service = AIService(db)
+            ai_result = await ai_service.process_answer_and_generate_next(
                 section_number=section_number,
                 current_question=question_text,
                 current_answer=answer_text,
@@ -702,16 +704,20 @@ class SectionService:
             logger.error(f"Failed to update project progress: {str(e)}")
             raise RuntimeError(f"Failed to update project progress: {str(e)}")
 
-    async def health_check(self) -> Dict[str, Any]:
+    async def health_check(self, db: AsyncSession) -> Dict[str, Any]:
         """
         Check the health of the section service and its dependencies.
         
+        Args:
+            db: Database session
+            
         Returns:
             Dict containing health status information
         """
         try:
             # Check AI service health
-            ai_health = self.ai_service.health_check()
+            ai_service = AIService(db)
+            ai_health = ai_service.health_check()
             
             return {
                 "status": "healthy" if ai_health["status"] == "healthy" else "degraded",

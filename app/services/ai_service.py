@@ -18,8 +18,8 @@ from langchain.schema import HumanMessage, SystemMessage
 from langchain.globals import set_debug
 
 from app.service.tools import DEFINED_TOOLS, get_form_section_info, set_history
-from app.database import get_db, get_async_db
 from app.services.obc_query_service import OBCQueryService
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.config.settings import Settings, settings
 from app.utils.prompt_builder import PromptBuilder
 
@@ -35,7 +35,8 @@ logger = logging.getLogger(__name__)
 class AIService:
     """Service for AI-powered question generation using Google Gemini."""
     
-    def __init__(self):
+    def __init__(self, db: AsyncSession):
+        self.db = db
         self.settings: Settings = settings
         self.llm = None
         self.prompt_builder = PromptBuilder("assets/prompt-parts")
@@ -144,18 +145,17 @@ class AIService:
             raise
     
     async def _get_async_obc_content(self, section):
-        """Get OBC content asynchronously."""
-        async for db in get_async_db():
-            obc = OBCQueryService(db)
-            section["sections"] = []
-            for x in section["obc_reference"]:
-                x["content"] = await obc.find_by_reference(x["section"])
-                section["sections"].append(x["content"])
-            return section
+        """Get OBC content asynchronously using injected database session."""
+        obc = OBCQueryService(self.db)
+        section["sections"] = []
+        for x in section["obc_reference"]:
+            x["content"] = await obc.find_by_reference(x["section"])
+            section["sections"].append(x["content"])
+        return section
 
-    def get_obc_content(self, section):
-        """Get OBC content synchronously."""
-        return asyncio.run(self._get_async_obc_content(section))
+    async def get_obc_content(self, section):
+        """Get OBC content using injected database session."""
+        return await self._get_async_obc_content(section)
 
     def save_chat_history(self, num: str, history: list[BaseMessage]):
         """Save chat history to a json file."""
@@ -195,7 +195,7 @@ class AIService:
             logging.error(f"Error loading chat history for {id}: {str(e)}")
             return []
 
-    def what_to_pass_to_user(self, num: str, human_answer: str = None) -> str:
+    async def what_to_pass_to_user(self, num: str, human_answer: str = None) -> str:
         """Main function to interact with user - converted from ai.py."""
         try:
             current_section = get_form_section_info(num)
@@ -205,7 +205,7 @@ class AIService:
                     "message": f"Section {num} not found"
                 }
                 
-            self.get_obc_content(current_section)
+            await self.get_obc_content(current_section)
 
             history = self.load_chat_history(num)
             if human_answer is None and history != [] and history[len(history)-1].type == "ai":

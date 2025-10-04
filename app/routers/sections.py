@@ -38,10 +38,10 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 router = APIRouter(prefix="/api/v1/sections", tags=["sections"])
 
 @router.get("/poc/{id}/clear")
-def get_clear(id: str):
-    ai_service = AIService()
+async def get_clear(id: str, db: AsyncSession = Depends(get_async_db)):
+    ai_service = AIService(db)
     ai_service.clear_chat_history(id)
-    response = ai_service.what_to_pass_to_user(id)
+    response = await ai_service.what_to_pass_to_user(id)
     return response
 
 @router.post("/poc/{id}/next")
@@ -51,8 +51,8 @@ async def post_next(id: str, answer: RequestAnswer, db: AsyncSession = Depends(g
     result = await db.execute(select_stmt)
     section = result.scalar_one_or_none()
     section_number = section.form_section_number if section else "unknown"
-    ai_service = AIService()
-    ai_response = ai_service.what_to_pass_to_user(section_number, answer.answer)
+    ai_service = AIService(db)
+    ai_response = await ai_service.what_to_pass_to_user(section_number, answer.answer)
 
     if ai_response["type"] == "final_answer":
         logging.info("AI Found the final answer, now we need to move to next section")
@@ -230,17 +230,6 @@ async def start_section(
     4. Calls LangChain with prompt template to generate the first question
     5. Returns the generated question without saving it
     """
-
-    select_stmt = select(Section).where(Section.id == section_id)
-    result = await db.execute(select_stmt)
-    section = result.scalar_one_or_none()
-    section_number = section.form_section_number if section else "unknown"
-    ai_service = AIService()
-    ai_response = ai_service.what_to_pass_to_user(section_number)
-
-    if ai_response["type"] == "final_answer":
-        logging.info("AI Found the final answer, now we need to move to next section")
-    return ai_response
     try:
         section_service = SectionService()
         result = await section_service.start_section(section_id, db)
