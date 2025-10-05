@@ -17,7 +17,7 @@ from langchain_core.prompts import PromptTemplate
 from langchain.schema import HumanMessage, SystemMessage
 from langchain.globals import set_debug
 
-from app.service.tools import DEFINED_TOOLS, get_form_section_info, set_history
+from app.services.tools import DEFINED_TOOLS, get_form_section_info, set_history
 from app.services.obc_query_service import OBCQueryService
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.config.settings import Settings, settings
@@ -34,17 +34,17 @@ logger = logging.getLogger(__name__)
 
 class AIService:
     """Service for AI-powered question generation using Google Gemini."""
-    
+
     def __init__(self, db: AsyncSession):
         self.db = db
         self.settings: Settings = settings
         self.llm = None
         self.prompt_builder = PromptBuilder("assets/prompt-parts")
-        
+
         # Constants from ai.py
         self.tool_calling_quota = 10
         self.HISTORY_DIR = Path("storage/history")
-        
+
         # Message types mapping
         self.MESSAGE_TYPES = {
             "human": HumanMessage,
@@ -52,7 +52,7 @@ class AIService:
             "system": SystemMessage,
             "tool": ToolMessage
         }
-        
+
         # Hardcoded form question for testing
         self.form_question = {
             "number": "3.02",
@@ -60,7 +60,7 @@ class AIService:
             "question": "What are the major occupancy groups in the building? What is their use?",
             "guide": "Identify each of the major occupancy group in the building and describe their use. (e.g. D - Business and Personal Services / Medical Clinic). Refer to OBC 3.1.2. and to Appendix A to the building code for multiple major occupancies. Refer also to Hazard Index tables 11.2.1.1.B – 11.2.1.1.N in Part 11 of the building code and A-3.1.2.1 (1) of Appendix A to the building code for assistance in determining or classifying major occupancies."
         }
-        
+
         # Prompt template from ai.py
         self.prompt_template = ChatPromptTemplate([
             (
@@ -115,9 +115,9 @@ class AIService:
             ),
             MessagesPlaceholder("history")
         ])
-        
+
         self._initialize_llm()
-    
+
     def _initialize_llm(self):
         """Initialize the Google Gemini LLM client with tools binding."""
         try:
@@ -126,7 +126,7 @@ class AIService:
             temperature = self.settings.gemini_temperature
             max_tokens = self.settings.gemini_max_tokens
             api_key = self.settings.gemini_api_key
-            
+
             # Initialize Google Gemini LLM
             self.llm = ChatGoogleGenerativeAI(
                 model=model_name,
@@ -135,15 +135,15 @@ class AIService:
                 google_api_key=api_key,
                 timeout=self.settings.ai_timeout_seconds
             )
-            
+
             # Bind tools and force LLM to use tools only (from ai.py approach)
             self.llm = self.llm.bind_tools(list(DEFINED_TOOLS.values()), tool_choice="any")
-            
+
             logging.info("Google Gemini LLM initialized successfully with tools")
         except Exception as e:
             logging.error(f"Failed to initialize Google Gemini LLM: {str(e)}")
             raise
-    
+
     async def get_obc_content(self, section):
         """Get OBC content using injected database session."""
         obc = OBCQueryService(self.db)
@@ -159,10 +159,10 @@ class AIService:
         serializable_history = []
         for msg in history:
             serializable_history.append({"type": msg.type, "content": msg.content})
-        
+
         # Ensure directory exists
         file_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         with open(file_path, "w") as f:
             json.dump(serializable_history, f, indent=4)
         logging.info(f"Chat history for section {num} saved to {file_path}")
@@ -178,7 +178,7 @@ class AIService:
         if not file_path.exists():
             logging.error(f"No chat history found for section {id} at {file_path}")
             return []
-        
+
         try:
             with open(file_path, "r") as f:
                 loaded_history = json.load(f)
@@ -200,17 +200,17 @@ class AIService:
                     "status": "error",
                     "message": f"Section {num} not found"
                 }
-                
+
             await self.get_obc_content(current_section)
 
             history = self.load_chat_history(num)
             if human_answer is None and history != [] and history[len(history)-1].type == "ai":
                 raise Exception("last message was from AI, a human message is needed next")
-                
+
             set_history(history)
             if human_answer is not None:
                 history.append(HumanMessage(human_answer))
-                
+
             prompt = self.prompt_template.invoke({**current_section, "history": history})
             ai_msg = self.llm.invoke(prompt)
 
@@ -221,7 +221,7 @@ class AIService:
                 }
             if len(ai_msg.tool_calls) > 1:
                 return {
-                    "status": "error", 
+                    "status": "error",
                     "message": "too many tools requested"
                 }
 
@@ -231,14 +231,14 @@ class AIService:
             tool_msg = selected_tool.invoke(tool_call)
             self.save_chat_history(num, history)  # Save history after tool call
             return json.loads(tool_msg.content)
-            
+
         except Exception as e:
             logging.error(f"Error in what_to_pass_to_user: {str(e)}")
             return {
                 "status": "error",
                 "message": str(e)
             }
-    
+
     async def generate_question(
         self,
         section_number: int,
@@ -248,13 +248,13 @@ class AIService:
     ) -> Dict[str, Any]:
         """
         Generate a contextual question for the given section using Gemini.
-        
+
         Args:
             section_number: The current section number
             ontario_chunks: Relevant Ontario Building Code chunks
             form_questions_and_answers: Previously answered form questions
             clarifying_questions_and_answers: Previous clarifying Q&As
-            
+
         Returns:
             Dict containing the generated question and metadata
         """
@@ -262,18 +262,18 @@ class AIService:
             # Prepare context data
             form_qa = form_questions_and_answers or []
             clarifying_qa = clarifying_questions_and_answers or []
-            
+
             # Build the prompt using the existing prompt builder
             prompt_text = self.prompt_builder.render(
                 current_question_number=str(section_number),
                 form_questions_and_answers=form_qa,
                 clarifying_questions_and_answers=clarifying_qa
             )
-            
+
             # Add ontario chunks context to the prompt
             ontario_context = self._format_ontario_chunks(ontario_chunks)
             enhanced_prompt = f"{prompt_text}\n\n### Relevant Ontario Building Code Sections:\n{ontario_context}"
-            
+
             # Create the chat prompt template
             chat_prompt = ChatPromptTemplate.from_messages([
                 SystemMessagePromptTemplate.from_template(
@@ -283,24 +283,24 @@ class AIService:
                 ),
                 HumanMessagePromptTemplate.from_template("{prompt}")
             ])
-            
+
             # Format the prompt
             formatted_prompt = chat_prompt.format_prompt(prompt=enhanced_prompt)
-            
+
             # Generate response using Gemini
             response = await self._call_llm_async(formatted_prompt.to_messages())
-            
+
             # Parse and format the response
             question_data = self._parse_llm_response(response, section_number)
-            
+
             logger.info(f"Successfully generated question for section {section_number}")
             return question_data
-            
+
         except Exception as e:
             logger.error(f"Error generating question for section {section_number}: {str(e)}")
             # Return a fallback question
             return self._get_fallback_question(section_number)
-    
+
     async def process_answer_and_generate_next(
         self,
         section_number: int,
@@ -311,27 +311,27 @@ class AIService:
     ) -> Dict[str, Any]:
         """
         Process the current answer and determine next step: ask another question or generate draft.
-        
+
         Args:
             section_number: The current section number
             current_question: The question that was just answered
             current_answer: The answer provided by the user
             previous_answers: List of previous Q&A pairs for this section
             ontario_chunks: Relevant Ontario Building Code chunks
-            
+
         Returns:
             Dict containing either next_question or draft_output
         """
         try:
             # Format previous Q&A pairs for context
             qa_context = self._format_previous_answers(previous_answers)
-            
+
             # Add current Q&A to context
             current_qa = f"Q: {current_question}\nA: {current_answer}"
-            
+
             # Format ontario chunks context
             ontario_context = self._format_ontario_chunks(ontario_chunks)
-            
+
             # Create decision prompt
             decision_prompt = f"""
 Based on the following context, determine if we need to ask more clarifying questions or if we have enough information to generate a draft section.
@@ -353,7 +353,7 @@ Instructions:
 
 Consider that we need sufficient detail to create a comprehensive building permit section.
 """
-            
+
             # Create the chat prompt template
             chat_prompt = ChatPromptTemplate.from_messages([
                 SystemMessagePromptTemplate.from_template(
@@ -363,14 +363,14 @@ Consider that we need sufficient detail to create a comprehensive building permi
                 ),
                 HumanMessagePromptTemplate.from_template("{prompt}")
             ])
-            
+
             # Format and call LLM
             formatted_prompt = chat_prompt.format_prompt(prompt=decision_prompt)
             response = await self._call_llm_async(formatted_prompt.to_messages())
-            
+
             # Parse the response to determine next action
             return self._parse_decision_response(response, section_number)
-            
+
         except Exception as e:
             logger.error(f"Error processing answer for section {section_number}: {str(e)}")
             # Return a fallback next question
@@ -382,25 +382,25 @@ Consider that we need sufficient detail to create a comprehensive building permi
                     "reason": "error_processing_answer"
                 }
             }
-    
+
     def _format_previous_answers(self, answers: List[Dict[str, Any]]) -> str:
         """Format previous answers for context."""
         if not answers:
             return "No previous questions asked."
-        
+
         formatted_answers = []
         for i, answer in enumerate(answers, 1):
             q_text = answer.get('question_text', 'Unknown question')
             a_text = answer.get('answer_text', 'No answer')
             formatted_answers.append(f"{i}. Q: {q_text}\n   A: {a_text}")
-        
+
         return "\n".join(formatted_answers)
-    
+
     def _parse_decision_response(self, response: str, section_number: int) -> Dict[str, Any]:
         """Parse the LLM decision response."""
         try:
             cleaned_response = response.strip()
-            
+
             if cleaned_response.startswith("QUESTION:"):
                 # Extract the question
                 question_text = cleaned_response[9:].strip()
@@ -438,7 +438,7 @@ Consider that we need sufficient detail to create a comprehensive building permi
                         "reason": "unclear_response_format"
                     }
                 }
-                
+
         except Exception as e:
             logger.error(f"Error parsing decision response: {str(e)}")
             return {
@@ -449,7 +449,7 @@ Consider that we need sufficient detail to create a comprehensive building permi
                     "reason": "parse_error"
                 }
             }
-    
+
     async def _call_llm_async(self, messages: List[Any]) -> str:
         """Make async call to the LLM."""
         try:
@@ -460,29 +460,29 @@ Consider that we need sufficient detail to create a comprehensive building permi
         except Exception as e:
             logger.error(f"LLM call failed: {str(e)}")
             raise
-    
+
     def _format_ontario_chunks(self, chunks: List[Dict[str, Any]]) -> str:
         """Format ontario chunks for inclusion in the prompt."""
         if not chunks:
             return "No specific building code sections available."
-        
+
         formatted_chunks = []
         for chunk in chunks:
             section_ref = chunk.get('section_reference', 'Unknown')
             section_title = chunk.get('section_title', 'No title')
             chunk_text = chunk.get('chunk_text', '')
-            
+
             formatted_chunk = f"**{section_ref}: {section_title}**\n{chunk_text}\n"
             formatted_chunks.append(formatted_chunk)
-        
+
         return "\n".join(formatted_chunks)
-    
+
     def _parse_llm_response(self, response: str, section_number: int) -> Dict[str, Any]:
         """Parse the LLM response into a structured question format."""
         try:
             # Clean up the response
             cleaned_response = response.strip()
-            
+
             # For now, return the response as a simple question
             # In the future, this could be enhanced to parse structured responses
             return {
@@ -500,7 +500,7 @@ Consider that we need sufficient detail to create a comprehensive building permi
         except Exception as e:
             logger.error(f"Error parsing LLM response: {str(e)}")
             return self._get_fallback_question(section_number)
-    
+
     def _get_fallback_question(self, section_number: int) -> Dict[str, Any]:
         """Return a fallback question when AI generation fails."""
         return {
@@ -515,21 +515,21 @@ Consider that we need sufficient detail to create a comprehensive building permi
                 "section_context": False
             }
         }
-    
+
     def health_check(self) -> Dict[str, Any]:
         """Check if the AI service is healthy and operational."""
         try:
             if self.llm is None:
                 return {"status": "unhealthy", "error": "LLM not initialized"}
-            
+
             # Simple test call
             test_messages = [
                 SystemMessage(content="You are a helpful assistant."),
                 HumanMessage(content="Say 'OK' if you can respond.")
             ]
-            
+
             response = self.llm.invoke(test_messages)
-            
+
             return {
                 "status": "healthy",
                 "model": "gemini-pro",

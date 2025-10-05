@@ -37,6 +37,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 router = APIRouter(prefix="/api/v1/sections", tags=["sections"])
 
+#TODO: Not needed
 @router.get("/{section_id}/clear")
 async def clear_section_history(section_id: str, db: AsyncSession = Depends(get_async_db)):
     """Clear chat history for a section"""
@@ -44,14 +45,15 @@ async def clear_section_history(section_id: str, db: AsyncSession = Depends(get_
     select_stmt = select(Section).where(Section.id == section_id)
     result = await db.execute(select_stmt)
     section = result.scalar_one_or_none()
-    
+
     if not section:
         raise HTTPException(status_code=404, detail="Section not found")
-    
+
     ai_service = AIService(db)
     ai_service.clear_chat_history(section.form_section_number)
-    response = await ai_service.what_to_pass_to_user(section.form_section_number)
-    return response
+    #TODO: this could be replaced with a redirect to /next
+    # response = await ai_service.what_to_pass_to_user(section.form_section_number)
+    return "Cleared"
 
 
 @router.get("/", response_model=SectionListResponse)
@@ -210,7 +212,7 @@ async def delete_section(
     await db.commit()
 
 
-@router.post("/{section_id}/start")
+@router.post("/{section_id}/next")
 async def start_section(
     section_id: str,
     answer: Optional[RequestAnswer] = None,
@@ -229,24 +231,20 @@ async def start_section(
     select_stmt = select(Section).where(Section.id == section_id)
     result = await db.execute(select_stmt)
     section = result.scalar_one_or_none()
-    
+
     if not section:
         raise HTTPException(status_code=404, detail="Section not found")
-    
+
     section_number = section.form_section_number
     ai_service = AIService(db)
-    
-    # Use the POC approach with what_to_pass_to_user
-    if answer:
-        ai_response = await ai_service.what_to_pass_to_user(section_number, answer.answer)
-    else:
-        ai_response = await ai_service.what_to_pass_to_user(section_number)
-    
+
+    ai_response = await ai_service.what_to_pass_to_user(section_number, answer.answer)
+
     # Handle final_answer type to log completion (like POC)
     if ai_response.get("type") == "final_answer":
         logging.info("AI Found the final answer, now we need to move to next section")
-        # Could update section status to completed here if needed
-    
+        #TODO: update section status to completed here if needed
+
     return ai_response
 
 

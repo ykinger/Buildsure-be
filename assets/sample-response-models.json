@@ -1,0 +1,92 @@
+{
+  "sample_response_models": {
+    "multiple_choice_question": {
+      "description": "Sample response for asking a multiple-choice question to the user",
+      "json": {
+        "type": "question",
+        "data": {
+          "type": "mcq",
+          "question": "What type of building construction is being proposed?",
+          "answer_options": [
+            "Wood frame construction",
+            "Steel frame construction",
+            "Concrete construction",
+            "Masonry construction",
+            "Hybrid construction"
+          ]
+        }
+      }
+    },
+    "numeric_question": {
+      "description": "Sample response for presenting a numeric question to the user",
+      "json": {
+        "type": "question",
+        "data": {
+          "type": "numeric",
+          "question": "What is the total floor area of the proposed building in square meters?"
+        }
+      }
+    },
+    "free_text_question": {
+      "description": "Sample response for presenting a free-form text question to the user",
+      "json": {
+        "type": "question",
+        "data": {
+          "type": "free_form_text",
+          "question": "Please describe the intended use of the building and any special features or requirements."
+        }
+      }
+    },
+    "final_answer": {
+      "description": "Sample response for providing a final answer to a form question",
+      "json": {
+        "type": "answer",
+        "data": {
+          "answer": "The proposed building meets all requirements for Type 3 construction as per Ontario Building Code Section 3.2.2.7, with appropriate fire separation and sprinkler protection."
+        }
+      }
+    }
+  },
+  "response_model_summary": {
+    "MultipleChoiceQuestionResponse": {
+      "structure": {
+        "type": "question",
+        "data": {
+          "type": "mcq",
+          "question": "string",
+          "answer_options": ["array of strings"]
+        }
+      },
+      "use_case": "When the AI needs to ask a question and provide predefined options for the user to choose from"
+    },
+    "NumericQuestionResponse": {
+      "structure": {
+        "type": "question",
+        "data": {
+          "type": "numeric",
+          "question": "string"
+        }
+      },
+      "use_case": "When the AI needs to ask for a numeric value from the user"
+    },
+    "FreeTextQuestionResponse": {
+      "structure": {
+        "type": "question",
+        "data": {
+          "type": "free_form_text",
+          "question": "string"
+        }
+      },
+      "use_case": "When the AI needs to ask a question that requires a free-form text answer"
+    },
+    "FinalAnswerResponse": {
+      "structure": {
+        "type": "answer",
+        "data": {
+          "answer": "string"
+        }
+      },
+      "use_case": "When the AI has determined the final answer to a form question and there will be no more questions"
+    }
+  }
+}
