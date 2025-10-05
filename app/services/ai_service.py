@@ -21,7 +21,6 @@ from app.services.tools import DEFINED_TOOLS, get_form_section_info, set_history
 from app.services.obc_query_service import OBCQueryService
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.config.settings import Settings, settings
-from app.utils.prompt_builder import PromptBuilder
 
 
 # Configure logging
@@ -39,7 +38,6 @@ class AIService:
         self.db = db
         self.settings: Settings = settings
         self.llm = None
-        self.prompt_builder = PromptBuilder("assets/prompt-parts")
 
         # Constants from ai.py
         self.tool_calling_quota = 10
