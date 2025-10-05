@@ -144,18 +144,14 @@ class AIService:
             logging.error(f"Failed to initialize Google Gemini LLM: {str(e)}")
             raise
     
-    async def _get_async_obc_content(self, section):
-        """Get OBC content asynchronously using injected database session."""
+    async def get_obc_content(self, section):
+        """Get OBC content using injected database session."""
         obc = OBCQueryService(self.db)
         section["sections"] = []
         for x in section["obc_reference"]:
             x["content"] = await obc.find_by_reference(x["section"])
             section["sections"].append(x["content"])
         return section
-
-    async def get_obc_content(self, section):
-        """Get OBC content using injected database session."""
-        return await self._get_async_obc_content(section)
 
     def save_chat_history(self, num: str, history: list[BaseMessage]):
         """Save chat history to a json file."""

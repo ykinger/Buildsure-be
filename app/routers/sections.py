@@ -2,7 +2,7 @@
 Sections Router
 FastAPI router for section CRUD operations.
 """
-from typing import List
+from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
@@ -37,26 +37,21 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 router = APIRouter(prefix="/api/v1/sections", tags=["sections"])
 
-@router.get("/poc/{id}/clear")
-async def get_clear(id: str, db: AsyncSession = Depends(get_async_db)):
-    ai_service = AIService(db)
-    ai_service.clear_chat_history(id)
-    response = await ai_service.what_to_pass_to_user(id)
-    return response
-
-@router.post("/poc/{id}/next")
-async def post_next(id: str, answer: RequestAnswer, db: AsyncSession = Depends(get_async_db)):
-
-    select_stmt = select(Section).where(Section.id == id)
+@router.get("/{section_id}/clear")
+async def clear_section_history(section_id: str, db: AsyncSession = Depends(get_async_db)):
+    """Clear chat history for a section"""
+    # Get section and use form_section_number for history clearing
+    select_stmt = select(Section).where(Section.id == section_id)
     result = await db.execute(select_stmt)
     section = result.scalar_one_or_none()
-    section_number = section.form_section_number if section else "unknown"
+    
+    if not section:
+        raise HTTPException(status_code=404, detail="Section not found")
+    
     ai_service = AIService(db)
-    ai_response = await ai_service.what_to_pass_to_user(section_number, answer.answer)
-
-    if ai_response["type"] == "final_answer":
-        logging.info("AI Found the final answer, now we need to move to next section")
-    return ai_response
+    ai_service.clear_chat_history(section.form_section_number)
+    response = await ai_service.what_to_pass_to_user(section.form_section_number)
+    return response
 
 
 @router.get("/", response_model=SectionListResponse)
@@ -215,39 +210,44 @@ async def delete_section(
     await db.commit()
 
 
-@router.post("/{section_id}/start", response_model=SectionStartResponse)
+@router.post("/{section_id}/start")
 async def start_section(
     section_id: str,
+    answer: Optional[RequestAnswer] = None,
     db: AsyncSession = Depends(get_async_db)
 ):
     """
-    Start a section by generating the first question.
+    Start a section conversation or continue with an answer.
 
-    This endpoint:
-    1. Validates that the section exists and has READY_TO_START status
-    2. Updates the section status to 'in_progress'
-    3. Retrieves relevant guideline chunks for this section
-    4. Calls LangChain with prompt template to generate the first question
-    5. Returns the generated question without saving it
+    This endpoint replaces the POC functionality and:
+    1. Gets the section and extracts form_section_number
+    2. Uses AIService.what_to_pass_to_user method for conversational flow
+    3. Handles both initial calls (no answer) and follow-up calls (with answer)
+    4. Returns structured AI responses for questions or final answers
     """
-    try:
-        section_service = SectionService()
-        result = await section_service.start_section(section_id, db)
-
-        return SectionStartResponse(
-            section_id=result["section_id"],
-            section_number=result["section_number"],
-            status=result["status"],
-            question=result["question"],
-            question_type="initial"
-        )
-
-    except ValueError as e:
-        # Business logic validation errors
-        raise HTTPException(status_code=400, detail=str(e))
-    except Exception as e:
-        # Unexpected errors
-        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+    # Get section and extract form_section_number (like POC does)
+    select_stmt = select(Section).where(Section.id == section_id)
+    result = await db.execute(select_stmt)
+    section = result.scalar_one_or_none()
+    
+    if not section:
+        raise HTTPException(status_code=404, detail="Section not found")
+    
+    section_number = section.form_section_number
+    ai_service = AIService(db)
+    
+    # Use the POC approach with what_to_pass_to_user
+    if answer:
+        ai_response = await ai_service.what_to_pass_to_user(section_number, answer.answer)
+    else:
+        ai_response = await ai_service.what_to_pass_to_user(section_number)
+    
+    # Handle final_answer type to log completion (like POC)
+    if ai_response.get("type") == "final_answer":
+        logging.info("AI Found the final answer, now we need to move to next section")
+        # Could update section status to completed here if needed
+    
+    return ai_response
 
 
 @router.get("/projects/{project_id}/sections", response_model=SectionListResponse)
