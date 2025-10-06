@@ -23,35 +23,34 @@ class SectionStatus(enum.Enum):
 
 
 class Section(Base):
-    __tablename__ = "sections"
 
     id = Column(
-        String(36), 
-        primary_key=True, 
+        String(36),
+        primary_key=True,
         default=lambda: str(uuid.uuid4()),
         nullable=False
     )
     project_id = Column(
-        String(36), 
+        String(36),
         ForeignKey("projects.id", ondelete="CASCADE"),
         nullable=False,
         index=True
     )
     form_section_number = Column(String, nullable=False)
     status = Column(
-        Enum(SectionStatus), 
-        nullable=False, 
+        Enum(SectionStatus),
+        nullable=False,
         default=SectionStatus.PENDING
     )
     draft_output = Column(JSON, nullable=True)
     final_output = Column(JSON, nullable=True)
     created_at = Column(
-        DateTime, 
+        DateTime,
         server_default=func.now(),
         nullable=False
     )
     updated_at = Column(
-        DateTime, 
+        DateTime,
         server_default=func.now(),
         onupdate=func.now(),
         nullable=False
@@ -59,7 +58,7 @@ class Section(Base):
 
     # Relationships
     project: Mapped["Project"] = relationship(
-        "Project", 
+        "Project",
         back_populates="sections"
     )
     answers: Mapped[List["Answer"]] = relationship(

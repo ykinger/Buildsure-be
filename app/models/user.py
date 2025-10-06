@@ -15,16 +15,15 @@ if TYPE_CHECKING:
 
 
 class User(Base):
-    __tablename__ = "users"
 
     id = Column(
-        String(36), 
-        primary_key=True, 
+        String(36),
+        primary_key=True,
         default=lambda: str(uuid.uuid4()),
         nullable=False
     )
     org_id = Column(
-        String(36), 
+        String(36),
         ForeignKey("organizations.id", ondelete="CASCADE"),
         nullable=False,
         index=True
@@ -32,12 +31,12 @@ class User(Base):
     name = Column(String(255), nullable=False)
     email = Column(String(255), nullable=False, unique=True, index=True)
     created_at = Column(
-        DateTime, 
+        DateTime,
         server_default=func.now(),
         nullable=False
     )
     updated_at = Column(
-        DateTime, 
+        DateTime,
         server_default=func.now(),
         onupdate=func.now(),
         nullable=False
@@ -45,11 +44,11 @@ class User(Base):
 
     # Relationships
     organization: Mapped["Organization"] = relationship(
-        "Organization", 
+        "Organization",
         back_populates="users"
     )
     projects: Mapped[List["Project"]] = relationship(
-        "Project", 
+        "Project",
         back_populates="user",
         cascade="all, delete-orphan"
     )

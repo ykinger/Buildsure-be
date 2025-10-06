@@ -9,16 +9,15 @@ from app.database import Base
 
 
 class OntarioChunk(Base):
-    __tablename__ = "ontario_chunks"
 
     id = Column(
-        String(36), 
-        primary_key=True, 
+        String(36),
+        primary_key=True,
         default=lambda: str(uuid.uuid4()),
         nullable=False
     )
     reference = Column(
-        String(30), 
+        String(30),
         nullable=False,
         index=True
     )
@@ -57,11 +56,11 @@ class OntarioChunk(Base):
         nullable=True
     )
     content = Column(
-        Text, 
+        Text,
         nullable=False
     )
     created_at = Column(
-        DateTime, 
+        DateTime,
         server_default=func.now(),
         nullable=False
     )

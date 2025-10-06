@@ -16,23 +16,22 @@ if TYPE_CHECKING:
 
 
 class Organization(Base):
-    __tablename__ = "organizations"
 
     id = Column(
-        String(36), 
-        primary_key=True, 
+        String(36),
+        primary_key=True,
         default=lambda: str(uuid.uuid4()),
         nullable=False
     )
     name = Column(String(255), nullable=False, index=True)
     description = Column(Text, nullable=True)
     created_at = Column(
-        DateTime, 
+        DateTime,
         server_default=func.now(),
         nullable=False
     )
     updated_at = Column(
-        DateTime, 
+        DateTime,
         server_default=func.now(),
         onupdate=func.now(),
         nullable=False
@@ -40,12 +39,12 @@ class Organization(Base):
 
     # Relationships
     users: Mapped[List["User"]] = relationship(
-        "User", 
+        "User",
         back_populates="organization",
         cascade="all, delete-orphan"
     )
     projects: Mapped[List["Project"]] = relationship(
-        "Project", 
+        "Project",
         back_populates="organization",
         cascade="all, delete-orphan"
     )
