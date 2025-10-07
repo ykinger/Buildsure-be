@@ -4,8 +4,13 @@ Defines the database model for storing Ontario Building Code chunks.
 """
 import uuid
 from datetime import datetime
+from typing import List, TYPE_CHECKING
 from sqlalchemy import Column, String, Text, DateTime, func
+from sqlalchemy.orm import relationship, Mapped
 from app.database import Base
+
+if TYPE_CHECKING:
+    from .data_matrix import DataMatrix
 
 
 class OntarioChunk(Base):
@@ -63,6 +68,13 @@ class OntarioChunk(Base):
         DateTime,
         server_default=func.now(),
         nullable=False
+    )
+
+    # Relationships
+    data_matrices: Mapped[List["DataMatrix"]] = relationship(
+        "DataMatrix",
+        secondary="data_matrix_ontario_chunk",
+        back_populates="ontario_chunks"
     )
 
     def __repr__(self) -> str:
