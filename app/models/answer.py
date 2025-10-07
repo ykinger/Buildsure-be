@@ -23,7 +23,7 @@ class Answer(Base):
     )
     section_id = Column(
         String(36),
-        ForeignKey("sections.id", ondelete="CASCADE"),
+        ForeignKey("section.id", ondelete="CASCADE"),
         nullable=False,
         index=True
     )

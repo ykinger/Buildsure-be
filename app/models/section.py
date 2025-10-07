@@ -32,7 +32,7 @@ class Section(Base):
     )
     project_id = Column(
         String(36),
-        ForeignKey("projects.id", ondelete="CASCADE"),
+        ForeignKey("project.id", ondelete="CASCADE"),
         nullable=False,
         index=True
     )

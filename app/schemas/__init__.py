@@ -33,11 +33,22 @@ from .conversation import (
     ConversationCreate,
     ConversationRead
 )
+from .data_matrix import (
+    DataMatrixBase,
+    DataMatrixCreate,
+    DataMatrixUpdate,
+    DataMatrix,
+    DataMatrixOntarioChunkBase,
+    DataMatrixOntarioChunkCreate,
+    DataMatrixOntarioChunk
+)
 
 __all__ = [
     "OrganizationBase", "OrganizationCreate", "OrganizationUpdate", "OrganizationResponse", "OrganizationListResponse",
     "UserBase", "UserCreate", "UserUpdate", "UserResponse", "UserListResponse",
     "ProjectBase", "ProjectCreate", "ProjectUpdate", "ProjectResponse", "ProjectListResponse",
     "SectionBase", "SectionCreate", "SectionUpdate", "SectionResponse", "SectionListResponse",
-    "ConversationCreate", "ConversationRead"
+    "ConversationCreate", "ConversationRead",
+    "DataMatrixBase", "DataMatrixCreate", "DataMatrixUpdate", "DataMatrix",
+    "DataMatrixOntarioChunkBase", "DataMatrixOntarioChunkCreate", "DataMatrixOntarioChunk"
 ]

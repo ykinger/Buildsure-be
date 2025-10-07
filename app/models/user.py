@@ -24,7 +24,7 @@ class User(Base):
     )
     org_id = Column(
         String(36),
-        ForeignKey("organizations.id", ondelete="CASCADE"),
+        ForeignKey("organization.id", ondelete="CASCADE"),
         nullable=False,
         index=True
     )
