@@ -238,7 +238,10 @@ async def start_section(
     section_number = section.form_section_number
     ai_service = AIService(db)
 
-    ai_response = await ai_service.what_to_pass_to_user(section_number, answer.answer)
+    if answer:
+        ai_response = await ai_service.what_to_pass_to_user(section_number, answer.answer)
+    else:
+        ai_response = await ai_service.what_to_pass_to_user(section_number)
 
     # Handle final_answer type to log completion (like POC)
     if ai_response.get("type") == "final_answer":
