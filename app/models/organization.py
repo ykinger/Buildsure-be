@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 
 
 class Organization(Base):
+    __tablename__ = "organization"
 
     id = Column(
         String(36),

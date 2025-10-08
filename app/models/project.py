@@ -24,6 +24,7 @@ class ProjectStatus(enum.Enum):
 
 
 class Project(Base):
+    __tablename__ = "project"
 
     id = Column(
         String(36),

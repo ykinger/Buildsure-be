@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 
 class DataMatrix(Base):
+    __tablename__ = "data_matrix"
 
     id = Column(
         String(36),

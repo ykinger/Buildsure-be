@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 
 
 class User(Base):
+    __tablename__ = "user"
 
     id = Column(
         String(36),

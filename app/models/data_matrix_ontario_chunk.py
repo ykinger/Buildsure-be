@@ -10,6 +10,7 @@ from app.database import Base
 
 
 class DataMatrixOntarioChunk(Base):
+    __tablename__ = "data_matrix_ontario_chunk"
 
     id = Column(
         String(36),

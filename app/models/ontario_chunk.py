@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 
 class OntarioChunk(Base):
+    __tablename__ = "ontario_chunk"
 
     id = Column(
         String(36),

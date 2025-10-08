@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 
 class Answer(Base):
+    __tablename__ = "answer"
 
     id = Column(
         String(36),

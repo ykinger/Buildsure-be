@@ -23,6 +23,7 @@ class SectionStatus(enum.Enum):
 
 
 class Section(Base):
+    __tablename__ = "section"
 
     id = Column(
         String(36),
