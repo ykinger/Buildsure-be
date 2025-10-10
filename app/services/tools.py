@@ -7,6 +7,10 @@ import os
 from pydantic import BaseModel, Field
 from typing import Literal
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, BaseMessage, ToolMessage
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.database import get_async_db
+from app.models.data_matrix import DataMatrix
 
 history = None
 def set_history(h):
@@ -15,8 +19,6 @@ def set_history(h):
 
 # Add the project root to Python path so we can import app modules
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-
-QUESTIONS_PATH = os.path.dirname(__file__) + "/../../storage/data/form.json"
 
 # Pydantic models for return types
 class MCQData(BaseModel):
@@ -155,19 +157,28 @@ def provide_final_answer(answer: str) -> FinalAnswerResponse:
     history.append(AIMessage(answer))
     return FinalAnswerResponse(data=final_answer_data).model_dump()
 
-def get_form_section_info(number: str) -> dict:
+async def get_form_section_info(number: str, db: AsyncSession) -> dict:
     """
     Provides basic form section information, including:
     - Of the section in the form
     - The question AI should seek the answer to
     - A guide on where in OBC to look for relevant information
-    -
     """
-    if number < "3.00" or number > "3.26":
+    # Query the data_matrix table for the section
+    stmt = select(DataMatrix).where(DataMatrix.number == number)
+    result = await db.execute(stmt)
+    data_matrix = result.scalar_one_or_none()
+
+    if not data_matrix:
         return None
-    for section in json.loads(open(QUESTIONS_PATH).read()):
-        if section["number"] == number:
-            return section
+
+    # Return the section information in the expected format
+    return {
+        "number": data_matrix.number,
+        "title": data_matrix.title,
+        "question": data_matrix.question,
+        "guide": data_matrix.guide
+    }
 
 DEFINED_TOOLS = {
     "ask_free_text_question": ask_free_text_question,

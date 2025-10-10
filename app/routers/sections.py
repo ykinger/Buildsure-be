@@ -3,6 +3,8 @@ Sections Router
 FastAPI router for section CRUD operations.
 """
 from typing import List, Optional
+from uuid import UUID
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
@@ -11,6 +13,7 @@ import math
 import json
 
 from pydantic import BaseModel
+from sqlmodel import SQLModel
 
 from app.database import get_async_db
 from app.models.section import Section
@@ -37,11 +40,11 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 router = APIRouter(prefix="/api/v1/sections", tags=["sections"])
 
-#TODO: Not needed
+
 @router.get("/{section_id}/clear")
 async def clear_section_history(section_id: str, db: AsyncSession = Depends(get_async_db)):
-    """Clear chat history for a section"""
-    # Get section and use form_section_number for history clearing
+    """Clear chat history (answers) for a section"""
+    # Get section and use section_id for history clearing
     select_stmt = select(Section).where(Section.id == section_id)
     result = await db.execute(select_stmt)
     section = result.scalar_one_or_none()
@@ -50,10 +53,9 @@ async def clear_section_history(section_id: str, db: AsyncSession = Depends(get_
         raise HTTPException(status_code=404, detail="Section not found")
 
     ai_service = AIService(db)
-    ai_service.clear_chat_history(section.form_section_number)
-    #TODO: this could be replaced with a redirect to /next
-    # response = await ai_service.what_to_pass_to_user(section.form_section_number)
-    return "Cleared"
+    await ai_service.clear_chat_history(section.id)
+    response = await ai_service.what_to_pass_to_user(section.form_section_number)
+    return response
 
 
 @router.get("/", response_model=SectionListResponse)
@@ -238,10 +240,9 @@ async def start_section(
     section_number = section.form_section_number
     ai_service = AIService(db)
 
-    if answer:
-        ai_response = await ai_service.what_to_pass_to_user(section_number, answer.answer)
-    else:
-        ai_response = await ai_service.what_to_pass_to_user(section_number)
+    # Handle the answer parameter properly
+    human_answer = answer.answer if answer else None
+    ai_response = await ai_service.what_to_pass_to_user(section_number, human_answer)
 
     # Handle final_answer type to log completion (like POC)
     if ai_response.get("type") == "final_answer":

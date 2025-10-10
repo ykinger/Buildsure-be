@@ -24,43 +24,43 @@ class ProjectStatus(enum.Enum):
 
 
 class Project(Base):
-    __tablename__ = "projects"
+    __tablename__ = "project"
 
     id = Column(
-        String(36), 
-        primary_key=True, 
+        String(36),
+        primary_key=True,
         default=lambda: str(uuid.uuid4()),
         nullable=False
     )
     org_id = Column(
-        String(36), 
-        ForeignKey("organizations.id", ondelete="CASCADE"),
+        String(36),
+        ForeignKey("organization.id", ondelete="CASCADE"),
         nullable=False,
         index=True
     )
     user_id = Column(
-        String(36), 
-        ForeignKey("users.id", ondelete="CASCADE"),
+        String(36),
+        ForeignKey("user.id", ondelete="CASCADE"),
         nullable=False,
         index=True
     )
     name = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
     status = Column(
-        Enum(ProjectStatus), 
-        nullable=False, 
+        Enum(ProjectStatus),
+        nullable=False,
         default=ProjectStatus.NOT_STARTED
     )
     current_section = Column(String, nullable=False, default="3.01")
     total_sections = Column(Integer, nullable=False, default=0)
     completed_sections = Column(Integer, nullable=False, default=0)
     created_at = Column(
-        DateTime, 
+        DateTime,
         server_default=func.now(),
         nullable=False
     )
     updated_at = Column(
-        DateTime, 
+        DateTime,
         server_default=func.now(),
         onupdate=func.now(),
         nullable=False
@@ -68,15 +68,15 @@ class Project(Base):
 
     # Relationships
     organization: Mapped["Organization"] = relationship(
-        "Organization", 
+        "Organization",
         back_populates="projects"
     )
     user: Mapped["User"] = relationship(
-        "User", 
+        "User",
         back_populates="projects"
     )
     sections: Mapped[List["Section"]] = relationship(
-        "Section", 
+        "Section",
         back_populates="project",
         cascade="all, delete-orphan",
         order_by="Section.form_section_number"

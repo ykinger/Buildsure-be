@@ -16,12 +16,16 @@ from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, Base
 from langchain_core.prompts import PromptTemplate
 from langchain.schema import HumanMessage, SystemMessage
 from langchain.globals import set_debug
+from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 from app.services.tools import DEFINED_TOOLS, get_form_section_info, set_history
 from app.services.obc_query_service import OBCQueryService
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.config.settings import Settings, settings
-from app.utils.prompt_builder import PromptBuilder
+from app.models.section import Section
+from app.models.answer import Answer
+from app.models.data_matrix import DataMatrix
 
 
 # Configure logging
@@ -39,7 +43,6 @@ class AIService:
         self.db = db
         self.settings: Settings = settings
         self.llm = None
-        self.prompt_builder = PromptBuilder("assets/prompt-parts")
 
         # Constants from ai.py
         self.tool_calling_quota = 10
@@ -145,65 +148,141 @@ class AIService:
             raise
 
     async def get_obc_content(self, section):
-        """Get OBC content using injected database session."""
-        obc = OBCQueryService(self.db)
+        """Get OBC content using the pivot table relationship."""
+        # Get the data_matrix by number with eager loading of ontario_chunks
+        stmt = select(DataMatrix).where(DataMatrix.number == section["number"]).options(
+            selectinload(DataMatrix.ontario_chunks)
+        )
+        result = await self.db.execute(stmt)
+        data_matrix = result.scalar_one_or_none()
+
+        if not data_matrix:
+            return section
+
+        # Get all related ontario_chunks through the relationship
         section["sections"] = []
-        for x in section["obc_reference"]:
-            x["content"] = await obc.find_by_reference(x["section"])
-            section["sections"].append(x["content"])
+        for ontario_chunk in data_matrix.ontario_chunks:
+            section["sections"].append({
+                "section": ontario_chunk.reference,
+                "content": ontario_chunk.content
+            })
+
         return section
 
-    def save_chat_history(self, num: str, history: list[BaseMessage]):
-        """Save chat history to a json file."""
-        file_path = self.HISTORY_DIR / f"{num}.json"
-        serializable_history = []
-        for msg in history:
-            serializable_history.append({"type": msg.type, "content": msg.content})
-
-        # Ensure directory exists
-        file_path.parent.mkdir(parents=True, exist_ok=True)
-
-        with open(file_path, "w") as f:
-            json.dump(serializable_history, f, indent=4)
-        logging.info(f"Chat history for section {num} saved to {file_path}")
-
-    def clear_chat_history(self, num: str):
-        """Clear chat history for a section."""
-        logging.info(f"Clearing history for section {num}")
-        self.save_chat_history(num, [])
-
-    def load_chat_history(self, id: str) -> list[BaseMessage]:
-        """Reconstruct Langchain message objects from saved history."""
-        file_path = self.HISTORY_DIR / f"{id}.json"
-        if not file_path.exists():
-            logging.error(f"No chat history found for section {id} at {file_path}")
-            return []
-
+    async def save_chat_history(self, section_id: str, history: list[BaseMessage]):
+        """Save chat history to Answer records in database."""
         try:
-            with open(file_path, "r") as f:
-                loaded_history = json.load(f)
+            # Get the section to ensure it exists
+            section_result = await self.db.execute(
+                select(Section).where(Section.id == section_id)
+            )
+            section = section_result.scalar_one_or_none()
 
-            return [
-                self.MESSAGE_TYPES[msg["type"]](**msg)
-                for msg in loaded_history
-            ]
+            if not section:
+                logging.error(f"Section {section_id} not found")
+                return
+
+            # Clear existing answers for this section
+            await self.clear_chat_history(section_id)
+
+            # Save each message as an Answer record
+            for msg in history:
+                if msg.type == "human":
+                    # Human messages are answers to previous AI questions
+                    # We need to find the previous AI question to associate with
+                    answer = Answer(
+                        section_id=section_id,
+                        question_text="User response",  # This will be updated with actual question context
+                        answer_text=msg.content,
+                        question_type="clarifying"
+                    )
+                    self.db.add(answer)
+                elif msg.type == "ai":
+                    # AI messages are questions that need answers
+                    answer = Answer(
+                        section_id=section_id,
+                        question_text=msg.content,
+                        answer_text="",  # Empty until user responds
+                        question_type="clarifying"
+                    )
+                    self.db.add(answer)
+
+            await self.db.commit()
+            logging.info(f"Chat history for section {section_id} saved to database")
+
         except Exception as e:
-            logging.error(f"Error loading chat history for {id}: {str(e)}")
+            logging.error(f"Error saving chat history for section {section_id}: {str(e)}")
+            await self.db.rollback()
+
+    async def clear_chat_history(self, section_id: str):
+        """Clear chat history for a section by deleting all Answer records."""
+        try:
+            result = await self.db.execute(
+                select(Answer).where(Answer.section_id == section_id)
+            )
+            answers = result.scalars().all()
+
+            for answer in answers:
+                await self.db.delete(answer)
+
+            await self.db.commit()
+            logging.info(f"Cleared {len(answers)} answers for section {section_id}")
+
+        except Exception as e:
+            logging.error(f"Error clearing chat history for section {section_id}: {str(e)}")
+            await self.db.rollback()
+
+    async def load_chat_history(self, section_id: str) -> list[BaseMessage]:
+        """Reconstruct Langchain message objects from Answer records."""
+        try:
+            result = await self.db.execute(
+                select(Answer)
+                .where(Answer.section_id == section_id)
+                .order_by(Answer.created_at.asc())
+            )
+            answers = result.scalars().all()
+
+            history = []
+            for answer in answers:
+                if answer.question_text and answer.question_text != "User response":
+                    # This is an AI question
+                    history.append(AIMessage(content=answer.question_text))
+                if answer.answer_text:
+                    # This is a human answer
+                    history.append(HumanMessage(content=answer.answer_text))
+
+            logging.info(f"Loaded {len(history)} messages from database for section {section_id}")
+            return history
+
+        except Exception as e:
+            logging.error(f"Error loading chat history for section {section_id}: {str(e)}")
             return []
 
-    async def what_to_pass_to_user(self, num: str, human_answer: str = None) -> str:
+    async def what_to_pass_to_user(self, section_number: str, human_answer: str = None) -> str:
         """Main function to interact with user - converted from ai.py."""
         try:
-            current_section = get_form_section_info(num)
+            current_section = await get_form_section_info(section_number, self.db)
             if not current_section:
                 return {
                     "status": "error",
-                    "message": f"Section {num} not found"
+                    "message": f"Section {section_number} not found"
                 }
 
             await self.get_obc_content(current_section)
 
-            history = self.load_chat_history(num)
+            # Find the section by form_section_number to get the section_id
+            section_result = await self.db.execute(
+                select(Section).where(Section.form_section_number == section_number)
+            )
+            section = section_result.scalar_one_or_none()
+
+            if not section:
+                return {
+                    "status": "error",
+                    "message": f"Section with number {section_number} not found in database"
+                }
+
+            history = await self.load_chat_history(section.id)
             if human_answer is None and history != [] and history[len(history)-1].type == "ai":
                 raise Exception("last message was from AI, a human message is needed next")
 
@@ -229,7 +308,7 @@ class AIService:
             logging.info("Running %s", tool_call["name"].lower())
             selected_tool = DEFINED_TOOLS[tool_call["name"].lower()]
             tool_msg = selected_tool.invoke(tool_call)
-            self.save_chat_history(num, history)  # Save history after tool call
+            await self.save_chat_history(section.id, history)  # Save history after tool call
             return json.loads(tool_msg.content)
 
         except Exception as e:
