@@ -57,7 +57,7 @@ class SectionStartResponse(BaseModel):
     status: SectionStatus
     question: str
     question_type: str = "initial"
-    
+
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -73,5 +73,20 @@ class SectionConfirmResponse(BaseModel):
     total_sections: int
     current_section: str
     message: str
-    
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class SectionConfirmRequest(BaseModel):
+    """Schema for section confirmation request with answer"""
+    answer: str
+
+
+class SectionConfirmSimpleResponse(BaseModel):
+    """Schema for simple section confirmation response"""
+    section_id: str
+    next_section_id: str
+    message: str
+    status: str
+
     model_config = ConfigDict(from_attributes=True)

@@ -16,7 +16,7 @@ from pydantic import BaseModel
 from sqlmodel import SQLModel
 
 from app.database import get_async_db
-from app.models.section import Section
+from app.models.section import Section, SectionStatus
 from app.models.project import Project
 from app.schemas.section import (
     SectionCreate,
@@ -24,7 +24,9 @@ from app.schemas.section import (
     SectionResponse,
     SectionListResponse,
     SectionStartResponse,
-    SectionConfirmResponse
+    SectionConfirmResponse,
+    SectionConfirmRequest,
+    SectionConfirmSimpleResponse
 )
 from app.schemas.answer import AnswerCreate, SectionAnswerResponse
 from app.services.section_service import SectionService
@@ -334,4 +336,81 @@ async def confirm_section(
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         # Unexpected errors
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+
+@router.post("/{section_id}/confirm", response_model=SectionConfirmSimpleResponse)
+async def confirm_section_simple(
+    section_id: str,
+    confirm_data: SectionConfirmRequest,
+    db: AsyncSession = Depends(get_async_db)
+):
+    """
+    Confirm a section by saving answer and progressing to next section.
+
+    This endpoint:
+    1. Accepts a string "answer" in the payload
+    2. Saves that answer in final_output column as JSON
+    3. Marks current section as READY_TO_START
+    4. Finds next section in lexicographical order that is PENDING and marks it as READY_TO_START
+    5. Returns response with next section ID
+    """
+    try:
+        # Step 1: Get the current section
+        section_result = await db.execute(
+            select(Section).where(Section.id == section_id)
+        )
+        current_section = section_result.scalar_one_or_none()
+
+        if not current_section:
+            raise HTTPException(status_code=404, detail="Section not found")
+
+        # Step 2: Save the answer to final_output as JSON
+        current_section.final_output = {"answer": confirm_data.answer}
+        current_section.status = SectionStatus.COMPLETED
+        db.add(current_section)
+
+        # Step 3: Find next section in lexicographical order that is PENDING
+        next_section_result = await db.execute(
+            select(Section)
+            .where(
+                Section.project_id == current_section.project_id,
+                Section.form_section_number > current_section.form_section_number,
+                Section.status != SectionStatus.COMPLETED
+            )
+            .order_by(Section.form_section_number.asc())
+            .limit(1)
+        )
+        next_section = next_section_result.scalar_one_or_none()
+
+        # Step 4: Mark next section as READY_TO_START if found
+        if next_section:
+            next_section.status = SectionStatus.READY_TO_START
+            db.add(next_section)
+
+        # Step 5: Commit all changes
+        await db.commit()
+
+        # Step 6: Prepare response
+        if next_section:
+            return SectionConfirmSimpleResponse(
+                section_id=section_id,
+                next_section_id=next_section.id,
+                message=f"Section confirmed successfully. Next section: {next_section.form_section_number}",
+                status=SectionStatus.READY_TO_START.value
+            )
+        else:
+            return SectionConfirmSimpleResponse(
+                section_id=section_id,
+                next_section_id="",
+                message="Section confirmed successfully. This is the final section.",
+                status=SectionStatus.READY_TO_START.value
+            )
+
+    except HTTPException:
+        # Re-raise HTTP exceptions
+        raise
+    except Exception as e:
+        # Rollback on error
+        await db.rollback()
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
