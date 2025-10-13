@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, ConfigDict
 from app.models.project import ProjectStatus
+from app.schemas.section import SectionResponse
 
 
 class ProjectBase(BaseModel):
@@ -65,6 +66,26 @@ class SectionReportData(BaseModel):
     final_output: Optional[Dict[str, Any]] = None
     completed: bool = False
 
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ProjectStartResponse(BaseModel):
+    """Schema for project start response with all sections"""
+    # Project fields
+    id: str
+    name: str
+    description: Optional[str]
+    status: ProjectStatus
+    current_section: str
+    total_sections: int
+    completed_sections: int
+    org_id: str
+    user_id: str
+    created_at: datetime
+    updated_at: datetime
+    # Sections array
+    sections: List['SectionResponse']
+    
     model_config = ConfigDict(from_attributes=True)
 
 

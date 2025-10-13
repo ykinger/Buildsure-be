@@ -9,15 +9,90 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from app.models.project import Project
+from app.models.project import Project, ProjectStatus
 from app.models.section import Section, SectionStatus
-from app.schemas.project import ProjectReportResponse, SectionReportData
+from app.schemas.project import ProjectReportResponse, SectionReportData, ProjectStartResponse
+from app.schemas.section import SectionResponse
 
 logger = logging.getLogger(__name__)
 
 
 class ProjectService:
     """Service for managing project operations and business logic."""
+    
+    async def start_project(
+        self,
+        project_id: str,
+        db: AsyncSession
+    ) -> ProjectStartResponse:
+        """
+        Start a project by creating 27 sections and updating project status.
+        
+        Args:
+            project_id: The project ID
+            db: Database session
+            
+        Returns:
+            ProjectStartResponse containing project details with all 27 sections
+            
+        Raises:
+            ValueError: If project not found
+            RuntimeError: If database operations fail
+        """
+        try:
+            # Get project
+            project = await self._get_project_by_id(project_id, db)
+            
+            # Create 27 sections
+            sections = []
+            for section_number in range(1, 28):  # 1 to 27
+                # Set section 1 as READY_TO_START, others as PENDING
+                status = SectionStatus.READY_TO_START if section_number == 1 else SectionStatus.PENDING
+                form_section_number = f"3.{section_number:02d}"
+                sections.append(Section(
+                    project_id=project.id,
+                    form_section_number=form_section_number,
+                    status=status
+                ))
+            
+            db.add_all(sections)
+            
+            # Update project status to IN_PROGRESS
+            project.status = ProjectStatus.IN_PROGRESS
+            
+            await db.commit()
+            await db.refresh(project)
+            
+            # Get all sections for response
+            sections_result = await db.execute(
+                select(Section)
+                .where(Section.project_id == project_id)
+                .order_by(Section.form_section_number)
+            )
+            all_sections = sections_result.scalars().all()
+            
+            # Build response
+            response_data = {
+                "id": project.id,
+                "name": project.name,
+                "description": project.description,
+                "status": project.status,
+                "current_section": project.current_section,
+                "total_sections": project.total_sections,
+                "completed_sections": project.completed_sections,
+                "org_id": project.org_id,
+                "user_id": project.user_id,
+                "created_at": project.created_at,
+                "updated_at": project.updated_at,
+                "sections": [SectionResponse.model_validate(section) for section in all_sections]
+            }
+            
+            logger.info(f"Successfully started project {project_id} with 27 sections")
+            return ProjectStartResponse(**response_data)
+            
+        except Exception as e:
+            logger.error(f"Error starting project {project_id}: {str(e)}")
+            raise
     
     async def generate_project_report(
         self,

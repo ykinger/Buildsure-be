@@ -21,6 +21,7 @@ from app.schemas.project import (
     ProjectUpdate,
     ProjectResponse,
     ProjectListResponse,
+    ProjectStartResponse,
     ProjectReportResponse
 )
 from app.services.project_service import ProjectService
@@ -113,21 +114,6 @@ async def create_project(
     })
     project = Project(**project_dict)
     db.add(project)
-    await db.flush()  # Flush to get the project ID
-    
-    # Create 27 sections using bulk insert
-    sections = []
-    for section_number in range(1, 28):  # 1 to 27
-        # Set section 1 as READY_TO_START, others as PENDING
-        status = SectionStatus.READY_TO_START if section_number == 1 else SectionStatus.PENDING
-        form_section_number = f"3.{section_number:02d}"
-        sections.append(Section(
-            project_id=project.id,
-            form_section_number=form_section_number,
-            status=status
-        ))
-    
-    db.add_all(sections)
     await db.commit()
     await db.refresh(project)
     
@@ -149,6 +135,69 @@ async def get_project(
         raise HTTPException(status_code=404, detail="Project not found")
     
     return ProjectResponse.model_validate(project)
+
+
+@router.post("/{project_id}/start", response_model=ProjectStartResponse, status_code=201)
+async def start_project(
+    project_id: str,
+    db: AsyncSession = Depends(get_async_db)
+):
+    """Start a project by creating 27 sections and updating project status"""
+    # Get project
+    result = await db.execute(
+        select(Project).where(Project.id == project_id)
+    )
+    project = result.scalar_one_or_none()
+    
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    # Create 27 sections using bulk insert
+    sections = []
+    for section_number in range(1, 28):  # 1 to 27
+        # Set section 1 as READY_TO_START, others as PENDING
+        status = SectionStatus.READY_TO_START if section_number == 1 else SectionStatus.PENDING
+        form_section_number = f"3.{section_number:02d}"
+        sections.append(Section(
+            project_id=project.id,
+            form_section_number=form_section_number,
+            status=status
+        ))
+    
+    db.add_all(sections)
+    
+    # Update project status to IN_PROGRESS
+    project.status = ProjectStatus.IN_PROGRESS
+    
+    await db.commit()
+    await db.refresh(project)
+    
+    # Get all sections for response
+    sections_result = await db.execute(
+        select(Section)
+        .where(Section.project_id == project_id)
+        .order_by(Section.form_section_number)
+    )
+    all_sections = sections_result.scalars().all()
+    
+    # Build response
+    from app.schemas.section import SectionResponse
+    response_data = {
+        "id": project.id,
+        "name": project.name,
+        "description": project.description,
+        "status": project.status,
+        "current_section": project.current_section,
+        "total_sections": project.total_sections,
+        "completed_sections": project.completed_sections,
+        "org_id": project.org_id,
+        "user_id": project.user_id,
+        "created_at": project.created_at,
+        "updated_at": project.updated_at,
+        "sections": [SectionResponse.model_validate(section) for section in all_sections]
+    }
+    
+    return ProjectStartResponse(**response_data)
 
 
 @router.put("/{project_id}", response_model=ProjectResponse)
