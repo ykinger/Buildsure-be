@@ -125,9 +125,13 @@ async def get_project(
     db: AsyncSession = Depends(get_async_db)
 ):
     """Get project by ID with all sections"""
+    from app.models.form_section_template import FormSectionTemplate
+    
     result = await db.execute(
         select(Project)
-        .options(selectinload(Project.sections))
+        .options(
+            selectinload(Project.sections).selectinload(Section.form_template)
+        )
         .where(Project.id == project_id)
     )
     project = result.scalar_one_or_none()
@@ -135,8 +139,23 @@ async def get_project(
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
     
-    # Build response with sections
+    # Build response with sections including form_title
     from app.schemas.section import SectionResponse
+    sections_data = []
+    for section in project.sections:
+        section_dict = {
+            "id": section.id,
+            "project_id": section.project_id,
+            "form_section_number": section.form_section_number,
+            "status": section.status,
+            "draft_output": section.draft_output,
+            "final_output": section.final_output,
+            "form_title": section.form_template.form_title if section.form_template else None,
+            "created_at": section.created_at,
+            "updated_at": section.updated_at
+        }
+        sections_data.append(SectionResponse(**section_dict))
+    
     response_data = {
         "id": project.id,
         "name": project.name,
@@ -149,7 +168,7 @@ async def get_project(
         "user_id": project.user_id,
         "created_at": project.created_at,
         "updated_at": project.updated_at,
-        "sections": [SectionResponse.model_validate(section) for section in project.sections]
+        "sections": sections_data
     }
     
     return ProjectDetailResponse(**response_data)
@@ -190,16 +209,33 @@ async def start_project(
     await db.commit()
     await db.refresh(project)
     
-    # Get all sections for response
+    # Get all sections for response with form_template
+    from app.models.form_section_template import FormSectionTemplate
     sections_result = await db.execute(
         select(Section)
+        .options(selectinload(Section.form_template))
         .where(Section.project_id == project_id)
         .order_by(Section.form_section_number)
     )
     all_sections = sections_result.scalars().all()
     
-    # Build response
+    # Build response with sections including form_title
     from app.schemas.section import SectionResponse
+    sections_data = []
+    for section in all_sections:
+        section_dict = {
+            "id": section.id,
+            "project_id": section.project_id,
+            "form_section_number": section.form_section_number,
+            "status": section.status,
+            "draft_output": section.draft_output,
+            "final_output": section.final_output,
+            "form_title": section.form_template.form_title if section.form_template else None,
+            "created_at": section.created_at,
+            "updated_at": section.updated_at
+        }
+        sections_data.append(SectionResponse(**section_dict))
+    
     response_data = {
         "id": project.id,
         "name": project.name,
@@ -212,7 +248,7 @@ async def start_project(
         "user_id": project.user_id,
         "created_at": project.created_at,
         "updated_at": project.updated_at,
-        "sections": [SectionResponse.model_validate(section) for section in all_sections]
+        "sections": sections_data
     }
     
     return ProjectDetailResponse(**response_data)

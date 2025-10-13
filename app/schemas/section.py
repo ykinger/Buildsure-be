@@ -33,6 +33,7 @@ class SectionResponse(SectionBase):
     """Schema for section response"""
     id: str
     project_id: str
+    form_title: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 
