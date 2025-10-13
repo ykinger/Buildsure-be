@@ -2,14 +2,13 @@
 Projects Router
 FastAPI router for project CRUD operations.
 """
-from typing import List, Optional
+from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 import math
-from io import BytesIO
 
 from app.database import get_async_db
 from app.models.project import Project, ProjectStatus
@@ -21,7 +20,7 @@ from app.schemas.project import (
     ProjectUpdate,
     ProjectResponse,
     ProjectListResponse,
-    ProjectStartResponse,
+    ProjectDetailResponse,
     ProjectReportResponse
 )
 from app.services.project_service import ProjectService
@@ -120,24 +119,43 @@ async def create_project(
     return ProjectResponse.model_validate(project)
 
 
-@router.get("/{project_id}", response_model=ProjectResponse)
+@router.get("/{project_id}", response_model=ProjectDetailResponse)
 async def get_project(
     project_id: str,
     db: AsyncSession = Depends(get_async_db)
 ):
-    """Get project by ID"""
+    """Get project by ID with all sections"""
     result = await db.execute(
-        select(Project).where(Project.id == project_id)
+        select(Project)
+        .options(selectinload(Project.sections))
+        .where(Project.id == project_id)
     )
     project = result.scalar_one_or_none()
     
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
     
-    return ProjectResponse.model_validate(project)
+    # Build response with sections
+    from app.schemas.section import SectionResponse
+    response_data = {
+        "id": project.id,
+        "name": project.name,
+        "description": project.description,
+        "status": project.status,
+        "current_section": project.current_section,
+        "total_sections": project.total_sections,
+        "completed_sections": project.completed_sections,
+        "org_id": project.org_id,
+        "user_id": project.user_id,
+        "created_at": project.created_at,
+        "updated_at": project.updated_at,
+        "sections": [SectionResponse.model_validate(section) for section in project.sections]
+    }
+    
+    return ProjectDetailResponse(**response_data)
 
 
-@router.post("/{project_id}/start", response_model=ProjectStartResponse, status_code=201)
+@router.post("/{project_id}/start", response_model=ProjectDetailResponse, status_code=201)
 async def start_project(
     project_id: str,
     db: AsyncSession = Depends(get_async_db)
@@ -197,7 +215,7 @@ async def start_project(
         "sections": [SectionResponse.model_validate(section) for section in all_sections]
     }
     
-    return ProjectStartResponse(**response_data)
+    return ProjectDetailResponse(**response_data)
 
 
 @router.put("/{project_id}", response_model=ProjectResponse)

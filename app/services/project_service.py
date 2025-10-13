@@ -11,7 +11,7 @@ from sqlalchemy.orm import selectinload
 
 from app.models.project import Project, ProjectStatus
 from app.models.section import Section, SectionStatus
-from app.schemas.project import ProjectReportResponse, SectionReportData, ProjectStartResponse
+from app.schemas.project import ProjectReportResponse, SectionReportData, ProjectDetailResponse
 from app.schemas.section import SectionResponse
 
 logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ class ProjectService:
         self,
         project_id: str,
         db: AsyncSession
-    ) -> ProjectStartResponse:
+    ) -> ProjectDetailResponse:
         """
         Start a project by creating 27 sections and updating project status.
         
@@ -33,7 +33,7 @@ class ProjectService:
             db: Database session
             
         Returns:
-            ProjectStartResponse containing project details with all 27 sections
+            ProjectDetailResponse containing project details with all 27 sections
             
         Raises:
             ValueError: If project not found
@@ -88,7 +88,7 @@ class ProjectService:
             }
             
             logger.info(f"Successfully started project {project_id} with 27 sections")
-            return ProjectStartResponse(**response_data)
+            return ProjectDetailResponse(**response_data)
             
         except Exception as e:
             logger.error(f"Error starting project {project_id}: {str(e)}")

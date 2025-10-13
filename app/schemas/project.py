@@ -69,8 +69,8 @@ class SectionReportData(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class ProjectStartResponse(BaseModel):
-    """Schema for project start response with all sections"""
+class ProjectDetailResponse(BaseModel):
+    """Schema for detailed project response with all sections"""
     # Project fields
     id: str
     name: str
