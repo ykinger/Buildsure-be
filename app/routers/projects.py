@@ -81,6 +81,10 @@ async def create_project(
     project_data: ProjectCreate,
     db: AsyncSession = Depends(get_async_db)
 ):
+    project_data.org_id = "17c93869-01ae-4cf8-8fac-17feb289e994"
+    project_data.user_id = "e22aad92-d56a-4198-a35b-631863e53463"
+    print("TODO change this : We are hardcoding org_id and user_id till we add auth", project_data)
+
     """Create a new project"""
     # Verify organization exists
     org_result = await db.execute(

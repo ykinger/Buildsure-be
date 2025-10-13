@@ -21,8 +21,8 @@ class ProjectCreate(BaseModel):
     """Schema for creating a project"""
     name: str
     description: Optional[str] = None
-    org_id: str
-    user_id: str
+    org_id: str = ""
+    user_id: str = ""
 
 
 class ProjectUpdate(BaseModel):
