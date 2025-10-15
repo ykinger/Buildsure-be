@@ -56,7 +56,7 @@ async def clear_section_history(section_id: str, db: AsyncSession = Depends(get_
 
     ai_service = AIService(db)
     await ai_service.clear_chat_history(section.id)
-    response = await ai_service.what_to_pass_to_user(section.form_section_number)
+    response = await ai_service.what_to_pass_to_user(section.id)
     return response
 
 
@@ -70,12 +70,12 @@ async def start_section(
     Start a section conversation or continue with an answer.
 
     This endpoint replaces the POC functionality and:
-    1. Gets the section and extracts form_section_number
+    1. Gets the section by section_id
     2. Uses AIService.what_to_pass_to_user method for conversational flow
     3. Handles both initial calls (no answer) and follow-up calls (with answer)
     4. Returns structured AI responses for questions or final answers
     """
-    # Get section and extract form_section_number (like POC does)
+    # Get section by section_id
     select_stmt = select(Section).where(Section.id == section_id)
     result = await db.execute(select_stmt)
     section = result.scalar_one_or_none()
@@ -83,12 +83,11 @@ async def start_section(
     if not section:
         raise HTTPException(status_code=404, detail="Section not found")
 
-    section_number = section.form_section_number
     ai_service = AIService(db)
 
     # Handle the answer parameter properly
     human_answer = answer.answer if answer else None
-    ai_response = await ai_service.what_to_pass_to_user(section_number, human_answer)
+    ai_response = await ai_service.what_to_pass_to_user(section.id, human_answer)
 
     # Handle final_answer type to log completion (like POC)
     if ai_response.get("type") == "final_answer":
@@ -96,6 +95,19 @@ async def start_section(
         #TODO: update section status to completed here if needed
 
     return ai_response
+
+
+@router.post("/{section_id}/start")
+async def start_section(
+    section_id: str,
+    answer: Optional[RequestAnswer] = None,
+    db: AsyncSession = Depends(get_async_db)
+):
+    """
+    Start a section and changes the state to In progress
+    """
+
+    return 
 
 @router.post("/{section_id}/confirm", response_model=SectionConfirmSimpleResponse)
 async def confirm_section_simple(

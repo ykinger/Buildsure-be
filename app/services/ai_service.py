@@ -258,29 +258,30 @@ class AIService:
             logging.error(f"Error loading chat history for section {section_id}: {str(e)}")
             return []
 
-    async def what_to_pass_to_user(self, section_number: str, human_answer: str = None) -> str:
+    async def what_to_pass_to_user(self, section_id: str, human_answer: str = None) -> str:
         """Main function to interact with user - converted from ai.py."""
         try:
-            current_section = await get_form_section_info(section_number, self.db)
-            if not current_section:
-                return {
-                    "status": "error",
-                    "message": f"Section {section_number} not found"
-                }
-
-            await self.get_obc_content(current_section)
-
-            # Find the section by form_section_number to get the section_id
+            # Get the section by section_id
             section_result = await self.db.execute(
-                select(Section).where(Section.form_section_number == section_number)
+                select(Section).where(Section.id == section_id)
             )
             section = section_result.scalar_one_or_none()
 
             if not section:
                 return {
                     "status": "error",
-                    "message": f"Section with number {section_number} not found in database"
+                    "message": f"Section with id {section_id} not found in database"
                 }
+
+            # Get form section info using the form_section_number
+            current_section = await get_form_section_info(section.form_section_number, self.db)
+            if not current_section:
+                return {
+                    "status": "error",
+                    "message": f"Section {section.form_section_number} not found"
+                }
+
+            await self.get_obc_content(current_section)
 
             history = await self.load_chat_history(section.id)
             if human_answer is None and history != [] and history[len(history)-1].type == "ai":
