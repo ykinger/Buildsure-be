@@ -5,7 +5,6 @@ from .organization import Organization
 from .user import User
 from .project import Project
 from .section import Section
-from .form_section_template import FormSectionTemplate
 from .ontario_chunk import OntarioChunk
 from .answer import Answer
 from .data_matrix import DataMatrix
@@ -16,7 +15,6 @@ __all__ = [
     "User",
     "Project",
     "Section",
-    "FormSectionTemplate",
     "OntarioChunk",
     "Answer",
     "DataMatrix",

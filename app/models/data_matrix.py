@@ -11,6 +11,7 @@ from app.database import Base
 
 if TYPE_CHECKING:
     from .ontario_chunk import OntarioChunk
+    from .section import Section
 
 
 class DataMatrix(Base):
@@ -55,6 +56,10 @@ class DataMatrix(Base):
         "OntarioChunk",
         secondary="data_matrix_ontario_chunk",
         back_populates="data_matrices"
+    )
+    sections: Mapped[List["Section"]] = relationship(
+        "Section",
+        back_populates="data_matrix"
     )
 
     def __repr__(self) -> str:

@@ -13,7 +13,7 @@ import enum
 if TYPE_CHECKING:
     from .project import Project
     from .answer import Answer
-    from .form_section_template import FormSectionTemplate
+    from .data_matrix import DataMatrix
 
 
 class SectionStatus(enum.Enum):
@@ -40,7 +40,7 @@ class Section(Base):
     )
     form_section_number = Column(
         String,
-        ForeignKey("form_section_template.question_number"),
+        ForeignKey("data_matrix.number"),
         nullable=False
     )
     status = Column(
@@ -73,8 +73,8 @@ class Section(Base):
         cascade="all, delete-orphan",
         order_by="Answer.created_at"
     )
-    form_template: Mapped["FormSectionTemplate"] = relationship(
-        "FormSectionTemplate",
+    data_matrix: Mapped["DataMatrix"] = relationship(
+        "DataMatrix",
         back_populates="sections"
     )
 

@@ -125,12 +125,12 @@ async def get_project(
     db: AsyncSession = Depends(get_async_db)
 ):
     """Get project by ID with all sections"""
-    from app.models.form_section_template import FormSectionTemplate
+    from app.models.data_matrix import DataMatrix
     
     result = await db.execute(
         select(Project)
         .options(
-            selectinload(Project.sections).selectinload(Section.form_template)
+            selectinload(Project.sections).selectinload(Section.data_matrix)
         )
         .where(Project.id == project_id)
     )
@@ -150,7 +150,7 @@ async def get_project(
             "status": section.status,
             "draft_output": section.draft_output,
             "final_output": section.final_output,
-            "form_title": section.form_template.form_title if section.form_template else None,
+            "form_title": section.data_matrix.title if section.data_matrix else None,
             "created_at": section.created_at,
             "updated_at": section.updated_at
         }
@@ -191,9 +191,9 @@ async def start_project(
     
     # Create 27 sections using bulk insert
     sections = []
-    for section_number in range(1, 28):  # 1 to 27
-        # Set section 1 as READY_TO_START, others as PENDING
-        status = SectionStatus.READY_TO_START if section_number == 1 else SectionStatus.PENDING
+    for section_number in range(0, 28):  # 0 to 27
+        # Set section 0 as READY_TO_START, others as PENDING
+        status = SectionStatus.READY_TO_START if section_number == 0 else SectionStatus.PENDING
         form_section_number = f"3.{section_number:02d}"
         sections.append(Section(
             project_id=project.id,
@@ -209,11 +209,11 @@ async def start_project(
     await db.commit()
     await db.refresh(project)
     
-    # Get all sections for response with form_template
-    from app.models.form_section_template import FormSectionTemplate
+    # Get all sections for response with data_matrix
+    from app.models.data_matrix import DataMatrix
     sections_result = await db.execute(
         select(Section)
-        .options(selectinload(Section.form_template))
+        .options(selectinload(Section.data_matrix))
         .where(Section.project_id == project_id)
         .order_by(Section.form_section_number)
     )
@@ -230,7 +230,7 @@ async def start_project(
             "status": section.status,
             "draft_output": section.draft_output,
             "final_output": section.final_output,
-            "form_title": section.form_template.form_title if section.form_template else None,
+            "form_title": section.data_matrix.title if section.data_matrix else None,
             "created_at": section.created_at,
             "updated_at": section.updated_at
         }
@@ -317,43 +317,6 @@ async def delete_project(
     
     await db.delete(project)
     await db.commit()
-
-
-@router.get("/organizations/{org_id}/projects", response_model=ProjectListResponse)
-async def list_projects_by_organization(
-    org_id: str,
-    page: int = Query(1, ge=1, description="Page number"),
-    size: int = Query(10, ge=1, le=100, description="Page size"),
-    db: AsyncSession = Depends(get_async_db)
-):
-    """List projects by organization ID"""
-    # Verify organization exists
-    org_result = await db.execute(
-        select(Organization).where(Organization.id == org_id)
-    )
-    if not org_result.scalar_one_or_none():
-        raise HTTPException(status_code=404, detail="Organization not found")
-    
-    return await list_projects(page=page, size=size, org_id=org_id, db=db)
-
-
-@router.get("/users/{user_id}/projects", response_model=ProjectListResponse)
-async def list_projects_by_user(
-    user_id: str,
-    page: int = Query(1, ge=1, description="Page number"),
-    size: int = Query(10, ge=1, le=100, description="Page size"),
-    db: AsyncSession = Depends(get_async_db)
-):
-    """List projects by user ID"""
-    # Verify user exists
-    user_result = await db.execute(
-        select(User).where(User.id == user_id)
-    )
-    if not user_result.scalar_one_or_none():
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    return await list_projects(page=page, size=size, user_id=user_id, db=db)
-
 
 @router.get("/{project_id}/report")
 async def get_project_report(
