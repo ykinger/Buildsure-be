@@ -3,7 +3,7 @@ import os
 
 from dotenv import load_dotenv
 from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -35,7 +35,6 @@ async def get_db():
     async with async_session_maker() as session:
         yield session
 
-Base = declarative_base()
 class CustomBase(SQLModel):
     """Custom Base class for models, to allow global customizations"""
     pass
