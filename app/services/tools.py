@@ -9,7 +9,7 @@ from typing import Literal
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, BaseMessage, ToolMessage
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.database import get_async_db
+from app.database import get_db
 from app.models.data_matrix import DataMatrix
 
 history = None

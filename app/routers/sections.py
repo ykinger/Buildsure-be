@@ -15,7 +15,7 @@ import json
 from pydantic import BaseModel
 from sqlmodel import SQLModel
 
-from app.database import get_async_db
+from app.database import get_db
 from app.models.section import Section, SectionStatus
 from app.models.project import Project
 from app.schemas.section import (
@@ -44,7 +44,7 @@ router = APIRouter(prefix="/api/v1/sections", tags=["sections"])
 
 
 @router.get("/{section_id}/clear")
-async def clear_section_history(section_id: str, db: AsyncSession = Depends(get_async_db)):
+async def clear_section_history(section_id: str, db: AsyncSession = Depends(get_db)):
     """Clear chat history (answers) for a section"""
     # Get section and use section_id for history clearing
     select_stmt = select(Section).where(Section.id == section_id)
@@ -64,7 +64,7 @@ async def clear_section_history(section_id: str, db: AsyncSession = Depends(get_
 async def start_section(
     section_id: str,
     answer: Optional[RequestAnswer] = None,
-    db: AsyncSession = Depends(get_async_db)
+    db: AsyncSession = Depends(get_db)
 ):
     """
     Start a section conversation or continue with an answer.
@@ -101,19 +101,19 @@ async def start_section(
 async def start_section(
     section_id: str,
     answer: Optional[RequestAnswer] = None,
-    db: AsyncSession = Depends(get_async_db)
+    db: AsyncSession = Depends(get_db)
 ):
     """
     Start a section and changes the state to In progress
     """
 
-    return 
+    return
 
 @router.post("/{section_id}/confirm", response_model=SectionConfirmSimpleResponse)
 async def confirm_section_simple(
     section_id: str,
     confirm_data: SectionConfirmRequest,
-    db: AsyncSession = Depends(get_async_db)
+    db: AsyncSession = Depends(get_db)
 ):
     """
     Confirm a section by saving answer and progressing to next section.

@@ -5,7 +5,6 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from app.database import create_tables
 from app.routers import (
     organizations_router,
     users_router,
@@ -17,8 +16,6 @@ from app.routers import (
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan events"""
-    # Startup
-    await create_tables()
     yield
     # Shutdown
     pass

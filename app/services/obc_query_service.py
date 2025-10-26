@@ -276,9 +276,9 @@ class OBCQueryService:
 # Example usage functions
 async def example_optimized_queries():
     """Examples of how to use the optimized query service."""
-    from app.database import get_async_db
+    from app.database import get_db
 
-    async for db in get_async_db():
+    async for db in get_db():
         service = OBCQueryService(db)
 
         # ✅ GOOD: Get all articles in a specific subsection
