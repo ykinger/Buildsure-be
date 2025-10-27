@@ -13,7 +13,7 @@ import asyncio
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from app.database import CustomBase, ASYNC_DATABASE_URL
-# from app.models import *  # Import all models (models deleted, starting over)
+from app.models import *  # Import all models
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -85,11 +85,17 @@ async def run_migrations_online() -> None:
 
     await connectable.dispose()
 
+def include_object(object, name, type_, reflected, compare_to):
+    if type_ == "table" and (name.startswith("old_") or name in ["ontario_chunk", "section", "data_matrix_ontario_chunk"]):
+        return False
+    return True
+
 def do_run_migrations(connection):
     context.configure(
         connection=connection,
         target_metadata=target_metadata,
         dialect_opts={"paramstyle": "named"},
+        include_object=include_object,
     )
     with context.begin_transaction():
         context.run_migrations()
