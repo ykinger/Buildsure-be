@@ -20,8 +20,7 @@ class Project(CustomBase, table=True):
     description: Optional[str] = Field(sa_column=Column(Text))
     status: str = Field(default=ProjectStatus.NOT_STARTED)
     current_section: str = Field(default="3.01")
-    total_sections: int = Field(default=27, sa_column=Column(Integer))
-    completed_sections: int = Field(default=0, sa_column=Column(Integer))
+
     created_at: Optional[datetime] = Field(
         sa_column=Column(DateTime, server_default=func.now(), nullable=False)
     )

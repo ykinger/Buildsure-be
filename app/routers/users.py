@@ -35,8 +35,8 @@ async def list_users(
     count_query = select(func.count(User.id))
 
     if org_id:
-        query = query.where(User.org_id == org_id)
-        count_query = count_query.where(User.org_id == org_id)
+        query = query.where(User.organization_id == org_id)
+        count_query = count_query.where(User.organization_id == org_id)
 
     # Get total count
     count_result = await db.execute(count_query)
@@ -72,7 +72,7 @@ async def create_user(
     """Create a new user"""
     # Verify organization exists
     org_result = await db.execute(
-        select(Organization).where(Organization.id == user_data.org_id)
+        select(Organization).where(Organization.id == user_data.organization_id)
     )
     if not org_result.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Organization not found")

@@ -13,8 +13,7 @@ class ProjectBase(BaseModel):
     description: Optional[str] = None
     status: ProjectStatus = ProjectStatus.NOT_STARTED
     current_section: str = "3.01"
-    total_sections: int = 27
-    completed_sections: int = 0
+
 
 
 class ProjectCreate(BaseModel):
@@ -31,8 +30,7 @@ class ProjectUpdate(BaseModel):
     description: Optional[str] = None
     status: Optional[ProjectStatus] = None
     current_section: Optional[str] = None
-    total_sections: Optional[int] = None
-    completed_sections: Optional[int] = None
+
     organization_id: Optional[str] = None
     user_id: Optional[str] = None
 
@@ -75,9 +73,8 @@ class ProjectDetailResponse(BaseModel):
     name: str
     description: Optional[str]
     status: ProjectStatus
-    current_section: str
-    total_sections: int
-    completed_sections: int
+
+
     organization_id: str
     user_id: str
     created_at: datetime
@@ -90,8 +87,7 @@ class ProjectReportResponse(BaseModel):
     project_id: str
     project_name: str
     project_status: ProjectStatus
-    total_sections: int
-    completed_sections: int
+
     generated_at: datetime
     sections: Dict[str, SectionReportData]  # Dynamic keys like "section_1", "section_2", etc.
 

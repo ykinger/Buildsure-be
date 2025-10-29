@@ -7,14 +7,12 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
-from sqlalchemy.orm import selectinload
 import math
 
 from app.database import get_db
 from app.models.project import Project, ProjectStatus
 from app.models.organization import Organization
 from app.models.user import User
-from app.models.section import Section, SectionStatus
 from app.schemas.project import (
     ProjectCreate,
     ProjectUpdate,
@@ -38,13 +36,24 @@ async def list_projects(
     db: AsyncSession = Depends(get_db)
 ):
     """List projects with pagination and optional filtering"""
-    # Build query
-    query = select(Project)
-    count_query = select(func.count(Project.id))
+    # TODO: Implement proper authentication to get current user's organization
+    # For now, require org_id filter for security
+    if not org_id:
+        raise HTTPException(
+            status_code=400,
+            detail="organization_id filter is required for security"
+        )
 
-    if org_id:
-        query = query.where(Project.org_id == org_id)
-        count_query = count_query.where(Project.org_id == org_id)
+    # Verify organization exists
+    org_result = await db.execute(
+        select(Organization).where(Organization.id == org_id)
+    )
+    if not org_result.scalar_one_or_none():
+        raise HTTPException(status_code=400, detail="Organization not found")
+
+    # Build query
+    query = select(Project).where(Project.organization_id == org_id)
+    count_query = select(func.count(Project.id)).where(Project.organization_id == org_id)
 
     if user_id:
         query = query.where(Project.user_id == user_id)
@@ -81,14 +90,17 @@ async def create_project(
     project_data: ProjectCreate,
     db: AsyncSession = Depends(get_db)
 ):
-    project_data.org_id = "17c93869-01ae-4cf8-8fac-17feb289e994"
-    project_data.user_id = "e22aad92-d56a-4198-a35b-631863e53463"
-    print("TODO change this : We are hardcoding org_id and user_id till we add auth", project_data)
-
     """Create a new project"""
+    # TODO: Implement proper authentication to get current user and organization
+    # For now, require organization_id and user_id to be provided
+    if not project_data.organization_id:
+        raise HTTPException(status_code=400, detail="organization_id is required")
+    if not project_data.user_id:
+        raise HTTPException(status_code=400, detail="user_id is required")
+
     # Verify organization exists
     org_result = await db.execute(
-        select(Organization).where(Organization.id == project_data.org_id)
+        select(Organization).where(Organization.id == project_data.organization_id)
     )
     if not org_result.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Organization not found")
@@ -97,18 +109,15 @@ async def create_project(
     user_result = await db.execute(
         select(User).where(
             User.id == project_data.user_id,
-            User.org_id == project_data.org_id
+            User.organization_id == project_data.organization_id
         )
     )
     if not user_result.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="User not found or doesn't belong to the organization")
 
-    # Create project with hardcoded total_sections=27
+    # Create project with default values
     project_dict = project_data.model_dump()
     project_dict.update({
-        'total_sections': 27,
-        'current_section': '3.01',
-        'completed_sections': 0,
         'status': ProjectStatus.NOT_STARTED
     })
     project = Project(**project_dict)
@@ -122,56 +131,41 @@ async def create_project(
 @router.get("/{project_id}", response_model=ProjectDetailResponse)
 async def get_project(
     project_id: str,
+    org_id: Optional[str] = Query(None, description="Organization ID for validation"),
     db: AsyncSession = Depends(get_db)
 ):
-    """Get project by ID with all sections"""
-    from app.models.data_matrix import DataMatrix
-
-    result = await db.execute(
-        select(Project)
-        .options(
-            selectinload(Project.sections).selectinload(Section.data_matrix)
+    """Get project by ID"""
+    try:
+        result = await db.execute(
+            select(Project).where(Project.id == project_id)
         )
-        .where(Project.id == project_id)
-    )
-    project = result.scalar_one_or_none()
+        project = result.scalar_one_or_none()
 
-    if not project:
-        raise HTTPException(status_code=404, detail="Project not found")
+        if not project:
+            raise HTTPException(status_code=404, detail="Project not found")
 
-    # Build response with sections including form_title
-    from app.schemas.section import SectionResponse
-    sections_data = []
-    for section in project.sections:
-        section_dict = {
-            "id": section.id,
-            "project_id": section.project_id,
-            "form_section_number": section.form_section_number,
-            "status": section.status,
-            "draft_output": section.draft_output,
-            "final_output": section.final_output,
-            "form_title": section.data_matrix.title if section.data_matrix else None,
-            "created_at": section.created_at,
-            "updated_at": section.updated_at
+        # Optional organization validation for security
+        if org_id and project.organization_id != org_id:
+            raise HTTPException(status_code=403, detail="Project does not belong to the specified organization")
+
+        response_data = {
+            "id": project.id,
+            "name": project.name,
+            "description": project.description,
+            "status": project.status,
+            "current_section": project.current_section,
+
+            "organization_id": project.organization_id,
+            "user_id": project.user_id,
+            "created_at": project.created_at,
+            "updated_at": project.updated_at,
         }
-        sections_data.append(SectionResponse(**section_dict))
 
-    response_data = {
-        "id": project.id,
-        "name": project.name,
-        "description": project.description,
-        "status": project.status,
-        "current_section": project.current_section,
-        "total_sections": project.total_sections,
-        "completed_sections": project.completed_sections,
-        "org_id": project.org_id,
-        "user_id": project.user_id,
-        "created_at": project.created_at,
-        "updated_at": project.updated_at,
-        "sections": sections_data
-    }
-
-    return ProjectDetailResponse(**response_data)
+        return ProjectDetailResponse(**response_data)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to retrieve project: {str(e)}")
 
 
 @router.post("/{project_id}/start", response_model=ProjectDetailResponse, status_code=201)
@@ -179,79 +173,15 @@ async def start_project(
     project_id: str,
     db: AsyncSession = Depends(get_db)
 ):
-    """Start a project by creating 27 sections and updating project status"""
-    # Get project
-    result = await db.execute(
-        select(Project).where(Project.id == project_id)
-    )
-    project = result.scalar_one_or_none()
-
-    if not project:
-        raise HTTPException(status_code=404, detail="Project not found")
-
-    # Create 27 sections using bulk insert
-    sections = []
-    for section_number in range(0, 28):  # 0 to 27
-        # Set section 0 as READY_TO_START, others as PENDING
-        status = SectionStatus.READY_TO_START if section_number == 0 else SectionStatus.PENDING
-        form_section_number = f"3.{section_number:02d}"
-        sections.append(Section(
-            project_id=project.id,
-            form_section_number=form_section_number,
-            status=status
-        ))
-
-    db.add_all(sections)
-
-    # Update project status to IN_PROGRESS
-    project.status = ProjectStatus.IN_PROGRESS
-
-    await db.commit()
-    await db.refresh(project)
-
-    # Get all sections for response with data_matrix
-    from app.models.data_matrix import DataMatrix
-    sections_result = await db.execute(
-        select(Section)
-        .options(selectinload(Section.data_matrix))
-        .where(Section.project_id == project_id)
-        .order_by(Section.form_section_number)
-    )
-    all_sections = sections_result.scalars().all()
-
-    # Build response with sections including form_title
-    from app.schemas.section import SectionResponse
-    sections_data = []
-    for section in all_sections:
-        section_dict = {
-            "id": section.id,
-            "project_id": section.project_id,
-            "form_section_number": section.form_section_number,
-            "status": section.status,
-            "draft_output": section.draft_output,
-            "final_output": section.final_output,
-            "form_title": section.data_matrix.title if section.data_matrix else None,
-            "created_at": section.created_at,
-            "updated_at": section.updated_at
-        }
-        sections_data.append(SectionResponse(**section_dict))
-
-    response_data = {
-        "id": project.id,
-        "name": project.name,
-        "description": project.description,
-        "status": project.status,
-        "current_section": project.current_section,
-        "total_sections": project.total_sections,
-        "completed_sections": project.completed_sections,
-        "org_id": project.org_id,
-        "user_id": project.user_id,
-        "created_at": project.created_at,
-        "updated_at": project.updated_at,
-        "sections": sections_data
-    }
-
-    return ProjectDetailResponse(**response_data)
+    """Start a project by updating project status to IN_PROGRESS"""
+    try:
+        project_service = ProjectService()
+        project = await project_service.start_project(project_id, db)
+        return project
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to start project: {str(e)}")
 
 
 @router.put("/{project_id}", response_model=ProjectResponse)
@@ -271,21 +201,21 @@ async def update_project(
 
     update_data = project_data.model_dump(exclude_unset=True)
 
-    # Verify organization exists if org_id is being updated
-    if "org_id" in update_data:
+    # Verify organization exists if organization_id is being updated
+    if "organization_id" in update_data:
         org_result = await db.execute(
-            select(Organization).where(Organization.id == update_data["org_id"])
+            select(Organization).where(Organization.id == update_data["organization_id"])
         )
         if not org_result.scalar_one_or_none():
             raise HTTPException(status_code=400, detail="Organization not found")
 
     # Verify user exists and belongs to the organization if user_id is being updated
     if "user_id" in update_data:
-        org_id = update_data.get("org_id", project.org_id)
+        organization_id = update_data.get("organization_id", project.organization_id)
         user_result = await db.execute(
             select(User).where(
                 User.id == update_data["user_id"],
-                User.org_id == org_id
+                User.organization_id == organization_id
             )
         )
         if not user_result.scalar_one_or_none():
