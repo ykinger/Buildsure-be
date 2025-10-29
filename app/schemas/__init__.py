@@ -22,13 +22,6 @@ from .project import (
     ProjectResponse,
     ProjectListResponse
 )
-from .section import (
-    SectionBase,
-    SectionCreate,
-    SectionUpdate,
-    SectionResponse,
-    SectionListResponse
-)
 from .conversation import (
     ConversationCreate,
     ConversationRead
@@ -47,7 +40,6 @@ __all__ = [
     "OrganizationBase", "OrganizationCreate", "OrganizationUpdate", "OrganizationResponse", "OrganizationListResponse",
     "UserBase", "UserCreate", "UserUpdate", "UserResponse", "UserListResponse",
     "ProjectBase", "ProjectCreate", "ProjectUpdate", "ProjectResponse", "ProjectListResponse",
-    "SectionBase", "SectionCreate", "SectionUpdate", "SectionResponse", "SectionListResponse",
     "ConversationCreate", "ConversationRead",
     "DataMatrixBase", "DataMatrixCreate", "DataMatrixUpdate", "DataMatrix",
     "DataMatrixOntarioChunkBase", "DataMatrixOntarioChunkCreate", "DataMatrixOntarioChunk"

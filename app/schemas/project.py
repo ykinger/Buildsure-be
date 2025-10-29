@@ -5,7 +5,6 @@ from datetime import datetime
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, ConfigDict
 from app.models.project import ProjectStatus
-from app.schemas.section import SectionResponse
 
 
 class ProjectBase(BaseModel):
@@ -22,7 +21,7 @@ class ProjectCreate(BaseModel):
     """Schema for creating a project"""
     name: str
     description: Optional[str] = None
-    org_id: str = ""
+    organization_id: str = ""
     user_id: str = ""
 
 
@@ -34,14 +33,14 @@ class ProjectUpdate(BaseModel):
     current_section: Optional[str] = None
     total_sections: Optional[int] = None
     completed_sections: Optional[int] = None
-    org_id: Optional[str] = None
+    organization_id: Optional[str] = None
     user_id: Optional[str] = None
 
 
 class ProjectResponse(ProjectBase):
     """Schema for project response"""
     id: str
-    org_id: str
+    organization_id: str
     user_id: str
     created_at: datetime
     updated_at: datetime
@@ -79,13 +78,10 @@ class ProjectDetailResponse(BaseModel):
     current_section: str
     total_sections: int
     completed_sections: int
-    org_id: str
+    organization_id: str
     user_id: str
     created_at: datetime
     updated_at: datetime
-    # Sections array
-    sections: List['SectionResponse']
-    
     model_config = ConfigDict(from_attributes=True)
 
 
