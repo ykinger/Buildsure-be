@@ -3,11 +3,12 @@ Projects Router
 FastAPI router for project CRUD operations.
 """
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 import math
+from datetime import datetime
 
 from app.database import get_db
 from app.models.project import Project, ProjectStatus
@@ -23,6 +24,9 @@ from app.schemas.project import (
 )
 from app.services.project_service import ProjectService
 from app.services.report_export_service import ReportExportService
+from app.repository.project import get_project_by_id, list_projects as list_projects_repo, create_project as create_project_repo, update_project as update_project_repo, delete_project as delete_project_repo
+from app.repository.organization import get_organization_by_id
+from app.repository.user import get_user_by_id
 
 router = APIRouter(prefix="/api/v1/projects", tags=["projects"])
 
@@ -33,48 +37,34 @@ async def list_projects(
     size: int = Query(10, ge=1, le=100, description="Page size"),
     org_id: Optional[str] = Query(None, description="Filter by organization ID"),
     user_id: Optional[str] = Query(None, description="Filter by user ID"),
-    db: AsyncSession = Depends(get_db)
+    session: AsyncSession = Depends(get_db)
 ):
     """List projects with pagination and optional filtering"""
     # TODO: Implement proper authentication to get current user's organization
     # For now, require org_id filter for security
     if not org_id:
         raise HTTPException(
-            status_code=400,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="organization_id filter is required for security"
         )
 
     # Verify organization exists
-    org_result = await db.execute(
-        select(Organization).where(Organization.id == org_id)
-    )
-    if not org_result.scalar_one_or_none():
-        raise HTTPException(status_code=400, detail="Organization not found")
+    organization = await get_organization_by_id(org_id, session) # Use functional repo for verification
+    if not organization:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Organization not found")
 
-    # Build query
-    query = select(Project).where(Project.organization_id == org_id)
+    # Get projects using functional repository
+    projects = await list_projects_repo(session=session, organization_id=org_id, user_id=user_id, offset=(page - 1) * size, limit=size)
+
+    # Get total count (still direct query for now, can be moved to repo if needed)
     count_query = select(func.count(Project.id)).where(Project.organization_id == org_id)
-
     if user_id:
-        query = query.where(Project.user_id == user_id)
         count_query = count_query.where(Project.user_id == user_id)
-
-    # Get total count
-    count_result = await db.execute(count_query)
+    count_result = await session.execute(count_query)
     total = count_result.scalar()
 
     # Calculate pagination
-    offset = (page - 1) * size
     pages = math.ceil(total / size) if total > 0 else 1
-
-    # Get projects
-    result = await db.execute(
-        query
-        .offset(offset)
-        .limit(size)
-        .order_by(Project.created_at.desc())
-    )
-    projects = result.scalars().all()
 
     return ProjectListResponse(
         items=[ProjectResponse.model_validate(project) for project in projects],
@@ -85,35 +75,28 @@ async def list_projects(
     )
 
 
-@router.post("/", response_model=ProjectResponse, status_code=201)
+@router.post("/", response_model=ProjectResponse, status_code=status.HTTP_201_CREATED)
 async def create_project(
     project_data: ProjectCreate,
-    db: AsyncSession = Depends(get_db)
+    session: AsyncSession = Depends(get_db)
 ):
     """Create a new project"""
     # TODO: Implement proper authentication to get current user and organization
     # For now, require organization_id and user_id to be provided
     if not project_data.organization_id:
-        raise HTTPException(status_code=400, detail="organization_id is required")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="organization_id is required")
     if not project_data.user_id:
-        raise HTTPException(status_code=400, detail="user_id is required")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="user_id is required")
 
     # Verify organization exists
-    org_result = await db.execute(
-        select(Organization).where(Organization.id == project_data.organization_id)
-    )
-    if not org_result.scalar_one_or_none():
-        raise HTTPException(status_code=400, detail="Organization not found")
+    organization = await get_organization_by_id(project_data.organization_id, session) # Use functional repo for verification
+    if not organization:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Organization not found")
 
     # Verify user exists and belongs to the organization
-    user_result = await db.execute(
-        select(User).where(
-            User.id == project_data.user_id,
-            User.organization_id == project_data.organization_id
-        )
-    )
-    if not user_result.scalar_one_or_none():
-        raise HTTPException(status_code=400, detail="User not found or doesn't belong to the organization")
+    user = await get_user_by_id(project_data.user_id, session) # Use functional repo for verification
+    if not user or user.organization_id != project_data.organization_id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User not found or doesn't belong to the specified organization")
 
     # Create project with default values
     project_dict = project_data.model_dump()
@@ -121,9 +104,7 @@ async def create_project(
         'status': ProjectStatus.NOT_STARTED
     })
     project = Project(**project_dict)
-    db.add(project)
-    await db.commit()
-    await db.refresh(project)
+    project = await create_project_repo(project, session) # Use functional repo to create
 
     return ProjectResponse.model_validate(project)
 
@@ -131,133 +112,86 @@ async def create_project(
 @router.get("/{project_id}", response_model=ProjectDetailResponse)
 async def get_project(
     project_id: str,
+    project: Project = Depends(get_project_by_id),
     org_id: Optional[str] = Query(None, description="Organization ID for validation"),
-    db: AsyncSession = Depends(get_db)
 ):
     """Get project by ID"""
-    try:
-        result = await db.execute(
-            select(Project).where(Project.id == project_id)
-        )
-        project = result.scalar_one_or_none()
+    # Optional organization validation for security
+    if org_id and project.organization_id != org_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Project does not belong to the specified organization")
 
-        if not project:
-            raise HTTPException(status_code=404, detail="Project not found")
-
-        # Optional organization validation for security
-        if org_id and project.organization_id != org_id:
-            raise HTTPException(status_code=403, detail="Project does not belong to the specified organization")
-
-        response_data = {
-            "id": project.id,
-            "name": project.name,
-            "description": project.description,
-            "status": project.status,
-            "current_section": project.current_section,
-
-            "organization_id": project.organization_id,
-            "user_id": project.user_id,
-            "created_at": project.created_at,
-            "updated_at": project.updated_at,
-        }
-
-        return ProjectDetailResponse(**response_data)
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to retrieve project: {str(e)}")
+    return project
 
 
-@router.post("/{project_id}/start", response_model=ProjectDetailResponse, status_code=201)
+@router.post("/{project_id}/start", response_model=ProjectDetailResponse, status_code=status.HTTP_200_OK)
 async def start_project(
     project_id: str,
-    db: AsyncSession = Depends(get_db)
+    project: Project = Depends(get_project_by_id),
+    session: AsyncSession = Depends(get_db)
 ):
     """Start a project by updating project status to IN_PROGRESS"""
     try:
         project_service = ProjectService()
-        project = await project_service.start_project(project_id, db)
+        project = await project_service.start_project(project_id, session) # Pass project_id and session
         return project
     except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to start project: {str(e)}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to start project: {str(e)}")
 
 
 @router.put("/{project_id}", response_model=ProjectResponse)
 async def update_project(
     project_id: str,
     project_data: ProjectUpdate,
-    db: AsyncSession = Depends(get_db)
+    project: Project = Depends(get_project_by_id),
+    session: AsyncSession = Depends(get_db)
 ):
     """Update project by ID"""
-    result = await db.execute(
-        select(Project).where(Project.id == project_id)
-    )
-    project = result.scalar_one_or_none()
-
-    if not project:
-        raise HTTPException(status_code=404, detail="Project not found")
-
     update_data = project_data.model_dump(exclude_unset=True)
 
     # Verify organization exists if organization_id is being updated
     if "organization_id" in update_data:
-        org_result = await db.execute(
-            select(Organization).where(Organization.id == update_data["organization_id"])
-        )
-        if not org_result.scalar_one_or_none():
-            raise HTTPException(status_code=400, detail="Organization not found")
+        organization = await get_organization_by_id(update_data["organization_id"], session)
+        if not organization:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Organization not found")
 
     # Verify user exists and belongs to the organization if user_id is being updated
     if "user_id" in update_data:
         organization_id = update_data.get("organization_id", project.organization_id)
-        user_result = await db.execute(
-            select(User).where(
-                User.id == update_data["user_id"],
-                User.organization_id == organization_id
-            )
-        )
-        if not user_result.scalar_one_or_none():
-            raise HTTPException(status_code=400, detail="User not found or doesn't belong to the organization")
+        user = await get_user_by_id(update_data["user_id"], session)
+        if not user or user.organization_id != organization_id:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User not found or doesn't belong to the specified organization")
 
-    # Update fields
-    for field, value in update_data.items():
-        setattr(project, field, value)
-
-    await db.commit()
-    await db.refresh(project)
+    project = await update_project_repo(project_id, update_data, session) # Use functional repo to update
+    if not project:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found during update")
 
     return ProjectResponse.model_validate(project)
 
 
-@router.delete("/{project_id}", status_code=204)
+@router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_project(
     project_id: str,
-    db: AsyncSession = Depends(get_db)
+    project: Project = Depends(get_project_by_id),
+    session: AsyncSession = Depends(get_db)
 ):
     """Delete project by ID"""
-    result = await db.execute(
-        select(Project).where(Project.id == project_id)
-    )
-    project = result.scalar_one_or_none()
-
-    if not project:
-        raise HTTPException(status_code=404, detail="Project not found")
-
-    await db.delete(project)
-    await db.commit()
+    success = await delete_project_repo(project_id, session) # Use functional repo to delete
+    if not success:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found during delete")
 
 @router.get("/{project_id}/report")
 async def get_project_report(
     project_id: str,
+    project: Project = Depends(get_project_by_id),
     format: Optional[str] = Query("json", description="Report format: json, pdf, or excel"),
-    db: AsyncSession = Depends(get_db)
+    session: AsyncSession = Depends(get_db)
 ):
     """Generate and return a comprehensive report for the project in various formats"""
     try:
         project_service = ProjectService()
-        report = await project_service.generate_project_report(project_id, db)
+        report = await project_service.generate_project_report(project_id, session) # Pass project_id and session
 
         # Return JSON format by default
         if format.lower() == "json":
@@ -295,11 +229,11 @@ async def get_project_report(
             )
 
         else:
-            raise HTTPException(status_code=400, detail="Invalid format. Supported formats: json, pdf, excel")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid format. Supported formats: json, pdf, excel")
 
     except ValueError as e:
         # Project not found or validation error
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except Exception as e:
         # Internal server error
-        raise HTTPException(status_code=500, detail=f"Failed to generate report: {str(e)}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to generate report: {str(e)}")

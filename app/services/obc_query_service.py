@@ -1,275 +1,144 @@
 """
-Optimized OBC query service with best practices for hierarchical data retrieval.
+Knowledge Base query service with best practices for hierarchical data retrieval.
 """
 from typing import List, Optional, Dict, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, or_, func
 from sqlalchemy.orm import selectinload
 
-from app.models.ontario_chunk import OntarioChunk
+from app.models.knowledge_base import KnowledgeBase
 
 
-class OBCQueryService:
-    """Service for optimized OBC chunk queries."""
+class KnowledgeBaseQueryService:
+    """Service for optimized knowledge base queries."""
 
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def get_chunks_by_hierarchy(
-        self,
-        division: Optional[str] = None,
-        part: Optional[str] = None,
-        section: Optional[str] = None,
-        subsection: Optional[str] = None,
-        article: Optional[str] = None,
-        chunk_type: Optional[str] = None,
-        limit: Optional[int] = None
-    ) -> List[OntarioChunk]:
-        """
-        Get chunks by exact hierarchical match.
-        Uses exact equality (==) for optimal performance.
-        """
-        conditions = []
-
-        # Use exact equality for all hierarchical fields
-        if division:
-            conditions.append(OntarioChunk.division == division)
-        if part:
-            conditions.append(OntarioChunk.part == part)
-        if section:
-            conditions.append(OntarioChunk.section == section)
-        if subsection:
-            conditions.append(OntarioChunk.subsection == subsection)
-        if article:
-            conditions.append(OntarioChunk.article == article)
-        if chunk_type:
-            conditions.append(OntarioChunk.chunk_type == chunk_type)
-
-        query = select(OntarioChunk)
-        if conditions:
-            query = query.where(and_(*conditions))
-
-        if limit:
-            query = query.limit(limit)
-
-        result = await self.db.execute(query)
-        return result.scalars().all()
-
-    async def get_article_by_reference(
+    async def get_content_by_reference(
         self,
         reference: str,
-        division: Optional[str] = None
-    ) -> Optional[OntarioChunk]:
+        source: Optional[str] = None
+    ) -> Optional[KnowledgeBase]:
         """
-        Get a specific article by its reference number.
+        Get specific knowledge base content by its reference number.
         Uses exact equality for optimal performance.
         """
         conditions = [
-            OntarioChunk.reference == reference,
-            OntarioChunk.chunk_type == "article"
+            KnowledgeBase.reference == reference
         ]
 
-        if division:
-            conditions.append(OntarioChunk.division == division)
+        if source:
+            conditions.append(KnowledgeBase.source == source)
 
         result = await self.db.execute(
-            select(OntarioChunk).where(and_(*conditions))
+            select(KnowledgeBase).where(and_(*conditions))
         )
         return result.scalar_one_or_none()
-
-    async def get_all_articles_in_subsection(
-        self,
-        division: str,
-        part: str,
-        section: str,
-        subsection: str
-    ) -> List[OntarioChunk]:
-        """
-        Get all articles within a specific subsection.
-        Uses exact equality for optimal performance.
-        """
-        result = await self.db.execute(
-            select(OntarioChunk).where(
-                and_(
-                    OntarioChunk.division == division,
-                    OntarioChunk.part == part,
-                    OntarioChunk.section == section,
-                    OntarioChunk.subsection == subsection,
-                    OntarioChunk.chunk_type == "article"
-                )
-            ).order_by(OntarioChunk.reference)
-        )
-        return result.scalars().all()
-
-    async def get_all_subsections_in_section(
-        self,
-        division: str,
-        part: str,
-        section: str
-    ) -> List[OntarioChunk]:
-        """
-        Get all subsections within a specific section.
-        Uses exact equality for optimal performance.
-        """
-        result = await self.db.execute(
-            select(OntarioChunk).where(
-                and_(
-                    OntarioChunk.division == division,
-                    OntarioChunk.part == part,
-                    OntarioChunk.section == section,
-                    OntarioChunk.chunk_type == "subsection"
-                )
-            ).order_by(OntarioChunk.subsection)
-        )
-        return result.scalars().all()
 
     async def search_content(
         self,
         search_term: str,
-        chunk_type: Optional[str] = None,
-        division: Optional[str] = None,
+        source: Optional[str] = None,
         case_sensitive: bool = False,
         limit: int = 50
-    ) -> List[OntarioChunk]:
+    ) -> List[KnowledgeBase]:
         """
-        Search for content in titles and content.
+        Search for content in references and content.
         Uses LIKE/ILIKE only when actually needed for pattern matching.
         """
         conditions = []
 
         # Use exact equality for structured fields
-        if chunk_type:
-            conditions.append(OntarioChunk.chunk_type == chunk_type)
-        if division:
-            conditions.append(OntarioChunk.division == division)
+        if source:
+            conditions.append(KnowledgeBase.source == source)
 
         # Use LIKE/ILIKE only for actual text search
         if case_sensitive:
             search_condition = or_(
-                OntarioChunk.title.like(f"%{search_term}%"),
-                OntarioChunk.content.like(f"%{search_term}%")
+                KnowledgeBase.reference.like(f"%{search_term}%"),
+                KnowledgeBase.content.like(f"%{search_term}%")
             )
         else:
             search_condition = or_(
-                OntarioChunk.title.ilike(f"%{search_term}%"),
-                OntarioChunk.content.ilike(f"%{search_term}%")
+                KnowledgeBase.reference.ilike(f"%{search_term}%"),
+                KnowledgeBase.content.ilike(f"%{search_term}%")
             )
 
         conditions.append(search_condition)
 
         result = await self.db.execute(
-            select(OntarioChunk)
+            select(KnowledgeBase)
             .where(and_(*conditions))
             .limit(limit)
         )
         return result.scalars().all()
 
-    async def get_hierarchy_summary(self) -> Dict[str, Any]:
+    async def get_source_summary(self) -> Dict[str, Any]:
         """
-        Get a summary of the hierarchical structure.
+        Get a summary of the knowledge base structure by source.
         Uses exact equality and efficient aggregation.
         """
-        # Count by division and chunk type
+        # Count by source
         result = await self.db.execute(
             select(
-                OntarioChunk.division,
-                OntarioChunk.chunk_type,
-                func.count(OntarioChunk.id).label('count')
+                KnowledgeBase.source,
+                func.count(KnowledgeBase.id).label('count')
             )
-            .group_by(OntarioChunk.division, OntarioChunk.chunk_type)
-            .order_by(OntarioChunk.division, OntarioChunk.chunk_type)
+            .group_by(KnowledgeBase.source)
+            .order_by(KnowledgeBase.source)
         )
 
         summary = {}
         for row in result:
-            if row.division not in summary:
-                summary[row.division] = {}
-            summary[row.division][row.chunk_type] = row.count
+            summary[row.source] = row.count
 
         return summary
 
-    async def get_parts_in_division(self, division: str) -> List[OntarioChunk]:
-        """
-        Get all parts in a specific division.
-        Uses exact equality for optimal performance.
-        """
-        result = await self.db.execute(
-            select(OntarioChunk).where(
-                and_(
-                    OntarioChunk.division == division,
-                    OntarioChunk.chunk_type == "part"
-                )
-            ).order_by(OntarioChunk.part)
-        )
-        return result.scalars().all()
-
-    async def get_sections_in_part(
-        self,
-        division: str,
-        part: str
-    ) -> List[OntarioChunk]:
-        """
-        Get all sections in a specific part.
-        Uses exact equality for optimal performance.
-        """
-        result = await self.db.execute(
-            select(OntarioChunk).where(
-                and_(
-                    OntarioChunk.division == division,
-                    OntarioChunk.part == part,
-                    OntarioChunk.chunk_type == "section"
-                )
-            ).order_by(OntarioChunk.section)
-        )
-        return result.scalars().all()
-
-    async def get_multiple_articles(
+    async def get_multiple_by_reference(
         self,
         references: List[str],
-        division: Optional[str] = None
-    ) -> List[OntarioChunk]:
+        source: Optional[str] = None
+    ) -> List[KnowledgeBase]:
         """
-        Get multiple articles by their references efficiently.
+        Get multiple knowledge base items by their references efficiently.
         Uses IN() for optimal performance with multiple values.
         """
         conditions = [
-            OntarioChunk.reference.in_(references),
-            OntarioChunk.chunk_type == "article"
+            KnowledgeBase.reference.in_(references)
         ]
 
-        if division:
-            conditions.append(OntarioChunk.division == division)
+        if source:
+            conditions.append(KnowledgeBase.source == source)
 
         result = await self.db.execute(
-            select(OntarioChunk)
+            select(KnowledgeBase)
             .where(and_(*conditions))
-            .order_by(OntarioChunk.reference)
+            .order_by(KnowledgeBase.reference)
         )
         return result.scalars().all()
 
     async def find_by_reference(
         self,
         references: list[str]|str,
-        division: str = "Division B"
-    ) -> List[OntarioChunk]:
+        source: str = "OBC"
+    ) -> str:
         """
-        Get all chunks in a specific division that contain the reference pattern.
-        Uses LIKE for pattern matching and returns results ordered by reference.
+        Get all knowledge base items that contain the reference pattern.
+        Uses LIKE for pattern matching and returns concatenated content.
         """
         if isinstance(references, str):
             references = [references]
         content = ""
-        # print("getting", references)
         for reference in references:
             result = await self.db.execute(
-                select(OntarioChunk)
-                .where(OntarioChunk.division == division)
-                #TODO: ref=ref OR ref like 'ref.%'
-                .where(OntarioChunk.reference.like(f"{reference}%"))
-                .order_by(OntarioChunk.reference)
+                select(KnowledgeBase)
+                .where(KnowledgeBase.source == source)
+                .where(KnowledgeBase.reference.like(f"{reference}%"))
+                .order_by(KnowledgeBase.reference)
             )
-            for chunk in result.scalars().all():
-                content += chunk.content
+            for item in result.scalars().all():
+                content += item.content
         return content
 
 
@@ -279,33 +148,24 @@ async def example_optimized_queries():
     from app.database import get_db
 
     async for db in get_db():
-        service = OBCQueryService(db)
+        service = KnowledgeBaseQueryService(db)
 
-        # ✅ GOOD: Get all articles in a specific subsection
-        articles = await service.get_all_articles_in_subsection(
-            division="Division A",
-            part="1",
-            section="2",
-            subsection="1"
-        )
-
-        # ✅ GOOD: Get a specific article by reference
-        article = await service.get_article_by_reference(
+        # ✅ GOOD: Get specific content by reference
+        content = await service.get_content_by_reference(
             reference="1.2.1.1",
-            division="Division A"
+            source="OBC"
         )
 
         # ✅ GOOD: Search for content (uses LIKE appropriately)
-        fire_articles = await service.search_content(
+        fire_content = await service.search_content(
             search_term="fire",
-            chunk_type="article",
-            division="Division A"
+            source="OBC"
         )
 
-        # ✅ GOOD: Get multiple articles efficiently
-        multiple_articles = await service.get_multiple_articles(
+        # ✅ GOOD: Get multiple items efficiently
+        multiple_items = await service.get_multiple_by_reference(
             references=["1.1.1.1", "1.2.1.1", "1.3.1.1"],
-            division="Division A"
+            source="OBC"
         )
 
         await db.close()
