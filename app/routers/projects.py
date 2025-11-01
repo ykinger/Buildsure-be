@@ -35,29 +35,30 @@ router = APIRouter(prefix="/api/v1/projects", tags=["projects"])
 async def list_projects(
     page: int = Query(1, ge=1, description="Page number"),
     size: int = Query(10, ge=1, le=100, description="Page size"),
-    org_id: Optional[str] = Query(None, description="Filter by organization ID"),
+    # org_id: Optional[str] = Query(None, description="Filter by organization ID"),
     user_id: Optional[str] = Query(None, description="Filter by user ID"),
     session: AsyncSession = Depends(get_db)
 ):
     """List projects with pagination and optional filtering"""
     # TODO: Implement proper authentication to get current user's organization
     # For now, require org_id filter for security
-    if not org_id:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="organization_id filter is required for security"
-        )
+    # if not org_id:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_400_BAD_REQUEST,
+    #         detail="organization_id filter is required for security"
+    #     )
 
-    # Verify organization exists
-    organization = await get_organization_by_id(org_id, session) # Use functional repo for verification
-    if not organization:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Organization not found")
+    # # Verify organization exists
+    # organization = await get_organization_by_id(org_id, session) # Use functional repo for verification
+    # if not organization:
+    #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Organization not found")
 
     # Get projects using functional repository
-    projects = await list_projects_repo(session=session, organization_id=org_id, user_id=user_id, offset=(page - 1) * size, limit=size)
+    projects = await list_projects_repo(session=session, user_id=user_id, offset=(page - 1) * size, limit=size)
 
     # Get total count (still direct query for now, can be moved to repo if needed)
-    count_query = select(func.count(Project.id)).where(Project.organization_id == org_id)
+    count_query = select(func.count(Project.id))
+    # .where(Project.organization_id == org_id)
     if user_id:
         count_query = count_query.where(Project.user_id == user_id)
     count_result = await session.execute(count_query)
@@ -113,12 +114,11 @@ async def create_project(
 async def get_project(
     project_id: str,
     project: Project = Depends(get_project_by_id),
-    org_id: Optional[str] = Query(None, description="Organization ID for validation"),
 ):
     """Get project by ID"""
-    # Optional organization validation for security
-    if org_id and project.organization_id != org_id:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Project does not belong to the specified organization")
+    # # Optional organization validation for security
+    # if org_id and project.organization_id != org_id:
+    #     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Project does not belong to the specified organization")
 
     return project
 

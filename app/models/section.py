@@ -36,18 +36,3 @@ class SectionStatus(str, Enum):
     COMPLETED = "completed"
     ARCHIVED = "archived"
 
-class Section(CustomBase, table=True):
-    __tablename__ = 'section'
-    id: Optional[str] = Field(default=None, primary_key=True)
-    project_id: str = Field(foreign_key="project.id")
-    form_section_number: str
-    form_title: Optional[str] = Field(sa_column=Column(Text))
-    status: SectionStatus = Field(default=SectionStatus.PENDING)
-    draft_output: Optional[Dict[str, Any]] = Field(sa_column=Column(JSON))
-    final_output: Optional[Dict[str, Any]] = Field(sa_column=Column(JSON))
-    created_at: Optional[datetime] = Field(
-        sa_column=Column(DateTime, server_default=func.now(), nullable=False)
-    )
-    updated_at: Optional[datetime] = Field(
-        sa_column=Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
-    )

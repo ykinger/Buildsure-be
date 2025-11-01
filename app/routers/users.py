@@ -28,17 +28,16 @@ router = APIRouter(prefix="/api/v1/users", tags=["users"])
 async def list_users(
     page: int = Query(1, ge=1, description="Page number"),
     size: int = Query(10, ge=1, le=100, description="Page size"),
-    org_id: Optional[str] = Query(None, description="Filter by organization ID"),
     session: AsyncSession = Depends(get_db)
 ):
     """List users with pagination and optional organization filtering"""
     # Get users using functional repository
-    users = await list_users_repo(session=session, offset=(page - 1) * size, limit=size, org_id=org_id)
+    users = await list_users_repo(session=session, offset=(page - 1) * size, limit=size)
 
     # Get total count (still direct query for now, can be moved to repo if needed)
     count_query = select(func.count(User.id))
-    if org_id:
-        count_query = count_query.where(User.organization_id == org_id)
+    # if org_id:
+    #     count_query = count_query.where(User.organization_id == org_id)
     count_result = await session.execute(count_query)
     total = count_result.scalar()
 

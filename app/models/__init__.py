@@ -11,5 +11,5 @@ __all__ = [
     "Message",
     "KnowledgeBase",
     "DataMatrixKnowledgeBase",
-    "Section", # Added Section to __all__
+    "Section",
 ]

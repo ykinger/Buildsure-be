@@ -18,6 +18,7 @@ from sqlmodel import SQLModel
 from app.database import get_db
 from app.models.project import Project
 from app.models.section import Section, SectionStatus
+from app.models.project_data_matrix import ProjectDataMatrix
 from app.schemas.section import (
     SectionCreate,
     SectionUpdate,
@@ -31,6 +32,7 @@ from app.schemas.section import (
 from app.schemas.answer import AnswerCreate, SectionAnswerResponse
 from app.repository.section import get_section_by_id, list_sections as list_sections_repo, create_section as create_section_repo, update_section as update_section_repo, delete_section as delete_section_repo
 from app.repository.project import get_project_by_id
+from app.repository.project_data_matrix import list_project_data_matrices
 
 import logging
 
@@ -43,34 +45,34 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 router = APIRouter(prefix="/api/v1/sections", tags=["sections"])
 
 
-@router.get("/", response_model=SectionListResponse)
+@router.get("/")
 async def list_sections(
     page: int = Query(1, ge=1, description="Page number"),
     size: int = Query(10, ge=1, le=100, description="Page size"),
-    project_id: Optional[str] = Query(None, description="Filter by project ID"),
     session: AsyncSession = Depends(get_db)
 ):
     """List sections with pagination and optional filtering by project ID"""
     # Get sections using functional repository
-    sections = await list_sections_repo(session=session, project_id=project_id, offset=(page - 1) * size, limit=size)
+    sections = await list_project_data_matrices(session=session, offset=(page - 1) * size, limit=size)
 
     # Get total count (still direct query for now, can be moved to repo if needed)
-    count_query = select(func.count(Section.id))
-    if project_id:
-        count_query = count_query.where(Section.project_id == project_id)
+    count_query = select(func.count(ProjectDataMatrix.id))
+    # if project_id:
+    #     count_query = count_query.where(Section.project_id == project_id)
     count_result = await session.execute(count_query)
     total = count_result.scalar()
 
     # Calculate pagination
     pages = math.ceil(total / size) if total > 0 else 1
 
-    return SectionListResponse(
-        items=[SectionResponse.model_validate(section) for section in sections],
-        total=total,
-        page=page,
-        size=size,
-        pages=pages
-    )
+    return sections
+    # return SectionListResponse(
+    #     items=[section for section in sections],
+    #     total=total,
+    #     page=page,
+    #     size=size,
+    #     pages=pages
+    # )
 
 
 @router.post("/", response_model=SectionResponse, status_code=status.HTTP_201_CREATED)

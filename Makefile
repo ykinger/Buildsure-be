@@ -22,7 +22,7 @@ run:
 
 # Run server in development mode with auto-reload
 dev:
-	uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+	. ./env/bin/activate && uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 # Run tests
 test:
