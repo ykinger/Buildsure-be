@@ -1,5 +1,6 @@
 from typing import Optional
 from datetime import datetime
+from enum import Enum
 from app.database import CustomBase
 from sqlmodel import Field, Relationship
 from sqlalchemy import Column, DateTime, func, JSON
