@@ -1,82 +1,38 @@
-"""
-Section Model
-Defines the database model for sections.
-"""
-import uuid
+from typing import Optional, Dict, Any
 from datetime import datetime
-from typing import Dict, Any, TYPE_CHECKING, List
-from sqlalchemy import Column, String, DateTime, func, ForeignKey, Integer, Enum, JSON
-from sqlalchemy.orm import relationship, Mapped
-from app.database import Base
-import enum
+from app.database import CustomBase
+from sqlmodel import Field, Relationship
+from sqlalchemy import Column, DateTime, func, JSON, Text
+from enum import Enum
 
-if TYPE_CHECKING:
-    from .project import Project
-    from .answer import Answer
-    from .data_matrix import DataMatrix
-
-
-class SectionStatus(enum.Enum):
+class SectionStatus(str, Enum):
     PENDING = "pending"
-    READY_TO_START = "ready_to_start"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
+    ARCHIVED = "archived"
 
-
-class Section(Base):
-    __tablename__ = "section"
-
-    id = Column(
-        String(36),
-        primary_key=True,
-        default=lambda: str(uuid.uuid4()),
-        nullable=False
+class Section(CustomBase, table=True):
+    __tablename__ = 'section'
+    id: Optional[str] = Field(default=None, primary_key=True)
+    project_id: str = Field(foreign_key="project.id")
+    form_section_number: str
+    form_title: Optional[str] = Field(sa_column=Column(Text))
+    status: SectionStatus = Field(default=SectionStatus.PENDING)
+    draft_output: Optional[Dict[str, Any]] = Field(sa_column=Column(JSON))
+    final_output: Optional[Dict[str, Any]] = Field(sa_column=Column(JSON))
+    created_at: Optional[datetime] = Field(
+        sa_column=Column(DateTime, server_default=func.now(), nullable=False)
     )
-    project_id = Column(
-        String(36),
-        ForeignKey("project.id", ondelete="CASCADE"),
-        nullable=False,
-        index=True
-    )
-    form_section_number = Column(
-        String,
-        ForeignKey("data_matrix.number"),
-        nullable=False
-    )
-    status = Column(
-        Enum(SectionStatus),
-        nullable=False,
-        default=SectionStatus.PENDING
-    )
-    draft_output = Column(JSON, nullable=True)
-    final_output = Column(JSON, nullable=True)
-    created_at = Column(
-        DateTime,
-        server_default=func.now(),
-        nullable=False
-    )
-    updated_at = Column(
-        DateTime,
-        server_default=func.now(),
-        onupdate=func.now(),
-        nullable=False
+    updated_at: Optional[datetime] = Field(
+        sa_column=Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
     )
 
-    # Relationships
-    project: Mapped["Project"] = relationship(
-        "Project",
-        back_populates="sections"
-    )
-    answers: Mapped[List["Answer"]] = relationship(
-        "Answer",
-        back_populates="section",
-        cascade="all, delete-orphan",
-        order_by="Answer.created_at"
-    )
-    data_matrix: Mapped["DataMatrix"] = relationship(
-        "DataMatrix",
-        back_populates="sections"
-    )
+    project: Optional["Project"] = Relationship(back_populates="sections")
+from enum import Enum
 
-    def __repr__(self) -> str:
-        return f"<Section(id={self.id}, project_id={self.project_id}, form_section_number={self.form_section_number}, status='{self.status.value}')>"
+class SectionStatus(str, Enum):
+    PENDING = "pending"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+    ARCHIVED = "archived"
+

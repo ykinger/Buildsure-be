@@ -4,13 +4,18 @@ Section Pydantic Schemas
 from datetime import datetime
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, ConfigDict
+
+from app.models.project import ProjectStatus
+
+
+from app.models.project import ProjectStatus
 from app.models.section import SectionStatus
 
 
 class SectionBase(BaseModel):
     """Base section schema with common fields"""
     form_section_number: str
-    status: SectionStatus = SectionStatus.PENDING
+    status: str # Changed from SectionStatus = SectionStatus.PENDING
     draft_output: Optional[Dict[str, Any]] = None
     final_output: Optional[Dict[str, Any]] = None
 
@@ -55,7 +60,7 @@ class SectionStartResponse(BaseModel):
     """Schema for section start response with generated question"""
     section_id: str
     form_section_number: str
-    status: SectionStatus
+    status: str # Changed from SectionStatus
     question: str
     question_type: str = "initial"
 
@@ -66,7 +71,7 @@ class SectionConfirmResponse(BaseModel):
     """Schema for section confirmation response"""
     section_id: str
     form_section_number: str
-    status: SectionStatus
+    status: str # Changed from SectionStatus
     final_output: Optional[Dict[str, Any]] = None
     project_id: str
     project_status: str

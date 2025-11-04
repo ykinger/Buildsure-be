@@ -3,13 +3,13 @@ Users Router
 FastAPI router for user CRUD operations.
 """
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 import math
 
-from app.database import get_async_db
+from app.database import get_db
 from app.models.user import User
 from app.models.organization import Organization
 from app.schemas.user import (
@@ -18,6 +18,8 @@ from app.schemas.user import (
     UserResponse,
     UserListResponse
 )
+from app.repository.user import get_user_by_id, get_user_by_email, list_users as list_users_repo, create_user as create_user_repo, update_user as update_user_repo, delete_user as delete_user_repo
+from app.repository.organization import get_organization_by_id
 
 router = APIRouter(prefix="/api/v1/users", tags=["users"])
 
@@ -26,35 +28,22 @@ router = APIRouter(prefix="/api/v1/users", tags=["users"])
 async def list_users(
     page: int = Query(1, ge=1, description="Page number"),
     size: int = Query(10, ge=1, le=100, description="Page size"),
-    org_id: Optional[str] = Query(None, description="Filter by organization ID"),
-    db: AsyncSession = Depends(get_async_db)
+    session: AsyncSession = Depends(get_db)
 ):
     """List users with pagination and optional organization filtering"""
-    # Build query
-    query = select(User)
+    # Get users using functional repository
+    users = await list_users_repo(session=session, offset=(page - 1) * size, limit=size)
+
+    # Get total count (still direct query for now, can be moved to repo if needed)
     count_query = select(func.count(User.id))
-    
-    if org_id:
-        query = query.where(User.org_id == org_id)
-        count_query = count_query.where(User.org_id == org_id)
-    
-    # Get total count
-    count_result = await db.execute(count_query)
+    # if org_id:
+    #     count_query = count_query.where(User.organization_id == org_id)
+    count_result = await session.execute(count_query)
     total = count_result.scalar()
-    
+
     # Calculate pagination
-    offset = (page - 1) * size
     pages = math.ceil(total / size) if total > 0 else 1
-    
-    # Get users
-    result = await db.execute(
-        query
-        .offset(offset)
-        .limit(size)
-        .order_by(User.created_at.desc())
-    )
-    users = result.scalars().all()
-    
+
     return UserListResponse(
         items=[UserResponse.model_validate(user) for user in users],
         total=total,
@@ -64,48 +53,34 @@ async def list_users(
     )
 
 
-@router.post("/", response_model=UserResponse, status_code=201)
+@router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def create_user(
     user_data: UserCreate,
-    db: AsyncSession = Depends(get_async_db)
+    session: AsyncSession = Depends(get_db)
 ):
     """Create a new user"""
     # Verify organization exists
-    org_result = await db.execute(
-        select(Organization).where(Organization.id == user_data.org_id)
-    )
-    if not org_result.scalar_one_or_none():
-        raise HTTPException(status_code=400, detail="Organization not found")
-    
+    organization = await get_organization_by_id(user_data.organization_id, session)
+    if not organization:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Organization not found")
+
     # Check if email already exists
-    email_result = await db.execute(
-        select(User).where(User.email == user_data.email)
-    )
-    if email_result.scalar_one_or_none():
-        raise HTTPException(status_code=400, detail="Email already registered")
-    
+    existing_user = await get_user_by_email(user_data.email, session)
+    if existing_user:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
+
     user = User(**user_data.model_dump())
-    db.add(user)
-    await db.commit()
-    await db.refresh(user)
-    
+    user = await create_user_repo(user, session)
+
     return UserResponse.model_validate(user)
 
 
 @router.get("/{user_id}", response_model=UserResponse)
 async def get_user(
     user_id: str,
-    db: AsyncSession = Depends(get_async_db)
+    user: User = Depends(get_user_by_id),
 ):
     """Get user by ID"""
-    result = await db.execute(
-        select(User).where(User.id == user_id)
-    )
-    user = result.scalar_one_or_none()
-    
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    
     return UserResponse.model_validate(user)
 
 
@@ -113,61 +88,41 @@ async def get_user(
 async def update_user(
     user_id: str,
     user_data: UserUpdate,
-    db: AsyncSession = Depends(get_async_db)
+    user: User = Depends(get_user_by_id),
+    session: AsyncSession = Depends(get_db)
 ):
     """Update user by ID"""
-    result = await db.execute(
-        select(User).where(User.id == user_id)
-    )
-    user = result.scalar_one_or_none()
-    
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    
     update_data = user_data.model_dump(exclude_unset=True)
-    
+
     # Verify organization exists if org_id is being updated
-    if "org_id" in update_data:
-        org_result = await db.execute(
-            select(Organization).where(Organization.id == update_data["org_id"])
-        )
-        if not org_result.scalar_one_or_none():
-            raise HTTPException(status_code=400, detail="Organization not found")
-    
+    if "organization_id" in update_data:
+        organization = await get_organization_by_id(update_data["organization_id"], session)
+        if not organization:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Organization not found")
+
     # Check if email already exists (excluding current user)
     if "email" in update_data:
-        email_result = await db.execute(
-            select(User).where(User.email == update_data["email"], User.id != user_id)
-        )
-        if email_result.scalar_one_or_none():
-            raise HTTPException(status_code=400, detail="Email already registered")
-    
-    # Update fields
-    for field, value in update_data.items():
-        setattr(user, field, value)
-    
-    await db.commit()
-    await db.refresh(user)
-    
+        existing_user = await get_user_by_email(update_data["email"], session)
+        if existing_user and existing_user.id != user_id:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
+
+    user = await update_user_repo(user_id, update_data, session)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found during update")
+
     return UserResponse.model_validate(user)
 
 
-@router.delete("/{user_id}", status_code=204)
+@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(
     user_id: str,
-    db: AsyncSession = Depends(get_async_db)
+    user: User = Depends(get_user_by_id),
+    session: AsyncSession = Depends(get_db)
 ):
     """Delete user by ID"""
-    result = await db.execute(
-        select(User).where(User.id == user_id)
-    )
-    user = result.scalar_one_or_none()
-    
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    await db.delete(user)
-    await db.commit()
+    success = await delete_user_repo(user_id, session)
+    if not success:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found during delete")
 
 
 @router.get("/organizations/{org_id}/users", response_model=UserListResponse)
@@ -175,14 +130,12 @@ async def list_users_by_organization(
     org_id: str,
     page: int = Query(1, ge=1, description="Page number"),
     size: int = Query(10, ge=1, le=100, description="Page size"),
-    db: AsyncSession = Depends(get_async_db)
+    session: AsyncSession = Depends(get_db)
 ):
     """List users by organization ID"""
     # Verify organization exists
-    org_result = await db.execute(
-        select(Organization).where(Organization.id == org_id)
-    )
-    if not org_result.scalar_one_or_none():
-        raise HTTPException(status_code=404, detail="Organization not found")
-    
-    return await list_users(page=page, size=size, org_id=org_id, db=db)
+    organization = await get_organization_by_id(org_id, session)
+    if not organization:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Organization not found")
+
+    return await list_users_repo(page=page, size=size, organization_id=org_id, session=session)

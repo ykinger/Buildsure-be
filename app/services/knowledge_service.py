@@ -1,118 +1,105 @@
 """
 Knowledge Service
-Provides functions for retrieving Ontario Building Code content.
+Provides functions for retrieving knowledge base content.
 """
 from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, or_, and_
-from app.models.ontario_chunk import OntarioChunk
+from app.models.knowledge_base import KnowledgeBase
 
 
 class KnowledgeService:
-    """Service for retrieving OBC knowledge."""
-    
+    """Service for retrieving knowledge base content."""
+
     def __init__(self, db: AsyncSession):
         self.db = db
-    
-    async def get_obc_context(self, reference: str) -> str:
+
+    async def get_knowledge_context(self, reference: str, source: str = "OBC") -> str:
         """
-        Retrieve OBC content for a given reference.
-        
-        Supports hierarchical retrieval:
-        - "3" -> All articles in part 3
-        - "3.2" -> All articles in section 3.2
-        - "3.2.1" -> All articles in subsection 3.2.1
-        - "3.2.1.1" -> Specific article 3.2.1.1
-        
+        Retrieve knowledge base content for a given reference.
+
         Args:
-            reference: OBC reference (e.g., "3", "3.2", "3.2.1", "3.2.1.1")
-            
+            reference: Knowledge base reference (e.g., "3.2.1.1")
+            source: Source filter (default: "OBC")
+
         Returns:
-            Concatenated content of all matching articles
+            Concatenated content of all matching items
         """
-        # Parse the reference to determine the level
-        parts = reference.split('.')
-        
-        # Build query conditions based on reference level
-        conditions = []
-        
-        if len(parts) >= 1 and parts[0]:
-            conditions.append(OntarioChunk.part == parts[0])
-        
-        if len(parts) >= 2 and parts[1]:
-            conditions.append(OntarioChunk.section == parts[1])
-        
-        if len(parts) >= 3 and parts[2]:
-            conditions.append(OntarioChunk.subsection == parts[2])
-        
-        if len(parts) >= 4 and parts[3]:
-            conditions.append(OntarioChunk.article == parts[3])
-        
-        # If no valid conditions, return empty
-        if not conditions:
-            return ""
-        
+        # Build query conditions
+        conditions = [
+            KnowledgeBase.source == source,
+            KnowledgeBase.reference.like(f"{reference}%")
+        ]
+
         # Execute query
-        query = select(OntarioChunk).where(and_(*conditions)).order_by(OntarioChunk.reference)
+        query = select(KnowledgeBase).where(and_(*conditions)).order_by(KnowledgeBase.reference)
         result = await self.db.execute(query)
-        chunks = result.scalars().all()
-        
-        if not chunks:
+        items = result.scalars().all()
+
+        if not items:
             return f"No content found for reference: {reference}"
-        
+
         # Concatenate all matching content
         content_parts = []
-        for chunk in chunks:
-            content_parts.append(f"## {chunk.reference} - {chunk.content}")
-        
+        for item in items:
+            content_parts.append(f"## {item.reference} - {item.content}")
+
         return "\n\n".join(content_parts)
-    
-    async def get_obc_article_count(self) -> int:
+
+    async def get_knowledge_count(self, source: Optional[str] = None) -> int:
         """
-        Get the total number of OBC articles in the database.
-        
-        Returns:
-            Total count of articles
-        """
-        query = select(OntarioChunk)
-        result = await self.db.execute(query)
-        chunks = result.scalars().all()
-        return len(chunks)
-    
-    async def get_obc_references(self, part: Optional[str] = None) -> List[str]:
-        """
-        Get all available OBC references, optionally filtered by part.
-        
+        Get the total number of knowledge base items in the database.
+
         Args:
-            part: Optional part number to filter by (e.g., "3")
-            
+            source: Optional source filter
+
+        Returns:
+            Total count of items
+        """
+        query = select(KnowledgeBase)
+
+        if source:
+            query = query.where(KnowledgeBase.source == source)
+
+        result = await self.db.execute(query)
+        items = result.scalars().all()
+        return len(items)
+
+    async def get_knowledge_references(self, source: Optional[str] = None) -> List[str]:
+        """
+        Get all available knowledge base references, optionally filtered by source.
+
+        Args:
+            source: Optional source to filter by
+
         Returns:
             List of reference strings
         """
-        query = select(OntarioChunk.reference)
-        
-        if part:
-            query = query.where(OntarioChunk.part == part)
-        
-        query = query.order_by(OntarioChunk.reference)
-        
+        query = select(KnowledgeBase.reference)
+
+        if source:
+            query = query.where(KnowledgeBase.source == source)
+
+        query = query.order_by(KnowledgeBase.reference)
+
         result = await self.db.execute(query)
         references = result.scalars().all()
-        
+
         return list(references)
 
 
-# Convenience function for getting OBC context
-async def get_obc_context(db: AsyncSession, reference: str) -> str:
+# Convenience function for getting knowledge context
+async def get_knowledge_context(db: AsyncSession, reference: str, source: str = "OBC") -> str:
     """
-    Convenience function to get OBC context.
-    
+    Convenience function to get knowledge base context.
+
     Args:
         db: Database session
-        reference: OBC reference
-        
+        reference: Knowledge base reference
+        source: Source filter (default: "OBC")
+
     Returns:
-        OBC content for the reference
+        Knowledge base content for the reference
     """
     service = KnowledgeService(db)
-    return await service.get_obc_context(reference)
+    return await service.get_knowledge_context(reference, source)

@@ -2,10 +2,10 @@
 Sections Router
 FastAPI router for section CRUD operations.
 """
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from uuid import UUID
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
@@ -15,9 +15,10 @@ import json
 from pydantic import BaseModel
 from sqlmodel import SQLModel
 
-from app.database import get_async_db
-from app.models.section import Section, SectionStatus
+from app.database import get_db
 from app.models.project import Project
+from app.models.section import Section, SectionStatus
+from app.models.project_data_matrix import ProjectDataMatrix
 from app.schemas.section import (
     SectionCreate,
     SectionUpdate,
@@ -29,8 +30,9 @@ from app.schemas.section import (
     SectionConfirmSimpleResponse
 )
 from app.schemas.answer import AnswerCreate, SectionAnswerResponse
-from app.services.section_service import SectionService
-from app.services.ai_service import AIService
+from app.repository.section import get_section_by_id, list_sections as list_sections_repo, create_section as create_section_repo, update_section as update_section_repo, delete_section as delete_section_repo
+from app.repository.project import get_project_by_id
+from app.repository.project_data_matrix import list_project_data_matrices
 
 import logging
 
@@ -43,144 +45,132 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 router = APIRouter(prefix="/api/v1/sections", tags=["sections"])
 
 
-@router.get("/{section_id}/clear")
-async def clear_section_history(section_id: str, db: AsyncSession = Depends(get_async_db)):
-    """Clear chat history (answers) for a section"""
-    # Get section and use section_id for history clearing
-    select_stmt = select(Section).where(Section.id == section_id)
-    result = await db.execute(select_stmt)
-    section = result.scalar_one_or_none()
+@router.get("/")
+async def list_sections(
+    page: int = Query(1, ge=1, description="Page number"),
+    size: int = Query(10, ge=1, le=100, description="Page size"),
+    session: AsyncSession = Depends(get_db)
+):
+    """List sections with pagination and optional filtering by project ID"""
+    # Get sections using functional repository
+    sections = await list_project_data_matrices(session=session, offset=(page - 1) * size, limit=size)
 
+    # Get total count (still direct query for now, can be moved to repo if needed)
+    count_query = select(func.count(ProjectDataMatrix.id))
+    # if project_id:
+    #     count_query = count_query.where(Section.project_id == project_id)
+    count_result = await session.execute(count_query)
+    total = count_result.scalar()
+
+    # Calculate pagination
+    pages = math.ceil(total / size) if total > 0 else 1
+
+    return sections
+    # return SectionListResponse(
+    #     items=[section for section in sections],
+    #     total=total,
+    #     page=page,
+    #     size=size,
+    #     pages=pages
+    # )
+
+
+@router.post("/", response_model=SectionResponse, status_code=status.HTTP_201_CREATED)
+async def create_section(
+    section_data: SectionCreate,
+    session: AsyncSession = Depends(get_db)
+):
+    """Create a new section"""
+    if not section_data.project_id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="project_id is required")
+
+    # Verify project exists
+    project = await get_project_by_id(section_data.project_id, session)
+    if not project:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Project not found")
+
+    section = Section(**section_data.model_dump())
+    section = await create_section_repo(section, session)
+
+    return SectionResponse.model_validate(section)
+
+
+@router.get("/{section_id}", response_model=SectionResponse)
+async def get_section(
+    section: Section = Depends(get_section_by_id),
+):
+    """Get section by ID"""
+    return SectionResponse.model_validate(section)
+
+
+@router.put("/{section_id}", response_model=SectionResponse)
+async def update_section(
+    section_id: str,
+    section_data: SectionUpdate,
+    session: AsyncSession = Depends(get_db)
+):
+    """Update section by ID"""
+    update_data = section_data.model_dump(exclude_unset=True)
+
+    # Verify project exists if project_id is being updated
+    if "project_id" in update_data:
+        project = await get_project_by_id(update_data["project_id"], session)
+        if not project:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Project not found")
+
+    section = await update_section_repo(section_id, update_data, session)
     if not section:
-        raise HTTPException(status_code=404, detail="Section not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Section not found during update")
 
-    ai_service = AIService(db)
-    await ai_service.clear_chat_history(section.id)
-    response = await ai_service.what_to_pass_to_user(section.id)
-    return response
+    return SectionResponse.model_validate(section)
+
+
+@router.delete("/{section_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_section(
+    section_id: str,
+    session: AsyncSession = Depends(get_db)
+):
+    """Delete section by ID"""
+    success = await delete_section_repo(section_id, session)
+    if not success:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Section not found during delete")
+
+
+@router.get("/{section_id}/clear")
+async def clear_section_history(section_id: str, session: AsyncSession = Depends(get_db)):
+    """Clear chat history (answers) for a section"""
+    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="Section functionality is currently disabled.")
 
 
 @router.post("/{section_id}/next")
-async def start_section(
+async def start_section_next(
     section_id: str,
     answer: Optional[RequestAnswer] = None,
-    db: AsyncSession = Depends(get_async_db)
+    session: AsyncSession = Depends(get_db)
 ):
     """
     Start a section conversation or continue with an answer.
-
-    This endpoint replaces the POC functionality and:
-    1. Gets the section by section_id
-    2. Uses AIService.what_to_pass_to_user method for conversational flow
-    3. Handles both initial calls (no answer) and follow-up calls (with answer)
-    4. Returns structured AI responses for questions or final answers
     """
-    # Get section by section_id
-    select_stmt = select(Section).where(Section.id == section_id)
-    result = await db.execute(select_stmt)
-    section = result.scalar_one_or_none()
-
-    if not section:
-        raise HTTPException(status_code=404, detail="Section not found")
-
-    ai_service = AIService(db)
-
-    # Handle the answer parameter properly
-    human_answer = answer.answer if answer else None
-    ai_response = await ai_service.what_to_pass_to_user(section.id, human_answer)
-
-    # Handle final_answer type to log completion (like POC)
-    if ai_response.get("type") == "final_answer":
-        logging.info("AI Found the final answer, now we need to move to next section")
-        #TODO: update section status to completed here if needed
-
-    return ai_response
+    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="Section functionality is currently disabled.")
 
 
 @router.post("/{section_id}/start")
-async def start_section(
+async def start_section_status_update(
     section_id: str,
     answer: Optional[RequestAnswer] = None,
-    db: AsyncSession = Depends(get_async_db)
+    session: AsyncSession = Depends(get_db)
 ):
     """
     Start a section and changes the state to In progress
     """
+    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="Section functionality is currently disabled.")
 
-    return 
 
 @router.post("/{section_id}/confirm", response_model=SectionConfirmSimpleResponse)
 async def confirm_section_simple(
     section_id: str,
     confirm_data: SectionConfirmRequest,
-    db: AsyncSession = Depends(get_async_db)
+    session: AsyncSession = Depends(get_db)
 ):
-    """
-    Confirm a section by saving answer and progressing to next section.
-
-    This endpoint:
-    1. Accepts a string "answer" in the payload
-    2. Saves that answer in final_output column as JSON
-    3. Marks current section as READY_TO_START
-    4. Finds next section in lexicographical order that is PENDING and marks it as READY_TO_START
-    5. Returns response with next section ID
-    """
-    try:
-        # Step 1: Get the current section
-        section_result = await db.execute(
-            select(Section).where(Section.id == section_id)
-        )
-        current_section = section_result.scalar_one_or_none()
-
-        if not current_section:
-            raise HTTPException(status_code=404, detail="Section not found")
-
-        # Step 2: Save the answer to final_output as JSON
-        current_section.final_output = {"answer": confirm_data.answer}
-        current_section.status = SectionStatus.COMPLETED
-        db.add(current_section)
-
-        # Step 3: Find next section in lexicographical order that is PENDING
-        next_section_result = await db.execute(
-            select(Section)
-            .where(
-                Section.project_id == current_section.project_id,
-                Section.form_section_number > current_section.form_section_number,
-                Section.status != SectionStatus.COMPLETED
-            )
-            .order_by(Section.form_section_number.asc())
-            .limit(1)
-        )
-        next_section = next_section_result.scalar_one_or_none()
-
-        # Step 4: Mark next section as READY_TO_START if found
-        if next_section:
-            next_section.status = SectionStatus.READY_TO_START
-            db.add(next_section)
-
-        # Step 5: Commit all changes
-        await db.commit()
-
-        # Step 6: Prepare response
-        if next_section:
-            return SectionConfirmSimpleResponse(
-                section_id=section_id,
-                next_section_id=next_section.id,
-                message=f"Section confirmed successfully. Next section: {next_section.form_section_number}",
-                status=SectionStatus.READY_TO_START.value
-            )
-        else:
-            return SectionConfirmSimpleResponse(
-                section_id=section_id,
-                next_section_id="",
-                message="Section confirmed successfully. This is the final section.",
-                status=SectionStatus.READY_TO_START.value
-            )
-
-    except HTTPException:
-        # Re-raise HTTP exceptions
-        raise
-    except Exception as e:
-        # Rollback on error
-        await db.rollback()
-        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+    """Confirm a section by saving answer and progressing to next section."""
+    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="Section functionality is currently disabled.")

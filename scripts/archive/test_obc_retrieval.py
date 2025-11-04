@@ -11,17 +11,17 @@ sys.path.insert(0, str(project_root))
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
-from app.database import get_async_db
+from app.database import get_db
 from app.models.ontario_chunk import OntarioChunk
 
 
 async def test_retrieval_capabilities():
     """Test various retrieval scenarios."""
-    
-    async for db in get_async_db():
+
+    async for db in get_db():
         try:
             print("=== OBC Chunk Retrieval Test ===\n")
-            
+
             # Test 1: Get all chunks in a specific subsection
             print("1. All chunks in subsection 1.1.1:")
             result = await db.execute(
@@ -37,7 +37,7 @@ async def test_retrieval_capabilities():
             for chunk in chunks:
                 print(f"  - {chunk.reference} ({chunk.chunk_type}): {chunk.title}")
             print()
-            
+
             # Test 2: Get all articles in a specific section
             print("2. All articles in section 1.2:")
             result = await db.execute(
@@ -53,7 +53,7 @@ async def test_retrieval_capabilities():
             for article in articles:
                 print(f"  - {article.reference}: {article.title}")
             print()
-            
+
             # Test 3: Get all parts in Division A
             print("3. All parts in Division A:")
             result = await db.execute(
@@ -67,7 +67,7 @@ async def test_retrieval_capabilities():
             for part in parts:
                 print(f"  - Part {part.part}: {part.title}")
             print()
-            
+
             # Test 4: Get specific article content
             print("4. Content of article 1.1.1.1:")
             result = await db.execute(
@@ -82,11 +82,11 @@ async def test_retrieval_capabilities():
                 print(f"  Title: {article.title}")
                 print(f"  Content preview: {article.content[:200]}...")
             print()
-            
+
             # Test 5: Count chunks by type and division
             print("5. Chunk counts by division:")
             result = await db.execute(
-                select(OntarioChunk.division, OntarioChunk.chunk_type, 
+                select(OntarioChunk.division, OntarioChunk.chunk_type,
                        func.count(OntarioChunk.id).label('count'))
                 .group_by(OntarioChunk.division, OntarioChunk.chunk_type)
                 .order_by(OntarioChunk.division, OntarioChunk.chunk_type)
@@ -99,7 +99,7 @@ async def test_retrieval_capabilities():
                     print(f"  {current_division}:")
                 print(f"    {row.chunk_type}: {row.count}")
             print()
-            
+
             # Test 6: Search for specific content
             print("6. Articles containing 'fire' in title:")
             result = await db.execute(
@@ -113,9 +113,9 @@ async def test_retrieval_capabilities():
             for article in fire_articles:
                 print(f"  - {article.reference}: {article.title}")
             print()
-            
+
             print("=== Test completed successfully! ===")
-            
+
         except Exception as e:
             print(f"Error during testing: {e}")
             raise

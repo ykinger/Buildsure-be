@@ -13,21 +13,20 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    """Schema for creating a user"""
-    org_id: str
+    organization_id: str
 
 
 class UserUpdate(BaseModel):
     """Schema for updating a user"""
     name: Optional[str] = None
     email: Optional[EmailStr] = None
-    org_id: Optional[str] = None
+    organization_id: Optional[str] = None
 
 
 class UserResponse(UserBase):
     """Schema for user response"""
     id: str
-    org_id: str
+    organization_id: str
     created_at: datetime
     updated_at: datetime
 

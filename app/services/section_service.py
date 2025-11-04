@@ -1,716 +1,599 @@
 """
 Section Service Module
-Handles section-related business logic and orchestration.
+Handles section-related business logic and orchestration for the new schema.
 """
 import logging
 from typing import Dict, List, Optional, Any
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
+from enum import Enum
 
 from app.models.project import Project
-from app.models.section import Section, SectionStatus
-from app.models.ontario_chunk import OntarioChunk
-from app.models.answer import Answer
+from app.models.project_data_matrix import ProjectDataMatrix
+from app.models.data_matrix import DataMatrix
+from app.models.knowledge_base import KnowledgeBase
+from app.models.data_matrix_knowledge_base import DataMatrixKnowledgeBase
+from app.models.message import Message
 from app.services.ai_service import AIService
 
 logger = logging.getLogger(__name__)
 
+class ProjectDataMatrixStatus(str, Enum):
+    """Status enum for ProjectDataMatrix sections"""
+    PENDING = "pending"
+    READY_TO_START = "ready_to_start"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+
+
 class SectionService:
     """Service for managing section operations and business logic."""
-    
+
     def __init__(self):
         pass  # No longer instantiate AIService here
-    
+
     async def start_section(
         self,
-        section_id: str,
+        project_data_matrix_id: str,
         db: AsyncSession
     ) -> Dict[str, Any]:
         """
         Start a section by validating, updating status, and generating the first question.
-        
+
         Args:
-            section_id: The section ID to start
+            project_data_matrix_id: The ProjectDataMatrix ID to start
             db: Database session
-            
+
         Returns:
             Dict containing the generated question and section info
-            
+
         Raises:
             ValueError: If validation fails
             RuntimeError: If database operations fail
         """
         try:
             # Step 1: Validate the section can be started
-            section = await self._validate_section_start(section_id, db)
-            
+            project_data_matrix = await self._validate_section_start(project_data_matrix_id, db)
+
             # Step 2: Update section status to 'in_progress'
-            await self._update_section_status(section, SectionStatus.IN_PROGRESS, db)
-            
-            # Step 3: Retrieve relevant ontario chunks
-            ontario_chunks = await self._get_relevant_guidelines(
-                section.section_number, db
-            )
-            
+            await self._update_section_status(project_data_matrix, ProjectDataMatrixStatus.IN_PROGRESS, db)
+
+            # Step 3: Retrieve relevant knowledge base content
+            knowledge_base_content = await self._get_relevant_guidelines(project_data_matrix.data_matrix_id, db)
+
             # Step 4: Generate the first question using AI
             ai_service = AIService(db)
             question_data = await ai_service.generate_question(
-                section_number=section.section_number,
-                ontario_chunks=ontario_chunks,
+                section_number=project_data_matrix.data_matrix_id,
+                ontario_chunks=knowledge_base_content,
                 form_questions_and_answers=[],  # Empty for first question
                 clarifying_questions_and_answers=[]  # Empty for first question
             )
-            
+
             # Step 5: Prepare the response
             response = {
-                "section_id": section.id,
-                "form_section_number": section.form_section_number,
-                "status": SectionStatus.IN_PROGRESS.value,
+                "project_data_matrix_id": project_data_matrix.id,
+                "status": ProjectDataMatrixStatus.IN_PROGRESS.value,
                 "question": question_data,
-                "guidelines_found": len(ontario_chunks),
-                "message": f"Section {section.form_section_number} started successfully"
+                "guidelines_found": len(knowledge_base_content),
+                "message": f"Section started successfully"
             }
-            
-            logger.info(f"Successfully started section {section.form_section_number} (ID: {section.id})")
+
+            logger.info(f"Successfully started section (ID: {project_data_matrix.id})")
             return response
-            
+
         except Exception as e:
-            logger.error(f"Error starting section {section_id}: {str(e)}")
+            logger.error(f"Error starting section {project_data_matrix_id}: {str(e)}")
             # Rollback any changes if needed
             await db.rollback()
             raise
-    
+
     async def _validate_section_start(
         self,
-        section_id: str,
+        project_data_matrix_id: str,
         db: AsyncSession
-    ) -> Section:
+    ) -> ProjectDataMatrix:
         """
         Validate that the section can be started.
-        
+
         Args:
-            section_id: The section ID
+            project_data_matrix_id: The ProjectDataMatrix ID
             db: Database session
-            
+
         Returns:
-            The section object
-            
+            The ProjectDataMatrix object
+
         Raises:
             ValueError: If validation fails
         """
         # Check if section exists
-        section_result = await db.execute(
-            select(Section).where(Section.id == section_id)
+        result = await db.execute(
+            select(ProjectDataMatrix).where(ProjectDataMatrix.id == project_data_matrix_id)
         )
-        section = section_result.scalar_one_or_none()
-        
-        if not section:
-            raise ValueError(f"Section with ID {section_id} not found")
-        
+        project_data_matrix = result.scalar_one_or_none()
+
+        if not project_data_matrix:
+            raise ValueError(f"Section with ID {project_data_matrix_id} not found")
+
         # Check if section is in the correct state to be started
-        if section.status != SectionStatus.READY_TO_START:
-            if section.status == SectionStatus.PENDING:
+        if project_data_matrix.status != ProjectDataMatrixStatus.READY_TO_START:
+            if project_data_matrix.status == ProjectDataMatrixStatus.PENDING:
                 raise ValueError(
-                    f"Section {section.form_section_number} is not ready to start. "
-                    f"Complete the previous section first."
+                    f"Section is not ready to start. Complete the previous section first."
                 )
-            elif section.status == SectionStatus.IN_PROGRESS:
+            elif project_data_matrix.status == ProjectDataMatrixStatus.IN_PROGRESS:
                 raise ValueError(
-                    f"Section {section.form_section_number} is already in progress"
+                    f"Section is already in progress"
                 )
-            elif section.status == SectionStatus.COMPLETED:
+            elif project_data_matrix.status == ProjectDataMatrixStatus.COMPLETED:
                 raise ValueError(
-                    f"Section {section.form_section_number} is already completed"
+                    f"Section is already completed"
                 )
             else:
                 raise ValueError(
-                    f"Section {section.form_section_number} cannot be started. "
-                    f"Current status: {section.status.value}"
+                    f"Section cannot be started. Current status: {project_data_matrix.status}"
                 )
-        
-        return section
-    
+
+        return project_data_matrix
+
     async def _update_section_status(
         self,
-        section: Section,
-        new_status: SectionStatus,
+        project_data_matrix: ProjectDataMatrix,
+        new_status: ProjectDataMatrixStatus,
         db: AsyncSession
     ) -> None:
         """
         Update the section status in the database.
-        
+
         Args:
-            section: The section to update
+            project_data_matrix: The section to update
             new_status: The new status
             db: Database session
         """
         try:
-            section.status = new_status
-            db.add(section)
+            project_data_matrix.status = new_status
+            db.add(project_data_matrix)
             await db.commit()
-            await db.refresh(section)
-            
-            logger.debug(f"Updated section {section.form_section_number} status to {new_status.value}")
-            
+            await db.refresh(project_data_matrix)
+
+            logger.debug(f"Updated section status to {new_status.value}")
+
         except Exception as e:
             await db.rollback()
             logger.error(f"Failed to update section status: {str(e)}")
             raise RuntimeError(f"Failed to update section status: {str(e)}")
-    
+
     async def _get_relevant_guidelines(
         self,
-        section_number: int,
+        data_matrix_id: str,
         db: AsyncSession,
         limit: int = 10
     ) -> List[Dict[str, Any]]:
         """
-        Retrieve relevant OBC chunks for the given section.
-        
+        Retrieve relevant knowledge base content for the given data matrix.
+
         Args:
-            section_number: The section number
+            data_matrix_id: The data matrix ID
             db: Database session
             limit: Maximum number of chunks to retrieve
-            
+
         Returns:
-            List of OBC chunk dictionaries
+            List of knowledge base content dictionaries
         """
         try:
-            # Query for OBC chunks that might be relevant to this section
-            # Get articles from Division B (Acceptable Solutions) as they contain the most detailed guidance
-            
+            # Query for knowledge base content via the junction table
             result = await db.execute(
-                select(OntarioChunk)
-                .where(OntarioChunk.division == "Division B")
-                .where(OntarioChunk.chunk_type == "article")
-                .order_by(OntarioChunk.reference)
+                select(KnowledgeBase)
+                .join(DataMatrixKnowledgeBase, KnowledgeBase.id == DataMatrixKnowledgeBase.knowledge_base_id)
+                .where(DataMatrixKnowledgeBase.data_matrix_id == data_matrix_id)
                 .limit(limit)
             )
-            chunks = result.scalars().all()
-            
+            knowledge_base_items = result.scalars().all()
+
             # Convert to dictionaries for AI service (matching expected format)
             guideline_data = []
-            for chunk in chunks:
+            for item in knowledge_base_items:
                 guideline_data.append({
-                    "section_reference": chunk.reference,
-                    "section_title": chunk.title,
-                    "section_level": 4,  # Articles are level 4 in hierarchy
-                    "chunk_text": chunk.content
+                    "section_reference": item.reference,
+                    "section_title": item.reference,  # Using reference as title
+                    "section_level": 4,  # Default level
+                    "chunk_text": item.content
                 })
-            
-            logger.debug(f"Retrieved {len(guideline_data)} OBC chunks for section {section_number}")
+
+            logger.debug(f"Retrieved {len(guideline_data)} knowledge base items for data matrix {data_matrix_id}")
             return guideline_data
-            
+
         except Exception as e:
-            logger.error(f"Error retrieving OBC chunks for section {section_number}: {str(e)}")
+            logger.error(f"Error retrieving knowledge base content for data matrix {data_matrix_id}: {str(e)}")
             # Return empty list if retrieval fails
             return []
-    
+
     async def get_section_status(
         self,
-        project_id: str,
-        section_number: int,
+        project_data_matrix_id: str,
         db: AsyncSession
     ) -> Dict[str, Any]:
         """
         Get the current status of a section.
-        
+
         Args:
-            project_id: The project ID
-            section_number: The section number
+            project_data_matrix_id: The ProjectDataMatrix ID
             db: Database session
-            
+
         Returns:
             Dict containing section status information
         """
         try:
             result = await db.execute(
-                select(Section).where(
-                    Section.project_id == project_id,
-                    Section.section_number == section_number
-                )
+                select(ProjectDataMatrix).where(ProjectDataMatrix.id == project_data_matrix_id)
             )
-            section = result.scalar_one_or_none()
-            
-            if not section:
-                raise ValueError(f"Section {section_number} not found for project {project_id}")
-            
+            project_data_matrix = result.scalar_one_or_none()
+
+            if not project_data_matrix:
+                raise ValueError(f"Section with ID {project_data_matrix_id} not found")
+
             return {
-                "project_id": project_id,
-                "section_number": section_number,
-                "status": section.status.value,
-                "draft_output": section.draft_output,
-                "final_output": section.final_output,
-                "created_at": section.created_at.isoformat() if section.created_at else None,
-                "updated_at": section.updated_at.isoformat() if section.updated_at else None
+                "project_data_matrix_id": project_data_matrix_id,
+                "status": project_data_matrix.status,
+                "output": project_data_matrix.output,
+                "created_at": project_data_matrix.created_at.isoformat() if project_data_matrix.created_at else None,
+                "updated_at": project_data_matrix.updated_at.isoformat() if project_data_matrix.updated_at else None
             }
-            
+
         except Exception as e:
             logger.error(f"Error getting section status: {str(e)}")
             raise
-    
+
     async def process_section_answer(
         self,
-        project_id: str,
-        section_number: int,
+        project_data_matrix_id: str,
         question_text: str,
         answer_text: str,
-        db: AsyncSession
+        user_id: Optional[str] = None,
+        db: AsyncSession = None
     ) -> Dict[str, Any]:
         """
         Process a section answer and determine next step.
-        
+
         Args:
-            project_id: The project ID
-            section_number: The section number
+            project_data_matrix_id: The ProjectDataMatrix ID
             question_text: The question that was answered
             answer_text: The user's answer
+            user_id: Optional user ID who provided the answer
             db: Database session
-            
+
         Returns:
             Dict containing next_question or draft_output
-            
+
         Raises:
             ValueError: If validation fails
             RuntimeError: If processing fails
         """
         try:
             # Step 1: Validate section exists and is in progress
-            section = await self._validate_section_answer(
-                project_id, section_number, db
-            )
-            
-            # Step 2: Save the answer to the answers table
-            answer = await self._save_answer(
-                section.id, question_text, answer_text, db
-            )
-            
-            # Step 3: Retrieve all previous answers for this section
-            previous_answers = await self._get_section_answers(section.id, db)
-            
-            # Step 4: Get relevant ontario chunks
-            ontario_chunks = await self._get_relevant_guidelines(
-                section_number, db
-            )
-            
+            project_data_matrix = await self._validate_section_answer(project_data_matrix_id, db)
+
+            # Step 2: Save the answer as a message
+            await self._save_message(project_data_matrix_id, user_id, "user", answer_text, db)
+
+            # Step 3: Retrieve all previous messages for this section
+            previous_messages = await self._get_section_messages(project_data_matrix_id, db)
+
+            # Step 4: Get relevant knowledge base content
+            knowledge_base_content = await self._get_relevant_guidelines(project_data_matrix.data_matrix_id, db)
+
             # Step 5: Call AI service to determine next step
             ai_service = AIService(db)
             ai_result = await ai_service.process_answer_and_generate_next(
-                section_number=section_number,
+                section_number=project_data_matrix.data_matrix_id,
                 current_question=question_text,
                 current_answer=answer_text,
-                previous_answers=previous_answers,
-                ontario_chunks=ontario_chunks
+                previous_answers=previous_messages,
+                ontario_chunks=knowledge_base_content
             )
-            
+
             # Step 6: Handle the AI result
             response = await self._handle_ai_result(
-                section, ai_result, len(previous_answers), db
+                project_data_matrix, ai_result, len(previous_messages), db
             )
-            
-            logger.info(f"Successfully processed answer for section {section_number}")
+
+            logger.info(f"Successfully processed answer for section {project_data_matrix_id}")
             return response
-            
+
         except Exception as e:
-            logger.error(f"Error processing answer for section {section_number}: {str(e)}")
+            logger.error(f"Error processing answer for section {project_data_matrix_id}: {str(e)}")
             await db.rollback()
             raise
-    
+
     async def _validate_section_answer(
         self,
-        project_id: str,
-        section_number: int,
+        project_data_matrix_id: str,
         db: AsyncSession
-    ) -> Section:
+    ) -> ProjectDataMatrix:
         """
         Validate that the section exists and is in progress.
-        
+
         Args:
-            project_id: The project ID
-            section_number: The section number
+            project_data_matrix_id: The ProjectDataMatrix ID
             db: Database session
-            
+
         Returns:
-            The section object
-            
+            The ProjectDataMatrix object
+
         Raises:
             ValueError: If validation fails
         """
         # Check if section exists and is in progress
         result = await db.execute(
-            select(Section).where(
-                Section.project_id == project_id,
-                Section.section_number == section_number
-            )
+            select(ProjectDataMatrix).where(ProjectDataMatrix.id == project_data_matrix_id)
         )
-        section = result.scalar_one_or_none()
-        
-        if not section:
+        project_data_matrix = result.scalar_one_or_none()
+
+        if not project_data_matrix:
+            raise ValueError(f"Section with ID {project_data_matrix_id} not found")
+
+        if project_data_matrix.status != ProjectDataMatrixStatus.IN_PROGRESS:
             raise ValueError(
-                f"Section {section_number} not found for project {project_id}"
+                f"Section is not in progress. Current status: {project_data_matrix.status}"
             )
-        
-        if section.status != SectionStatus.IN_PROGRESS:
-            raise ValueError(
-                f"Section {section_number} is not in progress. Current status: {section.status.value}"
-            )
-        
-        return section
-    
-    async def _save_answer(
+
+        return project_data_matrix
+
+    async def _save_message(
         self,
-        section_id: str,
-        question_text: str,
-        answer_text: str,
+        project_data_matrix_id: str,
+        user_id: Optional[str],
+        role: str,
+        content: str,
         db: AsyncSession
-    ) -> Answer:
+    ) -> Message:
         """
-        Save an answer to the database.
-        
+        Save a message to the database.
+
         Args:
-            section_id: The section ID
-            question_text: The question text
-            answer_text: The answer text
+            project_data_matrix_id: The ProjectDataMatrix ID
+            user_id: Optional user ID
+            role: The message role (user, assistant, system)
+            content: The message content
             db: Database session
-            
+
         Returns:
-            The created answer object
+            The created message object
         """
         try:
-            answer = Answer(
-                section_id=section_id,
-                question_text=question_text,
-                answer_text=answer_text,
-                question_type="clarifying"
+            message = Message(
+                project_data_matrix_id=project_data_matrix_id,
+                user_id=user_id,
+                role=role,
+                content=content
             )
-            
-            db.add(answer)
+
+            db.add(message)
             await db.commit()
-            await db.refresh(answer)
-            
-            logger.debug(f"Saved answer for section {section_id}")
-            return answer
-            
+            await db.refresh(message)
+
+            logger.debug(f"Saved message for section {project_data_matrix_id}")
+            return message
+
         except Exception as e:
             await db.rollback()
-            logger.error(f"Failed to save answer: {str(e)}")
-            raise RuntimeError(f"Failed to save answer: {str(e)}")
-    
-    async def _get_section_answers(
+            logger.error(f"Failed to save message: {str(e)}")
+            raise RuntimeError(f"Failed to save message: {str(e)}")
+
+    async def _get_section_messages(
         self,
-        section_id: str,
+        project_data_matrix_id: str,
         db: AsyncSession
     ) -> List[Dict[str, Any]]:
         """
-        Retrieve all answers for a section.
-        
+        Retrieve all messages for a section.
+
         Args:
-            section_id: The section ID
+            project_data_matrix_id: The ProjectDataMatrix ID
             db: Database session
-            
+
         Returns:
-            List of answer dictionaries
+            List of message dictionaries
         """
         try:
             result = await db.execute(
-                select(Answer)
-                .where(Answer.section_id == section_id)
-                .order_by(Answer.created_at)
+                select(Message)
+                .where(Message.project_data_matrix_id == project_data_matrix_id)
+                .order_by(Message.created_at)
             )
-            answers = result.scalars().all()
-            
+            messages = result.scalars().all()
+
             # Convert to dictionaries
-            answer_data = []
-            for answer in answers:
-                answer_data.append({
-                    "id": answer.id,
-                    "question_text": answer.question_text,
-                    "answer_text": answer.answer_text,
-                    "question_type": answer.question_type,
-                    "created_at": answer.created_at.isoformat() if answer.created_at else None
+            message_data = []
+            for message in messages:
+                message_data.append({
+                    "id": message.id,
+                    "role": message.role,
+                    "content": message.content,
+                    "user_id": message.user_id,
+                    "created_at": message.created_at.isoformat() if message.created_at else None
                 })
-            
-            return answer_data
-            
+
+            return message_data
+
         except Exception as e:
-            logger.error(f"Error retrieving answers for section {section_id}: {str(e)}")
+            logger.error(f"Error retrieving messages for section {project_data_matrix_id}: {str(e)}")
             return []
-    
+
     async def _handle_ai_result(
         self,
-        section: Section,
+        project_data_matrix: ProjectDataMatrix,
         ai_result: Dict[str, Any],
-        answers_count: int,
+        messages_count: int,
         db: AsyncSession
     ) -> Dict[str, Any]:
         """
         Handle the AI service result and update section if needed.
-        
+
         Args:
-            section: The section object
+            project_data_matrix: The section object
             ai_result: Result from AI service
-            answers_count: Number of answers for this section
+            messages_count: Number of messages for this section
             db: Database session
-            
+
         Returns:
             Response dictionary
         """
         try:
             action = ai_result.get("action", "question")
-            
+
             if action == "draft":
                 # Update section with draft output
                 draft_output = ai_result.get("draft_output")
-                section.draft_output = draft_output
-                db.add(section)
+                project_data_matrix.output = draft_output
+                db.add(project_data_matrix)
                 await db.commit()
-                await db.refresh(section)
-                
+                await db.refresh(project_data_matrix)
+
                 return {
-                    "section_id": section.id,
-                    "section_number": section.section_number,
-                    "status": section.status.value,
+                    "project_data_matrix_id": project_data_matrix.id,
+                    "status": project_data_matrix.status,
                     "next_question": None,
-                    "draft_output": draft_output,
-                    "message": f"Draft generated for section {section.section_number}",
-                    "answers_count": answers_count
+                    "output": draft_output,
+                    "message": f"Draft generated for section",
+                    "messages_count": messages_count
                 }
             else:
                 # Return next question
                 next_question = ai_result.get("next_question")
-                
+
                 return {
-                    "section_id": section.id,
-                    "section_number": section.section_number,
-                    "status": section.status.value,
+                    "project_data_matrix_id": project_data_matrix.id,
+                    "status": project_data_matrix.status,
                     "next_question": next_question,
-                    "draft_output": None,
-                    "message": f"Next question generated for section {section.section_number}",
-                    "answers_count": answers_count
+                    "output": None,
+                    "message": f"Next question generated for section",
+                    "messages_count": messages_count
                 }
-                
+
         except Exception as e:
             logger.error(f"Error handling AI result: {str(e)}")
             raise RuntimeError(f"Error handling AI result: {str(e)}")
-    
+
     async def confirm_section(
         self,
-        project_id: str,
-        section_number: int,
+        project_data_matrix_id: str,
         db: AsyncSession
     ) -> Dict[str, Any]:
         """
-        Confirm a section by saving draft as final output and updating project progress.
-        
+        Confirm a section by marking it as completed.
+
         Args:
-            project_id: The project ID
-            section_number: The section number to confirm
+            project_data_matrix_id: The ProjectDataMatrix ID to confirm
             db: Database session
-            
+
         Returns:
-            Dict containing confirmation details and updated project status
-            
+            Dict containing confirmation details
+
         Raises:
             ValueError: If validation fails
             RuntimeError: If database operations fail
         """
         try:
             # Step 1: Validate the section can be confirmed
-            project, section = await self._validate_section_confirm(
-                project_id, section_number, db
-            )
-            
-            # Step 2: Save draft_output as final_output and mark section as completed
-            await self._finalize_section(section, db)
-            
-            # Step 3: Update project progress
-            updated_project = await self._update_project_progress(project, db)
-            
-            # Step 4: Prepare the response
+            project_data_matrix = await self._validate_section_confirm(project_data_matrix_id, db)
+
+            # Step 2: Mark section as completed
+            await self._finalize_section(project_data_matrix, db)
+
+            # Step 3: Prepare the response
             response = {
-                "section_id": section.id,
-                "section_number": section.section_number,
-                "status": SectionStatus.COMPLETED.value,
-                "final_output": section.final_output,
-                "project_id": project_id,
-                "project_status": updated_project.status.value,
-                "completed_sections": updated_project.completed_sections,
-                "total_sections": updated_project.total_sections,
-                "current_section": updated_project.current_section,
-                "message": f"Section {section_number} confirmed successfully"
+                "project_data_matrix_id": project_data_matrix.id,
+                "status": ProjectDataMatrixStatus.COMPLETED.value,
+                "output": project_data_matrix.output,
+                "message": f"Section confirmed successfully"
             }
-            
-            logger.info(f"Successfully confirmed section {section_number} for project {project_id}")
+
+            logger.info(f"Successfully confirmed section {project_data_matrix_id}")
             return response
-            
+
         except Exception as e:
-            logger.error(f"Error confirming section {section_number} for project {project_id}: {str(e)}")
+            logger.error(f"Error confirming section {project_data_matrix_id}: {str(e)}")
             # Rollback any changes if needed
             await db.rollback()
             raise
-    
+
     async def _validate_section_confirm(
         self,
-        project_id: str,
-        section_number: int,
+        project_data_matrix_id: str,
         db: AsyncSession
-    ) -> tuple[Project, Section]:
+    ) -> ProjectDataMatrix:
         """
         Validate that the section can be confirmed.
-        
+
         Args:
-            project_id: The project ID
-            section_number: The section number
+            project_data_matrix_id: The ProjectDataMatrix ID
             db: Database session
-            
+
         Returns:
-            Tuple of (project, section)
-            
+            The ProjectDataMatrix object
+
         Raises:
             ValueError: If validation fails
         """
-        # Check if project exists
-        project_result = await db.execute(
-            select(Project).where(Project.id == project_id)
+        # Check if section exists
+        result = await db.execute(
+            select(ProjectDataMatrix).where(ProjectDataMatrix.id == project_data_matrix_id)
         )
-        project = project_result.scalar_one_or_none()
-        
-        if not project:
-            raise ValueError(f"Project with ID {project_id} not found")
-        
-        # Check if section exists for this project
-        section_result = await db.execute(
-            select(Section).where(
-                Section.project_id == project_id,
-                Section.section_number == section_number
-            )
-        )
-        section = section_result.scalar_one_or_none()
-        
-        if not section:
-            raise ValueError(
-                f"Section {section_number} not found for project {project_id}"
-            )
-        
-        # Validate that this section matches the project's current section
-        if project.current_section != section_number:
-            raise ValueError(
-                f"Cannot confirm section {section_number}. "
-                f"Current section is {project.current_section}"
-            )
-        
+        project_data_matrix = result.scalar_one_or_none()
+
+        if not project_data_matrix:
+            raise ValueError(f"Section with ID {project_data_matrix_id} not found")
+
         # Check if section is in progress
-        if section.status != SectionStatus.IN_PROGRESS:
+        if project_data_matrix.status != ProjectDataMatrixStatus.IN_PROGRESS:
             raise ValueError(
-                f"Section {section_number} is not in progress. "
-                f"Current status: {section.status.value}"
+                f"Section is not in progress. Current status: {project_data_matrix.status}"
             )
-        
-        # Check if section has draft_output to confirm
-        if not section.draft_output:
+
+        # Check if section has output to confirm
+        if not project_data_matrix.output:
             raise ValueError(
-                f"Section {section_number} has no draft output to confirm"
+                f"Section has no output to confirm"
             )
-        
-        return project, section
-    
+
+        return project_data_matrix
+
     async def _finalize_section(
         self,
-        section: Section,
+        project_data_matrix: ProjectDataMatrix,
         db: AsyncSession
     ) -> None:
         """
-        Finalize the section by copying draft to final output and marking as completed.
-        
+        Finalize the section by marking it as completed.
+
         Args:
-            section: The section to finalize
+            project_data_matrix: The section to finalize
             db: Database session
         """
         try:
-            # Copy draft_output to final_output
-            section.final_output = section.draft_output
-            
             # Mark section as completed
-            section.status = SectionStatus.COMPLETED
-            
-            db.add(section)
+            project_data_matrix.status = ProjectDataMatrixStatus.COMPLETED
+
+            db.add(project_data_matrix)
             await db.commit()
-            await db.refresh(section)
-            
-            logger.debug(f"Finalized section {section.section_number}")
-            
+            await db.refresh(project_data_matrix)
+
+            logger.debug(f"Finalized section {project_data_matrix.id}")
+
         except Exception as e:
             await db.rollback()
             logger.error(f"Failed to finalize section: {str(e)}")
             raise RuntimeError(f"Failed to finalize section: {str(e)}")
-    
-    async def _update_project_progress(
-        self,
-        project: Project,
-        db: AsyncSession
-    ) -> Project:
-        """
-        Update project progress after section confirmation.
-        
-        Args:
-            project: The project to update
-            db: Database session
-            
-        Returns:
-            Updated project object
-        """
-        try:
-            # Import here to avoid circular imports
-            from app.models.project import ProjectStatus
-            
-            # Increment completed sections
-            project.completed_sections += 1
-            
-            # Advance current section
-            project.current_section += 1
-            
-            # Set the next section to READY_TO_START if it exists and is currently PENDING
-            if project.current_section <= project.total_sections:
-                next_section_result = await db.execute(
-                    select(Section).where(
-                        Section.project_id == project.id,
-                        Section.section_number == project.current_section
-                    )
-                )
-                next_section = next_section_result.scalar_one_or_none()
-                
-                if next_section and next_section.status == SectionStatus.PENDING:
-                    next_section.status = SectionStatus.READY_TO_START
-                    db.add(next_section)
-                    logger.debug(f"Set section {project.current_section} to READY_TO_START")
-            
-            # Check if all sections are completed
-            if project.completed_sections >= project.total_sections:
-                project.status = ProjectStatus.COMPLETED
-                logger.info(f"Project {project.id} completed - all sections finished")
-            elif project.status == ProjectStatus.NOT_STARTED:
-                # If project was not started, mark it as in progress
-                project.status = ProjectStatus.IN_PROGRESS
-            
-            db.add(project)
-            await db.commit()
-            await db.refresh(project)
-            
-            logger.debug(f"Updated project progress: {project.completed_sections}/{project.total_sections}")
-            return project
-            
-        except Exception as e:
-            await db.rollback()
-            logger.error(f"Failed to update project progress: {str(e)}")
-            raise RuntimeError(f"Failed to update project progress: {str(e)}")
 
     async def health_check(self, db: AsyncSession) -> Dict[str, Any]:
         """
         Check the health of the section service and its dependencies.
-        
+
         Args:
             db: Database session
-            
+
         Returns:
             Dict containing health status information
         """
@@ -718,7 +601,7 @@ class SectionService:
             # Check AI service health
             ai_service = AIService(db)
             ai_health = ai_service.health_check()
-            
+
             return {
                 "status": "healthy" if ai_health["status"] == "healthy" else "degraded",
                 "ai_service": ai_health,
