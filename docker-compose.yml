@@ -1,22 +1,41 @@
 version: '3.8'
 
 services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: buildsure-postgres
+    environment:
+      POSTGRES_DB: buildsure
+      POSTGRES_USER: buildsure_user
+      POSTGRES_PASSWORD: buildsure_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U buildsure_user -d buildsure"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   buildsure-api:
     build: .
+    container_name: buildsure-api
     ports:
       - "5000:5000"
     environment:
       - FLASK_ENV=production
-      - DB_HOST=plm1w6.h.filess.io
-      - DB_NAME=buildsure_passagesee
-      - DB_USER=buildsure_passagesee
-      - DB_PASSWORD=d3f8fa3070f91f1a4ba7ac150b9836994e85607b
-      - DB_PORT=5433
+      - ASYNC_DATABASE_URL=postgresql+asyncpg://buildsure_user:buildsure_password@postgres:5432/buildsure
       - SECRET_KEY=your-production-secret-key-change-this
       - GEMINI_API_KEY=your-gemini-api-key-here
       - GEMINI_MODEL=gemini-pro
       - GEMINI_TEMPERATURE=0.7
       - GEMINI_MAX_OUTPUT_TOKENS=2048
+      - SQL_ECHO=false
+    depends_on:
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/api/v1/health/simple"]
@@ -24,3 +43,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+
+volumes:
+  postgres_data:

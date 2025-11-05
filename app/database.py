@@ -19,8 +19,10 @@ SQL_ECHO=os.getenv("SQL_ECHO", "false").lower() == "true"
 # Create async engine
 engine = create_async_engine(
     ASYNC_DATABASE_URL,
-    connect_args={"check_same_thread": False},
-    echo=SQL_ECHO
+    echo=SQL_ECHO,
+    pool_pre_ping=True,  # Enable connection health checks
+    pool_size=5,  # Connection pool size
+    max_overflow=10  # Maximum overflow connections
 )
 
 # Create async session maker
@@ -38,4 +40,3 @@ async def get_db():
 class CustomBase(SQLModel):
     """Custom Base class for models, to allow global customizations"""
     pass
-
