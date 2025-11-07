@@ -15,5 +15,5 @@ class Message(CustomBase, table=True):
         sa_column=Column(DateTime, server_default=func.now(), nullable=False)
     )
 
-    project_data_matrix: Optional["ProjectDataMatrix"] = Relationship()
-    user: Optional["User"] = Relationship()
+    project_data_matrix: Optional["ProjectDataMatrix"] = Relationship(back_populates="messages")
+    # user: Optional["User"] = Relationship(back_populates="messages")

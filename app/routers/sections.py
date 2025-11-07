@@ -32,7 +32,7 @@ from app.schemas.section import (
 from app.schemas.answer import AnswerCreate, SectionAnswerResponse
 from app.repository.section import get_section_by_id, list_sections as list_sections_repo, create_section as create_section_repo, update_section as update_section_repo, delete_section as delete_section_repo
 from app.repository.project import get_project_by_id
-from app.repository.project_data_matrix import list_project_data_matrices
+from app.repository.project_data_matrix import list_project_data_matrices, get_project_data_matrix_by_id
 
 import logging
 
@@ -95,12 +95,14 @@ async def create_section(
     return SectionResponse.model_validate(section)
 
 
-@router.get("/{section_id}", response_model=SectionResponse)
+@router.get("/{id}")
 async def get_section(
-    section: Section = Depends(get_section_by_id),
+    section: ProjectDataMatrix = Depends(get_project_data_matrix_by_id),
 ):
     """Get section by ID"""
-    return SectionResponse.model_validate(section)
+    print("========================")
+    print(section.messages)
+    return section
 
 
 @router.put("/{section_id}", response_model=SectionResponse)
@@ -136,9 +138,10 @@ async def delete_section(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Section not found during delete")
 
 
-@router.get("/{section_id}/clear")
-async def clear_section_history(section_id: str, session: AsyncSession = Depends(get_db)):
+@router.get("/{id}/clear")
+async def clear_section_history(section: AsyncSession = Depends(get_project_data_matrix_by_id)):
     """Clear chat history (answers) for a section"""
+    return section
     raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="Section functionality is currently disabled.")
 
 

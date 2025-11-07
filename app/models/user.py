@@ -19,3 +19,4 @@ class User(CustomBase, table=True):
 
     organization: Optional["Organization"] = Relationship(back_populates="users")
     projects: List["Project"] = Relationship(back_populates="user")
+    # messages: List["Message"] = Relationship(back_populates="user")

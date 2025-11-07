@@ -3,6 +3,7 @@ from typing import List, Optional
 from uuid import UUID
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 from sqlmodel import Session, select
 from app.database import get_db
 from app.models.project_data_matrix import ProjectDataMatrix
@@ -13,8 +14,8 @@ async def create_project_data_matrix(project_data_matrix: ProjectDataMatrix, ses
     await session.refresh(project_data_matrix)
     return project_data_matrix
 
-async def get_project_data_matrix_by_id(pdm_id: str, session: AsyncSession = Depends(get_db)) -> ProjectDataMatrix:
-    statement = select(ProjectDataMatrix).where(ProjectDataMatrix.id == pdm_id)
+async def get_project_data_matrix_by_id(id: str, session: AsyncSession = Depends(get_db)) -> ProjectDataMatrix:
+    statement = select(ProjectDataMatrix).where(ProjectDataMatrix.id == id).options(selectinload(ProjectDataMatrix.messages))
     result = await session.execute(statement)
     project_data_matrix = result.scalar_one_or_none()
     if not project_data_matrix:
@@ -22,7 +23,7 @@ async def get_project_data_matrix_by_id(pdm_id: str, session: AsyncSession = Dep
     return project_data_matrix
 
 async def list_project_data_matrices(session: AsyncSession = Depends(get_db), offset: int = 0, limit: int = 100) -> List[ProjectDataMatrix]:
-    statement = select(ProjectDataMatrix).offset(offset).limit(limit)
+    statement = select(ProjectDataMatrix).options(selectinload(ProjectDataMatrix.messages)).offset(offset).limit(limit)
     result = await session.execute(statement)
     return list(result.scalars().all())
 
