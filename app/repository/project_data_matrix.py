@@ -7,6 +7,7 @@ from sqlalchemy.orm import selectinload
 from sqlmodel import Session, select
 from app.database import get_db
 from app.models.project_data_matrix import ProjectDataMatrix
+from app.models.data_matrix import DataMatrix
 
 async def create_project_data_matrix(project_data_matrix: ProjectDataMatrix, session: AsyncSession = Depends(get_db)) -> ProjectDataMatrix:
     session.add(project_data_matrix)
@@ -17,7 +18,7 @@ async def create_project_data_matrix(project_data_matrix: ProjectDataMatrix, ses
 async def get_project_data_matrix_by_id(id: str, session: AsyncSession = Depends(get_db)) -> ProjectDataMatrix:
     statement = select(ProjectDataMatrix).where(ProjectDataMatrix.id == id).options(
         selectinload(ProjectDataMatrix.messages),
-        selectinload(ProjectDataMatrix.data_matrix)
+        selectinload(ProjectDataMatrix.data_matrix).selectinload(DataMatrix.knowledge_bases),
         )
     result = await session.execute(statement)
     project_data_matrix = result.scalar_one_or_none()
