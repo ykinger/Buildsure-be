@@ -12,7 +12,6 @@ class ProjectBase(BaseModel):
     name: str
     description: Optional[str] = None
     status: ProjectStatus = ProjectStatus.NOT_STARTED
-    current_section: str = "3.01"
 
 
 
@@ -29,8 +28,6 @@ class ProjectUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     status: Optional[ProjectStatus] = None
-    current_section: Optional[str] = None
-
     organization_id: Optional[str] = None
     user_id: Optional[str] = None
 
@@ -87,8 +84,17 @@ class ProjectReportResponse(BaseModel):
     project_id: str
     project_name: str
     project_status: ProjectStatus
-
     generated_at: datetime
     sections: Dict[str, SectionReportData]  # Dynamic keys like "section_1", "section_2", etc.
+
+    @property
+    def total_sections(self) -> int:
+        """Calculate total sections from sections dict"""
+        return len(self.sections)
+    
+    @property
+    def completed_sections(self) -> int:
+        """Calculate completed sections from sections dict"""
+        return sum(1 for section in self.sections.values() if section.completed)
 
     model_config = ConfigDict(from_attributes=True)

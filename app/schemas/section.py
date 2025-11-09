@@ -75,9 +75,6 @@ class SectionConfirmResponse(BaseModel):
     final_output: Optional[Dict[str, Any]] = None
     project_id: str
     project_status: str
-    completed_sections: int
-    total_sections: int
-    current_section: str
     message: str
 
     model_config = ConfigDict(from_attributes=True)

@@ -53,9 +53,6 @@ class ProjectService:
                 "name": project.name,
                 "description": project.description,
                 "status": project.status,
-                "current_section": project.current_section,
-                "total_sections": project.total_sections,
-                "completed_sections": project.completed_sections,
                 "organization_id": project.organization_id,
                 "user_id": project.user_id,
                 "created_at": project.created_at,
@@ -96,8 +93,9 @@ class ProjectService:
             completed_sections = await self._get_completed_sections(project_id, db)
 
             # Step 3: Format report data
+            # Using 27 as the default total sections (3.01 to 3.27)
             sections_data = await self._format_report_sections(
-                project.total_sections, completed_sections
+                27, completed_sections
             )
 
             # Step 4: Create report response
@@ -105,8 +103,6 @@ class ProjectService:
                 project_id=project_id,
                 project_name=project.name,
                 project_status=project.status,
-                total_sections=project.total_sections,
-                completed_sections=project.completed_sections,
                 generated_at=datetime.utcnow(),
                 sections=sections_data
             )
