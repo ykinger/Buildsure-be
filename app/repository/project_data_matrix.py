@@ -15,7 +15,10 @@ async def create_project_data_matrix(project_data_matrix: ProjectDataMatrix, ses
     return project_data_matrix
 
 async def get_project_data_matrix_by_id(id: str, session: AsyncSession = Depends(get_db)) -> ProjectDataMatrix:
-    statement = select(ProjectDataMatrix).where(ProjectDataMatrix.id == id).options(selectinload(ProjectDataMatrix.messages))
+    statement = select(ProjectDataMatrix).where(ProjectDataMatrix.id == id).options(
+        selectinload(ProjectDataMatrix.messages),
+        selectinload(ProjectDataMatrix.data_matrix)
+        )
     result = await session.execute(statement)
     project_data_matrix = result.scalar_one_or_none()
     if not project_data_matrix:
