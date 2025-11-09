@@ -12,11 +12,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.models.data_matrix import DataMatrix
 
-history = None
-def set_history(h):
-    global history
-    history = h
-
 # Add the project root to Python path so we can import app modules
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
@@ -91,7 +86,7 @@ def ask_multiple_choice_question(question_text: str, options: list[str]) -> Mult
     """
     logging.info("[MCQ] %s %s", question_text, options)
     mcq_data = MCQData(question=question_text, answer_options=options)
-    history.append(AIMessage(question_text))
+    # messages.append(AIMessage(question_text))
     return MultipleChoiceQuestionResponse(data=mcq_data).model_dump()
 
 @tool
@@ -109,7 +104,7 @@ def ask_numeric_question(question_text: str) -> NumericQuestionResponse:
         NumericQuestionResponse: The user's numeric answer.
     """
     numeric_data = NumericQuestionData(question=question_text)
-    history.append(AIMessage(question_text))
+    # messages.append(AIMessage(question_text))
     return NumericQuestionResponse(data=numeric_data).model_dump()
 
 @tool
@@ -126,7 +121,7 @@ def ask_free_text_question(question_text: str) -> FreeTextQuestionResponse:
         FreeTextQuestionResponse: The user's answer to the question.
     """
     free_text_data = FreeTextQuestionData(question=question_text)
-    history.append(AIMessage(question_text))
+    # messages.append(AIMessage(question_text))
     return FreeTextQuestionResponse(data=free_text_data).model_dump()
 
 @tool
@@ -154,7 +149,7 @@ def provide_final_answer(answer: str) -> FinalAnswerResponse:
     """
     logging.info("[Final] Answer: %s", answer)
     final_answer_data = FinalAnswerData(answer=answer)
-    history.append(AIMessage(answer))
+    # messages.append(AIMessage(answer))
     return FinalAnswerResponse(data=final_answer_data).model_dump()
 
 async def get_form_section_info(number: str, db: AsyncSession) -> dict:

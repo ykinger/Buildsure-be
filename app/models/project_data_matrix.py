@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 from enum import Enum
 from app.database import CustomBase
@@ -27,3 +27,4 @@ class ProjectDataMatrix(CustomBase, table=True):
 
     project: Optional["Project"] = Relationship(back_populates="project_data_matrices")
     data_matrix: Optional["DataMatrix"] = Relationship(back_populates="project_data_matrices")
+    messages: Optional[List["Message"]] = Relationship(back_populates="project_data_matrix")

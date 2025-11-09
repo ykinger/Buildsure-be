@@ -8,5 +8,5 @@ class DataMatrixKnowledgeBase(CustomBase, table=True):
     data_matrix_id: str = Field(foreign_key="data_matrix.id")
     knowledge_base_id: str = Field(foreign_key="knowledge_base.id")
 
-    data_matrix: Optional["DataMatrix"] = Relationship(back_populates="data_matrix_knowledge_bases")
-    knowledge_base: Optional["KnowledgeBase"] = Relationship(back_populates="data_matrix_knowledge_bases")
+    data_matrix: "DataMatrix" = Relationship(back_populates="data_matrix_knowledge_bases")
+    knowledge_base: "KnowledgeBase" = Relationship(back_populates="knowledge_base_data_matrices")

@@ -6,7 +6,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import Session, select
 from app.database import get_db
 from app.models.section import Section
+from app.models.project_data_matrix import ProjectDataMatrix
 
+async def get_pdm_by_id(project_data_matrix_id: str, session: AsyncSession = Depends(get_db)) -> ProjectDataMatrix:
+    statement = select(ProjectDataMatrix).where(ProjectDataMatrix.id == project_data_matrix_id)
+    result = await session.execute(statement)
+    return result.scalar_one_or_none()
+
+#####
 async def create_section(section: Section, session: AsyncSession = Depends(get_db)) -> Section:
     session.add(section)
     await session.commit()
@@ -17,6 +24,8 @@ async def get_section_by_id(section_id: str, session: AsyncSession = Depends(get
     statement = select(Section).where(Section.id == section_id)
     result = await session.execute(statement)
     section = result.scalar_one_or_none()
+    # TODO: This is our repository, we are out of HTTP contenxt and should not
+    # return/raise HTTP responses
     if not section:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Section not found")
     return section

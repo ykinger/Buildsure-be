@@ -44,3 +44,7 @@ async def delete_message(message_id: str, session: AsyncSession = Depends(get_db
         await session.commit()
         return True
     return False
+async def delete_messages(messages: List[Message]):
+    for message in messages:
+        print("Deleting message", message.id)
+        # await delete_message(message.id)

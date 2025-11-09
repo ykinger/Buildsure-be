@@ -1,6 +1,7 @@
 from typing import Optional
 from datetime import datetime
 from app.database import CustomBase
+from app.models.data_matrix_knowledge_base import DataMatrixKnowledgeBase
 from sqlmodel import Field, Relationship
 from sqlalchemy import Column, DateTime, func, Text
 from typing import List
@@ -19,3 +20,4 @@ class DataMatrix(CustomBase, table=True):
 
     project_data_matrices: List["ProjectDataMatrix"] = Relationship(back_populates="data_matrix")
     data_matrix_knowledge_bases: List["DataMatrixKnowledgeBase"] = Relationship(back_populates="data_matrix")
+    knowledge_bases: List["KnowledgeBase"] = Relationship(back_populates="data_matrices", link_model=DataMatrixKnowledgeBase)
