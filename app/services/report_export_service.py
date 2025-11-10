@@ -91,13 +91,17 @@ class ReportExportService:
             story.append(Paragraph(title, self.styles['CustomTitle']))
             story.append(Spacer(1, 20))
             
+            # Calculate sections statistics from the sections data
+            total_sections = len(report.sections)
+            completed_sections = sum(1 for section in report.sections.values() if section.completed)
+            
             # Project summary table
             summary_data = [
                 ['Project ID', report.project_id],
                 ['Project Name', report.project_name],
                 ['Status', report.project_status.value],
-                ['Total Sections', str(report.total_sections)],
-                ['Completed Sections', str(report.completed_sections)],
+                ['Total Sections', str(total_sections)],
+                ['Completed Sections', str(completed_sections)],
                 ['Generated At', report.generated_at.strftime('%Y-%m-%d %H:%M:%S UTC')]
             ]
             
@@ -217,13 +221,17 @@ class ReportExportService:
         sheet['A1'].font = Font(bold=True, size=16)
         sheet.merge_cells('A1:B1')
         
+        # Calculate sections statistics from the sections data
+        total_sections = len(report.sections)
+        completed_sections = sum(1 for section in report.sections.values() if section.completed)
+        
         # Summary data
         summary_data = [
             ('Project ID', report.project_id),
             ('Project Name', report.project_name),
             ('Status', report.project_status.value),
-            ('Total Sections', report.total_sections),
-            ('Completed Sections', report.completed_sections),
+            ('Total Sections', total_sections),
+            ('Completed Sections', completed_sections),
             ('Generated At', report.generated_at.strftime('%Y-%m-%d %H:%M:%S UTC'))
         ]
         

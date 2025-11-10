@@ -1,5 +1,6 @@
 from typing import Optional, List
 from datetime import datetime
+from uuid import uuid4
 from app.database import CustomBase
 from sqlmodel import Field, Relationship
 from sqlalchemy import Column, DateTime, func, Text, Integer
@@ -13,7 +14,7 @@ class ProjectStatus(str, Enum):
 
 class Project(CustomBase, table=True):
     __tablename__ = 'project'
-    id: Optional[str] = Field(default=None, primary_key=True)
+    id: str = Field(default_factory=lambda: str(uuid4()), primary_key=True)
     organization_id: str = Field(foreign_key="organization.id")
     user_id: str = Field(foreign_key="user.id")
     name: str

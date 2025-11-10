@@ -84,10 +84,12 @@ async def create_project(
     """Create a new project"""
     # TODO: Implement proper authentication to get current user and organization
     # For now, require organization_id and user_id to be provided
-    if not project_data.organization_id:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="organization_id is required")
-    if not project_data.user_id:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="user_id is required")
+    # if not project_data.organization_id:
+    #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="organization_id is required")
+    # if not project_data.user_id:
+    #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="user_id is required")
+    project_data.organization_id = "2fed349d-cd1d-44c3-8cc0-5114a4b19c6f"  # Placeholder organization_id
+    project_data.user_id = "6f89abee-e135-40f1-85a5-505e1e5431d6"  # Placeholder user_id
 
     # Verify organization exists
     organization = await get_organization_by_id(project_data.organization_id, session) # Use functional repo for verification
