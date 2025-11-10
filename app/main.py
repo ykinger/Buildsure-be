@@ -4,6 +4,7 @@ FastAPI Main Application
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+import sys
 
 # Import all models to ensure they are registered with SQLModel.metadata
 import app.models.organization
@@ -22,14 +23,28 @@ from app.routers import (
     projects_router,
     sections_router
 )
+from app.database import test_database_connection
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan events"""
+    # Startup: Validate database connection
+    try:
+        print("🔍 Checking database connection...")
+        await test_database_connection()
+        print("✅ Database connection successful")
+    except RuntimeError as e:
+        print(f"❌ Database connection failed: {str(e)}", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f"❌ Unexpected error during database validation: {str(e)}", file=sys.stderr)
+        sys.exit(1)
+    
     yield
+    
     # Shutdown
-    pass
+    print("🔒 Shutting down application...")
 
 
 # Create FastAPI application

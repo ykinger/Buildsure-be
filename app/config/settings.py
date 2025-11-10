@@ -12,10 +12,15 @@ class Settings(BaseSettings):
     """Application settings"""
     
     # Database
-    database_url: str = Field(
-        default="sqlite+aiosqlite:///./buildsure_dev.db",
-        env="DATABASE_URL",
-        description="Database connection URL"
+    async_database_url: str = Field(
+        ...,  # Required field, no default
+        env="ASYNC_DATABASE_URL",
+        description="Async database connection URL (PostgreSQL with asyncpg)"
+    )
+    sql_echo: bool = Field(
+        default=False,
+        env="SQL_ECHO",
+        description="Echo SQL statements to console"
     )
     
     # API Configuration
