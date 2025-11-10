@@ -30,20 +30,18 @@ from app.database import test_database_connection
 async def lifespan(app: FastAPI):
     """Application lifespan events"""
     # Startup: Validate database connection
+    print("🔍 Checking database connection...")
     try:
-        print("🔍 Checking database connection...")
         await test_database_connection()
         print("✅ Database connection successful")
-    except RuntimeError as e:
-        print(f"❌ Database connection failed: {str(e)}", file=sys.stderr)
-        sys.exit(1)
     except Exception as e:
-        print(f"❌ Unexpected error during database validation: {str(e)}", file=sys.stderr)
-        sys.exit(1)
+        # Re-raise the exception - FastAPI will prevent app startup
+        print(f"❌ Database connection failed: {str(e)}", file=sys.stderr)
+        raise
     
     yield
     
-    # Shutdown
+    # Shutdown - only runs on graceful shutdown
     print("🔒 Shutting down application...")
 
 
