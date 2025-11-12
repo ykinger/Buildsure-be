@@ -23,9 +23,8 @@ services:
     build: .
     container_name: buildsure-api
     ports:
-      - "5000:5000"
+      - "8000:8000"
     environment:
-      - FLASK_ENV=production
       - ASYNC_DATABASE_URL=postgresql+asyncpg://buildsure_user:buildsure_password@postgres:5432/buildsure
       - SECRET_KEY=your-production-secret-key-change-this
       - GEMINI_API_KEY=your-gemini-api-key-here
@@ -38,7 +37,7 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/api/v1/health/simple"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health/simple"]
       interval: 30s
       timeout: 10s
       retries: 3
