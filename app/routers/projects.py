@@ -10,6 +10,7 @@ from sqlalchemy import select, func
 import math
 from datetime import datetime
 
+from app.auth.cognito import get_current_user
 from app.database import get_db
 from app.models.project import Project, ProjectStatus
 from app.models.organization import Organization
@@ -37,6 +38,7 @@ async def list_projects(
     size: int = Query(10, ge=1, le=100, description="Page size"),
     # org_id: Optional[str] = Query(None, description="Filter by organization ID"),
     user_id: Optional[str] = Query(None, description="Filter by user ID"),
+    current_user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_db)
 ):
     """List projects with pagination and optional filtering"""
@@ -53,8 +55,9 @@ async def list_projects(
     # if not organization:
     #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Organization not found")
 
+    user_sub = current_user["sub"]
     # Get projects using functional repository
-    projects = await list_projects_repo(session=session, user_id=user_id, offset=(page - 1) * size, limit=size)
+    projects = await list_projects_repo(session=session, user_id=user_sub, offset=(page - 1) * size, limit=size)
 
     # Get total count (still direct query for now, can be moved to repo if needed)
     count_query = select(func.count(Project.id))
@@ -89,7 +92,7 @@ async def create_project(
     # if not project_data.user_id:
     #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="user_id is required")
     project_data.organization_id = "2fed349d-cd1d-44c3-8cc0-5114a4b19c6f"  # Placeholder organization_id
-    project_data.user_id = "6f89abee-e135-40f1-85a5-505e1e5431d6"  # Placeholder user_id
+    project_data.user_id = "c17b35c0-d051-7000-5fb7-55cead7e0d38"  # Placeholder user_id
 
     # Verify organization exists
     organization = await get_organization_by_id(project_data.organization_id, session) # Use functional repo for verification

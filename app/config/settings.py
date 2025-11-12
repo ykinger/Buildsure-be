@@ -74,6 +74,23 @@ class Settings(BaseSettings):
         description="Timeout for AI service calls in seconds"
     )
     
+    # AWS Cognito Configuration
+    cognito_region: str = Field(
+        default="us-east-2",
+        env="COGNITO_REGION",
+        description="AWS Cognito region"
+    )
+    cognito_user_pool_id: str = Field(
+        default="us-east-2_uM4bmGp4F",
+        env="COGNITO_USER_POOL_ID",
+        description="Cognito User Pool ID"
+    )
+    cognito_app_client_id: str = Field(
+        default="1jnked1f39lijtnhkc2j69f4c9",
+        env="COGNITO_APP_CLIENT_ID",
+        description="Cognito App Client ID"
+    )
+    
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
