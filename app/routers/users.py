@@ -9,6 +9,7 @@ from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 import math
 
+from app.auth.cognito import get_current_user
 from app.database import get_db
 from app.models.user import User
 from app.models.organization import Organization
@@ -28,6 +29,7 @@ router = APIRouter(prefix="/api/v1/users", tags=["users"])
 async def list_users(
     page: int = Query(1, ge=1, description="Page number"),
     size: int = Query(10, ge=1, le=100, description="Page size"),
+    current_user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_db)
 ):
     """List users with pagination and optional organization filtering"""
@@ -56,6 +58,7 @@ async def list_users(
 @router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def create_user(
     user_data: UserCreate,
+    current_user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_db)
 ):
     """Create a new user"""
@@ -78,6 +81,7 @@ async def create_user(
 @router.get("/{user_id}", response_model=UserResponse)
 async def get_user(
     user_id: str,
+    current_user: dict = Depends(get_current_user),
     user: User = Depends(get_user_by_id),
 ):
     """Get user by ID"""
@@ -88,6 +92,7 @@ async def get_user(
 async def update_user(
     user_id: str,
     user_data: UserUpdate,
+    current_user: dict = Depends(get_current_user),
     user: User = Depends(get_user_by_id),
     session: AsyncSession = Depends(get_db)
 ):
@@ -116,6 +121,7 @@ async def update_user(
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(
     user_id: str,
+    current_user: dict = Depends(get_current_user),
     user: User = Depends(get_user_by_id),
     session: AsyncSession = Depends(get_db)
 ):
@@ -130,6 +136,7 @@ async def list_users_by_organization(
     org_id: str,
     page: int = Query(1, ge=1, description="Page number"),
     size: int = Query(10, ge=1, le=100, description="Page size"),
+    current_user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_db)
 ):
     """List users by organization ID"""

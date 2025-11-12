@@ -9,6 +9,7 @@ from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 import math
 
+from app.auth.cognito import get_current_user
 from app.database import get_db
 from app.models.organization import Organization
 from app.schemas.organization import (
@@ -26,6 +27,7 @@ router = APIRouter(prefix="/api/v1/organizations", tags=["organizations"])
 async def list_organizations(
     page: int = Query(1, ge=1, description="Page number"),
     size: int = Query(10, ge=1, le=100, description="Page size"),
+    current_user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_db)
 ):
     """List organizations with pagination"""
@@ -51,6 +53,7 @@ async def list_organizations(
 @router.post("/", response_model=OrganizationResponse, status_code=status.HTTP_201_CREATED)
 async def create_organization(
     organization_data: OrganizationCreate,
+    current_user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_db)
 ):
     """Create a new organization"""
@@ -63,6 +66,7 @@ async def create_organization(
 @router.get("/{organization_id}", response_model=OrganizationResponse)
 async def get_organization(
     organization_id: str,
+    current_user: dict = Depends(get_current_user),
     organization: Organization = Depends(get_organization_by_id),
 ):
     """Get organization by ID"""
@@ -73,6 +77,7 @@ async def get_organization(
 async def update_organization(
     organization_id: str,
     organization_data: OrganizationUpdate,
+    current_user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_db)
 ):
     """Update organization by ID"""
@@ -88,6 +93,7 @@ async def update_organization(
 @router.delete("/{organization_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_organization(
     organization_id: str,
+    current_user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_db)
 ):
     """Delete organization by ID"""

@@ -82,6 +82,7 @@ async def list_projects(
 @router.post("/", response_model=ProjectResponse, status_code=status.HTTP_201_CREATED)
 async def create_project(
     project_data: ProjectCreate,
+    current_user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_db)
 ):
     """Create a new project"""
@@ -118,6 +119,7 @@ async def create_project(
 @router.get("/{project_id}", response_model=ProjectDetailResponse)
 async def get_project(
     project_id: str,
+    current_user: dict = Depends(get_current_user),
     project: Project = Depends(get_project_by_id),
 ):
     """Get project by ID"""
@@ -131,6 +133,7 @@ async def get_project(
 @router.post("/{project_id}/start", response_model=ProjectDetailResponse, status_code=status.HTTP_200_OK)
 async def start_project(
     project_id: str,
+    current_user: dict = Depends(get_current_user),
     project: Project = Depends(get_project_by_id),
     session: AsyncSession = Depends(get_db)
 ):
@@ -149,6 +152,7 @@ async def start_project(
 async def update_project(
     project_id: str,
     project_data: ProjectUpdate,
+    current_user: dict = Depends(get_current_user),
     project: Project = Depends(get_project_by_id),
     session: AsyncSession = Depends(get_db)
 ):
@@ -178,6 +182,7 @@ async def update_project(
 @router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_project(
     project_id: str,
+    current_user: dict = Depends(get_current_user),
     project: Project = Depends(get_project_by_id),
     session: AsyncSession = Depends(get_db)
 ):
@@ -189,8 +194,9 @@ async def delete_project(
 @router.get("/{project_id}/report")
 async def get_project_report(
     project_id: str,
-    project: Project = Depends(get_project_by_id),
     format: Optional[str] = Query("json", description="Report format: json, pdf, or excel"),
+    current_user: dict = Depends(get_current_user),
+    project: Project = Depends(get_project_by_id),
     session: AsyncSession = Depends(get_db)
 ):
     """Generate and return a comprehensive report for the project in various formats"""

@@ -15,6 +15,7 @@ import json
 from pydantic import BaseModel
 from sqlmodel import SQLModel
 
+from app.auth.cognito import get_current_user
 from app.database import get_db
 from app.models.project import Project
 from app.models.section import Section, SectionStatus
@@ -51,6 +52,7 @@ router = APIRouter(prefix="/api/v1/sections", tags=["sections"])
 async def list_sections(
     page: int = Query(1, ge=1, description="Page number"),
     size: int = Query(10, ge=1, le=100, description="Page size"),
+    current_user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_db)
 ):
     """List sections with pagination and optional filtering by project ID"""
@@ -80,6 +82,7 @@ async def list_sections(
 @router.post("/", response_model=SectionResponse, status_code=status.HTTP_201_CREATED)
 async def create_section(
     section_data: SectionCreate,
+    current_user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_db)
 ):
     """Create a new section"""
@@ -99,6 +102,7 @@ async def create_section(
 
 @router.get("/{id}")
 async def get_section(
+    current_user: dict = Depends(get_current_user),
     section: ProjectDataMatrix = Depends(get_project_data_matrix_by_id),
 ):
     """Get section by ID"""
@@ -109,6 +113,7 @@ async def get_section(
 async def update_section(
     section_id: str,
     section_data: SectionUpdate,
+    current_user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_db)
 ):
     """Update section by ID"""
@@ -130,6 +135,7 @@ async def update_section(
 @router.delete("/{section_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_section(
     section_id: str,
+    current_user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_db)
 ):
     """Delete section by ID"""
@@ -139,14 +145,21 @@ async def delete_section(
 
 
 @router.get("/{id}/clear")
-async def clear_section_history(pdm: ProjectDataMatrix = Depends(get_project_data_matrix_by_id), ai: AIService = Depends(AIService)):
+async def clear_section_history(
+    current_user: dict = Depends(get_current_user),
+    pdm: ProjectDataMatrix = Depends(get_project_data_matrix_by_id),
+    ai: AIService = Depends(AIService)
+):
     """Clear chat history (answers) for a section"""
     await delete_messages(pdm.messages)
     return await ai.what_next(pdm)
 
 
 @router.post("/{section_id}/next")
-async def start_section_next(pdm: ProjectDataMatrix = Depends(get_project_data_matrix_by_id), ai: AIService = Depends(AIService)
+async def start_section_next(
+    current_user: dict = Depends(get_current_user),
+    pdm: ProjectDataMatrix = Depends(get_project_data_matrix_by_id),
+    ai: AIService = Depends(AIService)
 ):
     """
     Start a section conversation or continue with an answer.
@@ -157,6 +170,7 @@ async def start_section_next(pdm: ProjectDataMatrix = Depends(get_project_data_m
 async def start_section_status_update(
     section_id: str,
     answer: Optional[RequestAnswer] = None,
+    current_user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_db)
 ):
     """
@@ -169,6 +183,7 @@ async def start_section_status_update(
 async def confirm_section_simple(
     section_id: str,
     confirm_data: SectionConfirmRequest,
+    current_user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_db)
 ):
     """Confirm a section by saving answer and progressing to next section."""
