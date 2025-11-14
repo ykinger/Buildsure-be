@@ -27,6 +27,9 @@ class Project(CustomBase, table=True):
     updated_at: Optional[datetime] = Field(
         sa_column=Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
     )
+    due_date: Optional[datetime] = Field(default=None, sa_column=Column(DateTime, nullable=True))
+    # total_sections: int = Field(default=0, sa_column=Column(Integer, default=0, nullable=False))
+    # completed_sections: int = Field(default=0, sa_column=Column(Integer, default=0, nullable=False))
 
     organization: Optional["Organization"] = Relationship(back_populates="projects")
     user: Optional["User"] = Relationship(back_populates="projects")

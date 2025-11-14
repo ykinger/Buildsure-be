@@ -4,8 +4,10 @@ from uuid import UUID
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import Session, select
+from sqlalchemy.orm import joinedload
 from app.database import get_db
 from app.models.project import Project
+from app.models.section import SectionStatus
 
 async def create_project(project: Project, session: AsyncSession = Depends(get_db)) -> Project:
     session.add(project)
@@ -14,22 +16,33 @@ async def create_project(project: Project, session: AsyncSession = Depends(get_d
     return project
 
 async def get_project_by_id(project_id: str, session: AsyncSession = Depends(get_db)) -> Project:
-    statement = select(Project).where(Project.id == project_id)
+    statement = select(Project).options(joinedload(Project.sections)).where(Project.id == project_id)
     result = await session.execute(statement)
     project = result.scalar_one_or_none()
     if not project:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
+
+    # Calculate total_sections and completed_sections
+    project.total_sections = len(project.sections)
+    project.completed_sections = sum(1 for section in project.sections if section.status == SectionStatus.COMPLETED)
+
     return project
 
 async def list_projects(session: AsyncSession = Depends(get_db), organization_id: Optional[str] = None, user_id: Optional[str] = None, offset: int = 0, limit: int = 100) -> List[Project]:
-    statement = select(Project)
+    statement = select(Project).options(joinedload(Project.project_data_matrices))
     if organization_id:
         statement = statement.where(Project.organization_id == organization_id)
     if user_id:
         statement = statement.where(Project.user_id == user_id)
-    statement = statement.offset(offset).limit(limit)
+    statement = statement.offset(offset).limit(limit).unique()
     result = await session.execute(statement)
-    return list(result.scalars().all())
+    projects = list(result.scalars().all())
+
+    for project in projects:
+        project.total_sections = len(project.project_data_matrices)
+        project.completed_sections = sum(1 for section in project.project_data_matrices if section.status == SectionStatus.COMPLETED)
+
+    return projects
 
 async def update_project(project_id: str, project_data: dict, session: AsyncSession = Depends(get_db)) -> Optional[Project]:
     project = await get_project_by_id(project_id, session)

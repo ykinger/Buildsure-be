@@ -9,6 +9,7 @@ from app.models.message import Message
 from app.models.knowledge_base import KnowledgeBase
 from app.models.data_matrix_knowledge_base import DataMatrixKnowledgeBase
 from app.models.section import Section
+from app.models.user import User
 
 __all__ = [
     "Organization",
