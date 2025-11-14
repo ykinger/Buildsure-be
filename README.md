@@ -92,6 +92,27 @@ The API will be available at `http://127.0.0.1:5000`
    docker run -p 5000:5000 --env-file .env buildsure-api
    ```
 
+### AWS ECS Deployment
+
+The application includes a complete CI/CD pipeline for deploying to AWS ECS using GitHub Actions.
+
+**Quick Start:**
+1. Create AWS resources (ECR, ECS, RDS, etc.)
+2. Configure GitHub Secrets
+3. Push to `main` branch to trigger deployment
+
+**Documentation:**
+- 📋 [Deployment Checklist](docs/deployment-checklist.md) - Step-by-step setup guide
+- 📖 [AWS Deployment Guide](docs/aws-deployment-guide.md) - Comprehensive deployment documentation
+- 🔄 [GitHub Actions Workflows](../.github/workflows/README.md) - CI/CD pipeline details
+
+**Features:**
+- ✅ Automated deployments on push to main
+- ✅ Docker image building and pushing to ECR
+- ✅ Zero-downtime deployments with health checks
+- ✅ CloudWatch logging and monitoring
+- ✅ Manual deployment trigger support
+
 ## API Endpoints
 
 ### Health Check
