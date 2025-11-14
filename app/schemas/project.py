@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, ConfigDict
 from app.models.project import ProjectStatus
+from app.schemas.section import SectionResponse
 
 
 class ProjectBase(BaseModel):
@@ -12,7 +13,8 @@ class ProjectBase(BaseModel):
     name: str
     description: Optional[str] = None
     status: ProjectStatus = ProjectStatus.NOT_STARTED
-
+    current_section: str = "3.01"
+    due_date: Optional[datetime] = None
 
 
 class ProjectCreate(BaseModel):
@@ -21,6 +23,7 @@ class ProjectCreate(BaseModel):
     description: Optional[str] = None
     organization_id: str = ""
     user_id: str = ""
+    due_date: Optional[datetime] = None
 
 
 class ProjectUpdate(BaseModel):
@@ -28,6 +31,9 @@ class ProjectUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     status: Optional[ProjectStatus] = None
+    current_section: Optional[str] = None
+    due_date: Optional[datetime] = None
+
     organization_id: Optional[str] = None
     user_id: Optional[str] = None
 
@@ -39,6 +45,9 @@ class ProjectResponse(ProjectBase):
     user_id: str
     created_at: datetime
     updated_at: datetime
+    total_sections: int
+    completed_sections: int
+    sections: List[SectionResponse]
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -70,12 +79,16 @@ class ProjectDetailResponse(BaseModel):
     name: str
     description: Optional[str]
     status: ProjectStatus
-
+    current_section: str
+    due_date: Optional[datetime]
 
     organization_id: str
     user_id: str
     created_at: datetime
     updated_at: datetime
+    total_sections: int
+    completed_sections: int
+    sections: List[SectionResponse]
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -91,7 +104,7 @@ class ProjectReportResponse(BaseModel):
     def total_sections(self) -> int:
         """Calculate total sections from sections dict"""
         return len(self.sections)
-    
+
     @property
     def completed_sections(self) -> int:
         """Calculate completed sections from sections dict"""
