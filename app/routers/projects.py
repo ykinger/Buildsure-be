@@ -68,7 +68,7 @@ async def list_projects(
     pages = math.ceil(total / size) if total > 0 else 1
 
     return ProjectListResponse(
-        items=[ProjectResponse.model_validate(project) for project in projects],
+        items=projects,
         total=total,
         page=page,
         size=size,
