@@ -12,7 +12,8 @@ import asyncio
 # Add the app directory to the Python path
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from app.database import CustomBase, ASYNC_DATABASE_URL
+from app.database import CustomBase
+from app.config.settings import settings
 from app.models import *  # Import all models
 
 # this is the Alembic Config object, which provides
@@ -36,7 +37,7 @@ target_metadata = CustomBase.metadata
 
 def get_url():
     """Get database URL from environment or config"""
-    return ASYNC_DATABASE_URL
+    return settings.async_database_url
 
 
 def run_migrations_offline() -> None:
