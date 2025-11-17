@@ -5,6 +5,7 @@ from app.database import CustomBase
 from sqlmodel import Field, Relationship
 from sqlalchemy import Column, DateTime, func, Text, Integer
 from enum import Enum
+from pydantic import computed_field
 
 class ProjectStatus(str, Enum):
     NOT_STARTED = "not_started"
@@ -27,6 +28,7 @@ class Project(CustomBase, table=True):
     updated_at: Optional[datetime] = Field(
         sa_column=Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
     )
+    due_date: Optional[datetime] = Field(default=None, sa_column=Column(DateTime, nullable=True))
 
     organization: Optional["Organization"] = Relationship(back_populates="projects")
     user: Optional["User"] = Relationship(back_populates="projects")

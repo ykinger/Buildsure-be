@@ -4,8 +4,13 @@ from uuid import UUID
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import Session, select
+from sqlalchemy.orm import joinedload
 from app.database import get_db
 from app.models.project import Project
+from app.models.section import SectionStatus
+from app.models.project_data_matrix import PDMStatus, ProjectDataMatrix
+from app.schemas.project import ProjectResponse
+from app.schemas.section import SectionResponse
 
 async def create_project(project: Project, session: AsyncSession = Depends(get_db)) -> Project:
     session.add(project)
@@ -14,23 +19,64 @@ async def create_project(project: Project, session: AsyncSession = Depends(get_d
     return project
 
 async def get_project_by_id(project_id: str, session: AsyncSession = Depends(get_db)) -> Project:
-    statement = select(Project).where(Project.id == project_id)
+    statement = select(Project).options(joinedload(Project.sections)).where(Project.id == project_id)
     result = await session.execute(statement)
     project = result.scalar_one_or_none()
     if not project:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
+
+    # Calculate total_sections and completed_sections
+    project.total_sections = len(project.sections)
+    project.completed_sections = sum(1 for section in project.sections if section.status == SectionStatus.COMPLETED)
+
     return project
 
-async def list_projects(session: AsyncSession = Depends(get_db), organization_id: Optional[str] = None, user_id: Optional[str] = None, offset: int = 0, limit: int = 100) -> List[Project]:
-    statement = select(Project)
+async def list_projects(session: AsyncSession = Depends(get_db), organization_id: Optional[str] = None, user_id: Optional[str] = None, offset: int = 0, limit: int = 100) -> List[ProjectResponse]:
+    statement = select(Project).options(joinedload(Project.project_data_matrices).joinedload(ProjectDataMatrix.data_matrix))
     if organization_id:
         statement = statement.where(Project.organization_id == organization_id)
     if user_id:
         statement = statement.where(Project.user_id == user_id)
     statement = statement.offset(offset).limit(limit)
     result = await session.execute(statement)
-    return list(result.scalars().all())
+    projects_from_db = list(result.scalars().unique().all())
 
+    project_responses: List[ProjectResponse] = []
+    for project in projects_from_db:
+        total_sections = len(project.project_data_matrices)
+        completed_sections = sum(1 for pdm in project.project_data_matrices if pdm.status == PDMStatus.COMPLETED)
+        
+        # Convert ProjectDataMatrix objects to SectionResponse objects
+        sections_response = [
+            SectionResponse(
+                id=str(pdm.id),
+                project_id=str(pdm.project_id),
+                form_section_number=pdm.data_matrix.number,
+                status=pdm.status,
+                final_output=pdm.output,
+                created_at=pdm.created_at,
+                updated_at=pdm.updated_at
+            ) for pdm in project.project_data_matrices
+        ]
+
+        project_responses.append(
+            ProjectResponse(
+                id=str(project.id),
+                organization_id=str(project.organization_id),
+                user_id=str(project.user_id),
+                name=project.name,
+                description=project.description,
+                status=project.status,
+                current_section=project.current_section,
+                created_at=project.created_at,
+                updated_at=project.updated_at,
+                due_date=project.due_date,
+                total_sections=total_sections,
+                completed_sections=completed_sections,
+                sections=sections_response
+            )
+        )
+    return project_responses
 async def update_project(project_id: str, project_data: dict, session: AsyncSession = Depends(get_db)) -> Optional[Project]:
     project = await get_project_by_id(project_id, session)
     if project:
