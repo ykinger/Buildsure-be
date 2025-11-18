@@ -59,7 +59,9 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "https://d15ie9y8k0o201.cloudfront.net"
+        "https://d15ie9y8k0o201.cloudfront.net",
+        "https://build-sure.org",
+        "https://www.build-sure.org"
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
