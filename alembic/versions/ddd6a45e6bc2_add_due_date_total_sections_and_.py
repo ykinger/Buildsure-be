@@ -1,7 +1,7 @@
 """Add due_date, total_sections, and completed_sections to Project model
 
 Revision ID: ddd6a45e6bc2
-Revises: 9f05dabcafd0
+Revises: 495b4d75fc56
 Create Date: 2025-11-10 23:06:30.529350
 
 """
