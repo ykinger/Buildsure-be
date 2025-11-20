@@ -17,6 +17,7 @@ from app.models.organization import Organization
 from app.models.user import User
 from app.schemas.project import (
     ProjectCreate,
+    ProjectCreateResponse,
     ProjectUpdate,
     ProjectResponse,
     ProjectListResponse,
@@ -79,7 +80,7 @@ async def list_projects(
     )
 
 
-@router.post("/", response_model=ProjectResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=ProjectCreateResponse, status_code=status.HTTP_201_CREATED)
 async def create_project(
     project_data: ProjectCreate,
     current_user: dict = Depends(get_current_user),
@@ -108,7 +109,7 @@ async def create_project(
     project = Project(**project_dict)
     project = await create_project_repo(project, session)
 
-    return ProjectResponse.model_validate(project)
+    return ProjectCreateResponse.model_validate(project)
 
 
 @router.get("/{project_id}", response_model=ProjectDetailResponse)

@@ -13,7 +13,7 @@ class ProjectBase(BaseModel):
     name: str
     description: Optional[str] = None
     status: ProjectStatus = ProjectStatus.NOT_STARTED
-    current_section: str = "3.01"
+    current_section: str = "3.00"
     due_date: Optional[datetime] = None
 
 
@@ -38,13 +38,18 @@ class ProjectUpdate(BaseModel):
     user_id: Optional[str] = None
 
 
-class ProjectResponse(ProjectBase):
-    """Schema for project response"""
+class ProjectCreateResponse(ProjectBase):
+    """Schema for project create response"""
     id: str
     organization_id: str
     user_id: str
     created_at: datetime
     updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+class ProjectResponse(ProjectCreateResponse):
+    """Schema for project response"""
     total_sections: int
     completed_sections: int
     sections: List[SectionResponse]
