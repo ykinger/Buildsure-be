@@ -86,32 +86,27 @@ async def create_project(
     session: AsyncSession = Depends(get_db)
 ):
     """Create a new project"""
-    # TODO: Implement proper authentication to get current user and organization
-    # For now, require organization_id and user_id to be provided
-    # if not project_data.organization_id:
-    #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="organization_id is required")
-    # if not project_data.user_id:
-    #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="user_id is required")
-    project_data.organization_id = "2fed349d-cd1d-44c3-8cc0-5114a4b19c6f"  # Placeholder organization_id
-    project_data.user_id = "c17b35c0-d051-7000-5fb7-55cead7e0d38"  # Placeholder user_id
+    # Extract user ID from authentication token
+    user_sub = current_user["sub"]
+    
+    # Look up user in database to get organization_id
+    user = await get_user_by_id(user_sub, session)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Authenticated user not found in database"
+        )
 
-    # Verify organization exists
-    organization = await get_organization_by_id(project_data.organization_id, session) # Use functional repo for verification
-    if not organization:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Organization not found")
-
-    # Verify user exists and belongs to the organization
-    user = await get_user_by_id(project_data.user_id, session) # Use functional repo for verification
-    if not user or user.organization_id != project_data.organization_id:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User not found or doesn't belong to the specified organization")
-
-    # Create project with default values
+    # Create project with authenticated user's data (override any provided values)
     project_dict = project_data.model_dump()
     project_dict.update({
+        'user_id': user_sub,  # Force to authenticated user
+        'organization_id': user.organization_id,  # Force to user's organization
         'status': ProjectStatus.NOT_STARTED
     })
+    
     project = Project(**project_dict)
-    project = await create_project_repo(project, session) # Use functional repo to create
+    project = await create_project_repo(project, session)
 
     return ProjectResponse.model_validate(project)
 
