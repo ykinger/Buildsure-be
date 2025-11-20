@@ -5,12 +5,17 @@ Handles project-related business logic and orchestration.
 import logging
 from datetime import datetime
 from typing import Dict, List, Optional, Any
+from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
 from app.models.project import Project, ProjectStatus
 from app.schemas.project import ProjectReportResponse, SectionReportData, ProjectDetailResponse
+from app.models.data_matrix import DataMatrix
+from app.models.project_data_matrix import ProjectDataMatrix, PDMStatus
+from app.repository.data_matrix import list_data_matrices
+from app.repository.project_data_matrix import create_project_data_matrix
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +51,9 @@ class ProjectService:
 
             await db.commit()
             await db.refresh(project)
+
+            # Pre-populate project data matrix
+            await self._pre_populate_data_matrix(project.id, db)
 
             # Build response
             response_data = {
@@ -189,6 +197,28 @@ class ProjectService:
             )
 
         return sections_data
+
+    async def _pre_populate_data_matrix(
+        self,
+        project_id: str,
+        data_matrices :list[DataMatrix] = Depends(list_data_matrices)
+    ) -> None:
+        """
+        Copies all records from the `data_matrix` table to the `project_data_matrix` table
+        for a given project, filling the project_id and other fields accordingly.
+
+        Args:
+            project_id: The ID of the project to pre-populate data for.
+            db: The database session.
+        """
+        for dm in data_matrices:
+            pdm = ProjectDataMatrix(
+                project_id=project_id,
+                data_matrix_id=dm.id,
+                status=PDMStatus.PENDING,
+                output=None
+            )
+            await create_project_data_matrix(pdm)
 
     async def health_check(self) -> Dict[str, Any]:
         """
