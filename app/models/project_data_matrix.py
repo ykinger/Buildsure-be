@@ -1,9 +1,10 @@
 from typing import Optional, List
 from datetime import datetime
 from enum import Enum
+from uuid import uuid4
 from app.database import CustomBase
 from sqlmodel import Field, Relationship
-from sqlalchemy import Column, DateTime, func, JSON
+from sqlalchemy import Column, DateTime, func, JSON, String
 
 class PDMStatus(str, Enum):
     PENDING = "pending"
@@ -13,10 +14,10 @@ class PDMStatus(str, Enum):
 
 class ProjectDataMatrix(CustomBase, table=True):
     __tablename__ = 'project_data_matrix'
-    id: Optional[str] = Field(default=None, primary_key=True)
+    id: str = Field(default_factory=lambda: str(uuid4()), primary_key=True)
     project_id: str = Field(foreign_key="project.id")
     data_matrix_id: str = Field(foreign_key="data_matrix.id")
-    status: PDMStatus = Field(default=PDMStatus.PENDING)
+    status: PDMStatus = Field(default=PDMStatus.PENDING, sa_type=String)
     output: Optional[dict] = Field(sa_column=Column(JSON))
     created_at: Optional[datetime] = Field(
         sa_column=Column(DateTime, server_default=func.now(), nullable=False)

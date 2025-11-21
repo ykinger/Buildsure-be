@@ -22,7 +22,8 @@ from app.schemas.project import (
     ProjectDetailsResponse,
     ProjectListResponse,
     ProjectDetailResponse,
-    ProjectReportResponse
+    ProjectReportResponse,
+    ProjectStartResponse
 )
 from app.services.project_service import ProjectService
 from app.services.report_export_service import ReportExportService
@@ -119,7 +120,7 @@ async def get_project(
     return project
 
 
-@router.post("/{project_id}/start", response_model=ProjectDetailResponse, status_code=status.HTTP_200_OK)
+@router.post("/{project_id}/start", response_model=ProjectStartResponse, status_code=status.HTTP_200_OK)
 async def start_project(
     project_id: str,
     user_and_org: dict = Depends(get_current_user_and_org),

@@ -46,6 +46,11 @@ class ProjectCreateResponse(ProjectBase):
 
     model_config = ConfigDict(from_attributes=True)
 
+
+# Alias for project start endpoint
+ProjectStartResponse = ProjectCreateResponse
+
+
 class ProjectDetailsResponse(ProjectCreateResponse):
     """Schema for project response"""
     total_sections: int

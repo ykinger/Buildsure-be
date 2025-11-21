@@ -7,7 +7,6 @@ from sqlmodel import Session, select
 from sqlalchemy.orm import joinedload
 from app.database import get_db
 from app.models.project import Project
-from app.models.section import SectionStatus
 from app.models.project_data_matrix import PDMStatus, ProjectDataMatrix
 from app.schemas.project import ProjectDetailsResponse
 from app.schemas.section import SectionResponse
@@ -19,15 +18,11 @@ async def create_project(project: Project, session: AsyncSession = Depends(get_d
     return project
 
 async def get_project_by_id(project_id: str, session: AsyncSession = Depends(get_db)) -> Project:
-    statement = select(Project).options(joinedload(Project.sections)).where(Project.id == project_id)
+    statement = select(Project).options(joinedload(Project.project_data_matrices)).where(Project.id == project_id)
     result = await session.execute(statement)
-    project = result.scalar_one_or_none()
+    project = result.unique().scalar_one_or_none()
     if not project:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
-
-    # Calculate total_sections and completed_sections
-    project.total_sections = len(project.sections)
-    project.completed_sections = sum(1 for section in project.sections if section.status == SectionStatus.COMPLETED)
 
     return project
 
