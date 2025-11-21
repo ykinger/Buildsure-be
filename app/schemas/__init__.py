@@ -19,7 +19,7 @@ from .project import (
     ProjectBase,
     ProjectCreate,
     ProjectUpdate,
-    ProjectResponse,
+    ProjectDetailsResponse,
     ProjectListResponse
 )
 from .conversation import (
@@ -39,7 +39,7 @@ from .data_matrix import (
 __all__ = [
     "OrganizationBase", "OrganizationCreate", "OrganizationUpdate", "OrganizationResponse", "OrganizationListResponse",
     "UserBase", "UserCreate", "UserUpdate", "UserResponse", "UserListResponse",
-    "ProjectBase", "ProjectCreate", "ProjectUpdate", "ProjectResponse", "ProjectListResponse",
+    "ProjectBase", "ProjectCreate", "ProjectUpdate", "ProjectDetailsResponse", "ProjectListResponse",
     "ConversationCreate", "ConversationRead",
     "DataMatrixBase", "DataMatrixCreate", "DataMatrixUpdate", "DataMatrix",
     "DataMatrixOntarioChunkBase", "DataMatrixOntarioChunkCreate", "DataMatrixOntarioChunk"

@@ -473,7 +473,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectResponse'
+                $ref: '#/components/schemas/ProjectDetailsResponse'
         '400':
           description: Bad request (organization or user not found, or user doesn't belong to organization)
           content:
@@ -500,7 +500,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectResponse'
+                $ref: '#/components/schemas/ProjectDetailsResponse'
         '404':
           description: Project not found
           content:
@@ -532,7 +532,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectResponse'
+                $ref: '#/components/schemas/ProjectDetailsResponse'
         '400':
           description: Bad request (organization or user not found, or user doesn't belong to organization)
           content:
@@ -1345,7 +1345,7 @@ components:
           format: uuid
           example: "123e4567-e89b-12d3-a456-426614174001"
 
-    ProjectResponse:
+    ProjectDetailsResponse:
       allOf:
         - $ref: '#/components/schemas/ProjectBase'
         - type: object
@@ -1389,7 +1389,7 @@ components:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/ProjectResponse'
+            $ref: '#/components/schemas/ProjectDetailsResponse'
         total:
           type: integer
           example: 1

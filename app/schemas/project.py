@@ -13,7 +13,6 @@ class ProjectBase(BaseModel):
     name: str
     description: Optional[str] = None
     status: ProjectStatus = ProjectStatus.NOT_STARTED
-    current_section: str = "3.00"
     due_date: Optional[datetime] = None
 
 
@@ -31,7 +30,6 @@ class ProjectUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     status: Optional[ProjectStatus] = None
-    current_section: Optional[str] = None
     due_date: Optional[datetime] = None
 
     organization_id: Optional[str] = None
@@ -48,7 +46,7 @@ class ProjectCreateResponse(ProjectBase):
 
     model_config = ConfigDict(from_attributes=True)
 
-class ProjectResponse(ProjectCreateResponse):
+class ProjectDetailsResponse(ProjectCreateResponse):
     """Schema for project response"""
     total_sections: int
     completed_sections: int
@@ -59,7 +57,7 @@ class ProjectResponse(ProjectCreateResponse):
 
 class ProjectListResponse(BaseModel):
     """Schema for paginated project list response"""
-    items: List[ProjectResponse]
+    items: List[ProjectCreateResponse]
     total: int
     page: int
     size: int
@@ -84,7 +82,6 @@ class ProjectDetailResponse(BaseModel):
     name: str
     description: Optional[str]
     status: ProjectStatus
-    current_section: str
     due_date: Optional[datetime]
 
     organization_id: str

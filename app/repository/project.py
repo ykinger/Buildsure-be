@@ -9,7 +9,7 @@ from app.database import get_db
 from app.models.project import Project
 from app.models.section import SectionStatus
 from app.models.project_data_matrix import PDMStatus, ProjectDataMatrix
-from app.schemas.project import ProjectResponse
+from app.schemas.project import ProjectDetailsResponse
 from app.schemas.section import SectionResponse
 
 async def create_project(project: Project, session: AsyncSession = Depends(get_db)) -> Project:
@@ -31,7 +31,7 @@ async def get_project_by_id(project_id: str, session: AsyncSession = Depends(get
 
     return project
 
-async def list_projects(session: AsyncSession = Depends(get_db), organization_id: Optional[str] = None, user_id: Optional[str] = None, offset: int = 0, limit: int = 100) -> List[ProjectResponse]:
+async def list_projects(session: AsyncSession = Depends(get_db), organization_id: Optional[str] = None, user_id: Optional[str] = None, offset: int = 0, limit: int = 100) -> List[ProjectDetailsResponse]:
     statement = select(Project).options(joinedload(Project.project_data_matrices).joinedload(ProjectDataMatrix.data_matrix))
     if organization_id:
         statement = statement.where(Project.organization_id == organization_id)
@@ -41,7 +41,7 @@ async def list_projects(session: AsyncSession = Depends(get_db), organization_id
     result = await session.execute(statement)
     projects_from_db = list(result.scalars().unique().all())
 
-    project_responses: List[ProjectResponse] = []
+    project_responses: List[ProjectDetailsResponse] = []
     for project in projects_from_db:
         total_sections = len(project.project_data_matrices)
         completed_sections = sum(1 for pdm in project.project_data_matrices if pdm.status == PDMStatus.COMPLETED)
@@ -60,14 +60,13 @@ async def list_projects(session: AsyncSession = Depends(get_db), organization_id
         ]
 
         project_responses.append(
-            ProjectResponse(
+            ProjectDetailsResponse(
                 id=str(project.id),
                 organization_id=str(project.organization_id),
                 user_id=str(project.user_id),
                 name=project.name,
                 description=project.description,
                 status=project.status,
-                current_section=project.current_section,
                 created_at=project.created_at,
                 updated_at=project.updated_at,
                 due_date=project.due_date,

@@ -10,7 +10,7 @@ from sqlalchemy import select, func
 import math
 from datetime import datetime
 
-from app.auth.cognito import get_current_user
+from app.auth.cognito import get_current_user, get_current_user_and_org
 from app.database import get_db
 from app.models.project import Project, ProjectStatus
 from app.models.organization import Organization
@@ -19,7 +19,7 @@ from app.schemas.project import (
     ProjectCreate,
     ProjectCreateResponse,
     ProjectUpdate,
-    ProjectResponse,
+    ProjectDetailsResponse,
     ProjectListResponse,
     ProjectDetailResponse,
     ProjectReportResponse
@@ -39,7 +39,7 @@ async def list_projects(
     size: int = Query(10, ge=1, le=100, description="Page size"),
     # org_id: Optional[str] = Query(None, description="Filter by organization ID"),
     user_id: Optional[str] = Query(None, description="Filter by user ID"),
-    current_user: dict = Depends(get_current_user),
+    user_and_org: dict = Depends(get_current_user_and_org),
     session: AsyncSession = Depends(get_db)
 ):
     """List projects with pagination and optional filtering"""
@@ -56,7 +56,7 @@ async def list_projects(
     # if not organization:
     #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Organization not found")
 
-    user_sub = current_user["sub"]
+    user_sub = user_and_org["user_claims"]["sub"]
     # Get projects using functional repository
     projects = await list_projects_repo(session=session, user_id=user_sub, offset=(page - 1) * size, limit=size)
 
@@ -83,26 +83,19 @@ async def list_projects(
 @router.post("/", response_model=ProjectCreateResponse, status_code=status.HTTP_201_CREATED)
 async def create_project(
     project_data: ProjectCreate,
-    current_user: dict = Depends(get_current_user),
+    user_and_org: dict = Depends(get_current_user_and_org),
     session: AsyncSession = Depends(get_db)
 ):
     """Create a new project"""
-    # Extract user ID from authentication token
-    user_sub = current_user["sub"]
-    
-    # Look up user in database to get organization_id
-    user = await get_user_by_id(user_sub, session)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
-            detail="Authenticated user not found in database"
-        )
+    # Extract user ID and organization ID from authentication
+    user_sub = user_and_org["user_claims"]["sub"]
+    organization_id = user_and_org["organization_id"]
 
     # Create project with authenticated user's data (override any provided values)
     project_dict = project_data.model_dump()
     project_dict.update({
         'user_id': user_sub,  # Force to authenticated user
-        'organization_id': user.organization_id,  # Force to user's organization
+        'organization_id': organization_id,  # Force to user's organization
         'status': ProjectStatus.NOT_STARTED
     })
     
@@ -129,7 +122,7 @@ async def get_project(
 @router.post("/{project_id}/start", response_model=ProjectDetailResponse, status_code=status.HTTP_200_OK)
 async def start_project(
     project_id: str,
-    current_user: dict = Depends(get_current_user),
+    user_and_org: dict = Depends(get_current_user_and_org),
     project: Project = Depends(get_project_by_id),
     session: AsyncSession = Depends(get_db)
 ):
@@ -144,7 +137,7 @@ async def start_project(
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to start project: {str(e)}")
 
 
-@router.put("/{project_id}", response_model=ProjectResponse)
+@router.put("/{project_id}", response_model=ProjectDetailsResponse)
 async def update_project(
     project_id: str,
     project_data: ProjectUpdate,
@@ -172,7 +165,7 @@ async def update_project(
     if not project:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found during update")
 
-    return ProjectResponse.model_validate(project)
+    return ProjectDetailsResponse.model_validate(project)
 
 
 @router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
