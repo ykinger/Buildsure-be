@@ -18,7 +18,9 @@ async def create_project(project: Project, session: AsyncSession = Depends(get_d
     return project
 
 async def get_project_by_id(project_id: str, session: AsyncSession = Depends(get_db)) -> Project:
-    statement = select(Project).options(joinedload(Project.project_data_matrices)).where(Project.id == project_id)
+    statement = select(Project).options(
+        joinedload(Project.project_data_matrices).joinedload(ProjectDataMatrix.data_matrix)
+    ).where(Project.id == project_id)
     result = await session.execute(statement)
     project = result.unique().scalar_one_or_none()
     if not project:

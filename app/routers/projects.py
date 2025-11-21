@@ -117,7 +117,40 @@ async def get_project(
     # if org_id and project.organization_id != org_id:
     #     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Project does not belong to the specified organization")
 
-    return project
+    # Calculate sections statistics
+    from app.models.project_data_matrix import PDMStatus
+    from app.schemas.section import SectionResponse
+    
+    total_sections = len(project.project_data_matrices)
+    completed_sections = sum(1 for pdm in project.project_data_matrices if pdm.status == PDMStatus.COMPLETED)
+    
+    # Convert ProjectDataMatrix objects to SectionResponse objects
+    sections_response = [
+        SectionResponse(
+            id=str(pdm.id),
+            project_id=str(pdm.project_id),
+            form_section_number=pdm.data_matrix.number,
+            status=pdm.status,
+            final_output=pdm.output,
+            created_at=pdm.created_at,
+            updated_at=pdm.updated_at
+        ) for pdm in project.project_data_matrices
+    ]
+
+    return ProjectDetailResponse(
+        id=str(project.id),
+        organization_id=str(project.organization_id),
+        user_id=str(project.user_id),
+        name=project.name,
+        description=project.description,
+        status=project.status,
+        created_at=project.created_at,
+        updated_at=project.updated_at,
+        due_date=project.due_date,
+        total_sections=total_sections,
+        completed_sections=completed_sections,
+        sections=sections_response
+    )
 
 
 @router.post("/{project_id}/start", response_model=ProjectStartResponse, status_code=status.HTTP_200_OK)
