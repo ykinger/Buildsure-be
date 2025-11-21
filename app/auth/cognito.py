@@ -2,11 +2,14 @@
 AWS Cognito JWT Authentication
 Validates JWT tokens from AWS Cognito and extracts user claims
 """
-from typing import Dict, Optional
+from typing import Dict, Optional, Any
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from cognitojwt import decode as cognito_jwt_decode
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.config.settings import settings
+from app.database import get_db
+from app.repository.user import get_user_by_id
 
 # HTTPBearer automatically extracts "Bearer <token>" from Authorization header
 security = HTTPBearer()
@@ -114,3 +117,69 @@ async def get_optional_user(
         return claims
     except:
         return None
+
+
+async def get_current_user_and_org(
+    current_user: Dict[str, str] = Depends(get_current_user),
+    session: AsyncSession = Depends(get_db)
+) -> Dict[str, Any]:
+    """
+    FastAPI Dependency: Validate JWT token and retrieve user with organization ID
+    
+    This dependency combines JWT validation with database lookup to provide:
+    1. JWT token validation (via get_current_user)
+    2. User record from database
+    3. Organization ID the user belongs to
+    
+    Usage in routes:
+        @router.get("/protected")
+        async def protected_route(
+            user_and_org: dict = Depends(get_current_user_and_org)
+        ):
+            user_id = user_and_org["user_claims"]["sub"]
+            org_id = user_and_org["organization_id"]
+            user_email = user_and_org["user"].email
+            user_name = user_and_org["user"].name
+            ...
+    
+    Raises:
+        HTTPException: 
+            - 401 if token is invalid, expired, or malformed
+            - 404 if user doesn't exist in database
+    
+    Returns:
+        dict: Dictionary containing:
+            - user_claims: Dict with JWT claims (sub, email, email_verified, etc.)
+            - organization_id: str - The ID of the organization the user belongs to
+            - user: User object with all user data from database
+    """
+    try:
+        # Extract user ID from JWT claims
+        user_id = current_user.get("sub")
+        
+        if not user_id:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token: missing user ID",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        
+        # Fetch user from database
+        user = await get_user_by_id(user_id, session)
+        
+        # Return combined data
+        return {
+            "user_claims": current_user,
+            "organization_id": user.organization_id,
+            "user": user
+        }
+        
+    except HTTPException:
+        # Re-raise HTTP exceptions (from get_user_by_id or above)
+        raise
+    except Exception as e:
+        # Handle unexpected errors
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving user and organization: {str(e)}"
+        )
