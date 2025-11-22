@@ -37,15 +37,15 @@ async def update_message(message_id: str, message_data: dict, session: AsyncSess
         return message
     return None
 
-async def delete_message(message_id: str, session: AsyncSession) -> bool:
-    message = await get_message_by_id(message_id, session)
-    if message:
-        session.delete(message)
-        await session.commit()
-        return True
-    return False
-
 async def delete_messages(messages: List[Message], session: AsyncSession):
-    for message in messages:
-        print("Deleting message", message.id)
-        await delete_message(message.id, session)
+    if not messages:
+        return
+
+    message_ids = [message.id for message in messages]
+    print ("Deleting", message_ids)
+
+    from sqlalchemy import delete as sqlalchemy_delete
+    statement = sqlalchemy_delete(Message).where(Message.id.in_(message_ids))
+
+    await session.execute(statement)
+    await session.commit()
