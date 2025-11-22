@@ -148,10 +148,11 @@ async def delete_section(
 async def clear_section_history(
     current_user: dict = Depends(get_current_user),
     pdm: ProjectDataMatrix = Depends(get_project_data_matrix_by_id),
-    ai: AIService = Depends(AIService)
+    ai: AIService = Depends(AIService),
+    session: AsyncSession = Depends(get_db)
 ):
     """Clear chat history (answers) for a section"""
-    await delete_messages(pdm.messages)
+    await delete_messages(pdm.messages, session)
     return await ai.what_next(pdm)
 
 
