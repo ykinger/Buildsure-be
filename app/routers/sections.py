@@ -155,6 +155,10 @@ async def clear_section_history(
 ):
     """Clear chat history (answers) for a section"""
     await delete_messages(pdm.messages, session)
+    
+    # Update status to IN_PROGRESS
+    pdm = await update_pdm_status(pdm, PDMStatus.IN_PROGRESS, session)
+    
     return await ai.what_next(pdm, session)
 
 
