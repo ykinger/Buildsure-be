@@ -23,7 +23,7 @@ from app.services.tools import DEFINED_TOOLS
 # from app.services.obc_query_service import OBCQueryService
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.config.settings import Settings, settings
-from app.models import ProjectDataMatrix, DataMatrix, Section
+from app.models import ProjectDataMatrix, DataMatrix, Section, Message
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -101,6 +101,51 @@ class AIService:
 
         self._initialize_llm()
 
+    def _convert_to_langchain_message(self, message: Message) -> BaseMessage:
+        """Convert SQLModel Message to LangChain BaseMessage."""
+        if message.type == "human":
+            return HumanMessage(content=message.content)
+        elif message.type == "ai":
+            return AIMessage(content=message.content)
+        elif message.type == "system":
+            return SystemMessage(content=message.content)
+        else:
+            # Default to HumanMessage for unknown types
+            return HumanMessage(content=message.content)
+
+    def _convert_to_sqlmodel_message(self,
+                                   message: BaseMessage,
+                                   project_data_matrix_id: str,
+                                   user_id: Optional[str] = None) -> Message:
+        """Convert LangChain BaseMessage to SQLModel Message."""
+        from uuid import uuid4
+
+        if isinstance(message, HumanMessage):
+            message_type = "human"
+        elif isinstance(message, AIMessage):
+            message_type = "ai"
+        elif isinstance(message, SystemMessage):
+            message_type = "system"
+        elif isinstance(message, ToolMessage):
+            message_type = "tool"
+        else:
+            message_type = "unknown"
+
+        return Message(
+            id=str(uuid4()),
+            project_data_matrix_id=project_data_matrix_id,
+            user_id=user_id,
+            type=message_type,
+            content=message.content
+        )
+
+    def _get_langchain_messages(self, section: ProjectDataMatrix) -> List[BaseMessage]:
+        """Convert SQLModel messages to LangChain messages for prompt template."""
+        if not section.messages:
+            return []
+
+        return [self._convert_to_langchain_message(msg) for msg in section.messages]
+
     def _initialize_llm(self):
         """Initialize the Google Gemini LLM client with tools binding."""
         try:
@@ -126,17 +171,28 @@ class AIService:
         except Exception as e:
             logging.error(f"Failed to initialize Google Gemini LLM: {str(e)}")
             raise
-        """Get OBC content using the pivot table relationship."""
-    async def what_next(self, section: ProjectDataMatrix,  human_answer: str = None) -> str:
+
+    async def what_next(self, section: ProjectDataMatrix, db_session: AsyncSession, human_answer: str = None, user_id: Optional[str] = None) -> str:
         """Main function to interact with user - converted from ai.py."""
         try:
-
-            # history = await self.load_chat_history(section.id)
-            if human_answer is None and section.messages != [] and section.messages[len(section.messages)-1].type == "ai":
+            # Validate message sequence
+            if human_answer is None and section.messages and section.messages[-1].type == "ai":
                 raise Exception("last message was from AI, a human message is needed next")
 
+            # Convert human answer to SQLModel Message and add to section
             if human_answer is not None:
-                section.messages.append(HumanMessage(human_answer))
+                human_message = self._convert_to_sqlmodel_message(
+                    HumanMessage(content=human_answer),
+                    project_data_matrix_id=section.id,
+                    user_id=user_id
+                )
+                section.messages.append(human_message)
+                # Persist the human message to database
+                db_session.add(human_message)
+                await db_session.commit()
+
+            # Get LangChain messages for prompt template
+            langchain_messages = self._get_langchain_messages(section)
 
             prompt = self.prompt_template.invoke({
                 "title": section.data_matrix.title,
@@ -144,7 +200,7 @@ class AIService:
                 "question": section.data_matrix.question,
                 "guide": section.data_matrix.guide,
                 "knowledge_base": section.data_matrix.knowledge_bases,
-                "history": [message.content for message in section.messages],
+                "history": langchain_messages,
             })
 
             ai_msg = self.llm.invoke(prompt)
@@ -163,9 +219,30 @@ class AIService:
             tool_call = ai_msg.tool_calls[0]
             logging.info("Running %s", tool_call["name"].lower())
             selected_tool = DEFINED_TOOLS[tool_call["name"].lower()]
-            #TODO: Grab ai message and add it to messages
+
+            # Save AI message to database before tool call
+            ai_sql_message = self._convert_to_sqlmodel_message(
+                ai_msg,
+                project_data_matrix_id=section.id,
+                user_id=user_id
+            )
+            section.messages.append(ai_sql_message)
+            db_session.add(ai_sql_message)
+            await db_session.commit()
+
+            # Execute tool call
             tool_msg = selected_tool.invoke(tool_call)
-            # TODO: save history after tool call
+
+            # Save tool message to database
+            tool_sql_message = self._convert_to_sqlmodel_message(
+                tool_msg,
+                project_data_matrix_id=section.id,
+                user_id=user_id
+            )
+            section.messages.append(tool_sql_message)
+            db_session.add(tool_sql_message)
+            await db_session.commit()
+
             return json.loads(tool_msg.content)
 
         except Exception as e:

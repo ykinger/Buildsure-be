@@ -153,32 +153,35 @@ async def clear_section_history(
 ):
     """Clear chat history (answers) for a section"""
     await delete_messages(pdm.messages, session)
-    return await ai.what_next(pdm)
+    return await ai.what_next(pdm, session)
 
 
 @router.post("/{section_id}/next")
 async def start_section_next(
+    answer: Optional[RequestAnswer] = None,
     current_user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_db),
     pdm: ProjectDataMatrix = Depends(get_project_data_matrix_by_id),
     ai: AIService = Depends(AIService)
 ):
     """
     Start a section conversation or continue with an answer.
     """
-    return ai.what_next(pdm)
+    return await ai.what_next(pdm, session, answer.answer)
 
 @router.post("/{section_id}/start")
 async def start_section_status_update(
     section_id: str,
-    answer: Optional[RequestAnswer] = None,
     current_user: dict = Depends(get_current_user),
-    session: AsyncSession = Depends(get_db)
+    session: AsyncSession = Depends(get_db),
+    pdm: ProjectDataMatrix = Depends(get_project_data_matrix_by_id),
+    ai: AIService = Depends(AIService)
 ):
     """
     Start a section and changes the state to In progress
     """
-    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="Section functionality is currently disabled.")
 
+    return await ai.what_next(pdm, session)
 
 @router.post("/{section_id}/confirm", response_model=SectionConfirmSimpleResponse)
 async def confirm_section_simple(
