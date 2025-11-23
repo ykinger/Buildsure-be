@@ -15,7 +15,7 @@ import json
 from pydantic import BaseModel
 from sqlmodel import SQLModel
 
-from app.auth.cognito import get_current_user
+from app.auth.cognito import get_current_user, get_current_user_and_org
 from app.database import get_db
 from app.models.project import Project
 from app.models.section import Section, SectionStatus
@@ -41,6 +41,7 @@ from app.models.project_data_matrix import PDMStatus
 import logging
 
 class RequestAnswer(BaseModel):
+    model_config = {"extra": "ignore"}
     answer: str
 
 # Configure logging
@@ -157,7 +158,7 @@ async def clear_section_history(
     return await ai.what_next(pdm, session)
 
 
-@router.post("/{section_id}/next")
+@router.post("/{id}/next")
 async def start_section_next(
     answer: Optional[RequestAnswer] = None,
     current_user: dict = Depends(get_current_user),
@@ -172,7 +173,7 @@ async def start_section_next(
 
 @router.post("/{section_id}/start")
 async def start_section_status_update(
-    current_user: dict = Depends(get_current_user),
+    user_and_org: dict = Depends(get_current_user_and_org),
     session: AsyncSession = Depends(get_db),
     pdm: ProjectDataMatrix = Depends(get_project_data_matrix_by_id),
     ai: AIService = Depends(AIService)
@@ -180,6 +181,13 @@ async def start_section_status_update(
     """
     Start a section and changes the state to In progress
     """
+    # Verify user belongs to the same organization as the project
+    if pdm.project.organization_id != user_and_org["organization_id"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have access to start sections in this project's organization"
+        )
+    
     # Only allow starting if current status is PENDING or READY_TO_START
     if pdm.status not in [PDMStatus.PENDING, PDMStatus.READY_TO_START]:
         raise HTTPException(
