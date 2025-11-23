@@ -34,7 +34,7 @@ from app.schemas.answer import AnswerCreate, SectionAnswerResponse
 from app.repository.section import get_section_by_id, list_sections as list_sections_repo, create_section as create_section_repo, update_section as update_section_repo, delete_section as delete_section_repo
 from app.repository.project import get_project_by_id
 from app.repository.message import delete_messages
-from app.repository.project_data_matrix import list_project_data_matrices, get_project_data_matrix_by_id, update_pdm_status, find_next_pending_pdm
+from app.repository.project_data_matrix import list_project_data_matrices, get_project_data_matrix_by_id, update_pdm_status, find_next_pending_pdm, update_project_data_matrix
 from app.services.ai_service import AIService
 from app.models.project_data_matrix import PDMStatus
 
@@ -203,12 +203,14 @@ async def start_section_status_update(
 
 @router.post("/{id}/confirm", response_model=SectionConfirmSimpleResponse)
 async def confirm_section_simple(
+    confirm_data: SectionConfirmRequest,
     # current_user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_db),
     pdm: ProjectDataMatrix = Depends(get_project_data_matrix_by_id)
 ):
     """
     Confirm completion of a section and progress to next pending section.
+    - Saves the final answer to the output field
     - Marks current section as COMPLETED
     - Finds next pending section and marks it as READY_TO_START
     - Returns information about current and next sections
@@ -219,6 +221,13 @@ async def confirm_section_simple(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Cannot confirm section with current status: {pdm.status}. Section must be IN_PROGRESS."
         )
+
+    # Save the final answer to the output field
+    await update_project_data_matrix(
+        pdm.id,
+        {"output": {"answer": confirm_data.answer}},
+        session
+    )
 
     # Update current section status to COMPLETED
     pdm = await update_pdm_status(pdm, PDMStatus.COMPLETED, session)
