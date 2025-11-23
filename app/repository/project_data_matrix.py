@@ -60,6 +60,7 @@ async def find_next_pending_pdm(project_id: str, session: AsyncSession) -> Optio
         .where(ProjectDataMatrix.project_id == project_id)
         .where(ProjectDataMatrix.status == PDMStatus.PENDING)
         .order_by(DataMatrix.number)
+        .options(selectinload(ProjectDataMatrix.data_matrix))
     )
     result = await session.execute(statement)
     return result.scalars().first()

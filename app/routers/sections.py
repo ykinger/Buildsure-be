@@ -34,8 +34,9 @@ from app.schemas.answer import AnswerCreate, SectionAnswerResponse
 from app.repository.section import get_section_by_id, list_sections as list_sections_repo, create_section as create_section_repo, update_section as update_section_repo, delete_section as delete_section_repo
 from app.repository.project import get_project_by_id
 from app.repository.message import delete_messages
-from app.repository.project_data_matrix import list_project_data_matrices, get_project_data_matrix_by_id
+from app.repository.project_data_matrix import list_project_data_matrices, get_project_data_matrix_by_id, update_pdm_status, find_next_pending_pdm
 from app.services.ai_service import AIService
+from app.models.project_data_matrix import PDMStatus
 
 import logging
 
@@ -171,7 +172,6 @@ async def start_section_next(
 
 @router.post("/{section_id}/start")
 async def start_section_status_update(
-    section_id: str,
     current_user: dict = Depends(get_current_user),
     session: AsyncSession = Depends(get_db),
     pdm: ProjectDataMatrix = Depends(get_project_data_matrix_by_id),
@@ -180,15 +180,59 @@ async def start_section_status_update(
     """
     Start a section and changes the state to In progress
     """
+    # Only allow starting if current status is PENDING or READY_TO_START
+    if pdm.status not in [PDMStatus.PENDING, PDMStatus.READY_TO_START]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot start section with current status: {pdm.status}"
+        )
 
+    # Update status to IN_PROGRESS
+    pdm = await update_pdm_status(pdm, PDMStatus.IN_PROGRESS, session)
+
+    # Return AI service response
     return await ai.what_next(pdm, session)
 
-@router.post("/{section_id}/confirm", response_model=SectionConfirmSimpleResponse)
+@router.post("/{id}/confirm", response_model=SectionConfirmSimpleResponse)
 async def confirm_section_simple(
-    section_id: str,
-    confirm_data: SectionConfirmRequest,
-    current_user: dict = Depends(get_current_user),
-    session: AsyncSession = Depends(get_db)
+    # current_user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_db),
+    pdm: ProjectDataMatrix = Depends(get_project_data_matrix_by_id)
 ):
-    """Confirm a section by saving answer and progressing to next section."""
-    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="Section functionality is currently disabled.")
+    """
+    Confirm completion of a section and progress to next pending section.
+    - Marks current section as COMPLETED
+    - Finds next pending section and marks it as READY_TO_START
+    - Returns information about current and next sections
+    """
+    # Only allow confirming if current status is IN_PROGRESS
+    if pdm.status != PDMStatus.IN_PROGRESS:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot confirm section with current status: {pdm.status}. Section must be IN_PROGRESS."
+        )
+
+    # Update current section status to COMPLETED
+    pdm = await update_pdm_status(pdm, PDMStatus.COMPLETED, session)
+
+    # Find next pending section in the same project
+    next_pdm = await find_next_pending_pdm(pdm.project_id, session)
+
+    if next_pdm:
+        # Mark next section as READY_TO_START
+        next_pdm = await update_pdm_status(next_pdm, PDMStatus.READY_TO_START, session)
+        next_section_id = next_pdm.id
+
+        message = f"Section {pdm.data_matrix.number} completed. "
+        message += f"Next section {next_pdm.data_matrix.number} is ready to start."
+    else:
+        # No more pending sections
+        next_section_id = ""
+        message = f"Section {pdm.data_matrix.number} completed. All sections are finished."
+
+    return SectionConfirmSimpleResponse(
+        section_id=pdm.id,
+        next_section_id=next_section_id,
+        message=message,
+        status="completed"
+    )
