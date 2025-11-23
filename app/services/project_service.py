@@ -11,7 +11,7 @@ from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 
 from app.models.project import Project, ProjectStatus
-from app.schemas.project import ProjectReportResponse, SectionReportData, ProjectDetailResponse
+from app.schemas.project import ProjectReportResponse, SectionReportData, ProjectStartResponse
 from app.models.data_matrix import DataMatrix
 from app.models.project_data_matrix import ProjectDataMatrix, PDMStatus
 from app.repository.data_matrix import list_data_matrices
@@ -32,16 +32,16 @@ class ProjectService:
         self,
         project_id: str,
         db: AsyncSession
-    ) -> ProjectDetailResponse:
+    ) -> ProjectStartResponse:
         """
-        Start a project by creating 27 sections and updating project status.
+        Start a project by updating project status and creating project_data_matrix rows.
 
         Args:
             project_id: The project ID
             db: Database session
 
         Returns:
-            ProjectDetailResponse containing project details with all 27 sections
+            ProjectStartResponse containing basic project details
 
         Raises:
             ValueError: If project not found
@@ -64,12 +64,12 @@ class ProjectService:
             next_pdm = await find_next_pending_pdm(project.id, db)
             if next_pdm:
                 await update_pdm_status(next_pdm, PDMStatus.READY_TO_START, db)
-            
+
             # Fetch the fully detailed project response
             project_details = await get_project_details_by_id(project_id, db)
 
             logger.info(f"Successfully started project {project_id}")
-            return project_details
+            return ProjectStartResponse(**response_data)
 
         except Exception as e:
             logger.error(f"Error starting project {project_id}: {str(e)}")
@@ -207,20 +207,39 @@ class ProjectService:
         """
         Copies all records from the `data_matrix` table to the `project_data_matrix` table
         for a given project, filling the project_id and other fields accordingly.
+        - Checks for existing rows to avoid duplicates
+        - Sets status=PENDING for all rows except number "3.00" which is IN_PROGRESS
 
         Args:
             project_id: The ID of the project to pre-populate data for.
             db: The database session.
         """
+        # Check if already populated to avoid duplicates
+        existing = await db.execute(
+            select(ProjectDataMatrix).where(ProjectDataMatrix.project_id == project_id)
+        )
+        if existing.scalars().first():
+            logger.info(f"Project {project_id} already has project_data_matrix rows, skipping")
+            return
+
+        # Get all data matrices
         data_matrices = await list_data_matrices(session=db)
+
+        # Create project_data_matrix rows
         for dm in data_matrices:
+            # Set READY_TO_START for number "3.00", PENDING for others
+            status = PDMStatus.READY_TO_START if dm.number == "3.00" else PDMStatus.PENDING
+
             pdm = ProjectDataMatrix(
                 project_id=project_id,
                 data_matrix_id=dm.id,
-                status=PDMStatus.PENDING,
+                status=status,
                 output=None
             )
-            await create_project_data_matrix(pdm, session=db)
+            db.add(pdm)
+
+        await db.commit()
+        logger.info(f"Successfully pre-populated {len(data_matrices)} project_data_matrix rows for project {project_id}")
 
     async def health_check(self) -> Dict[str, Any]:
         """
