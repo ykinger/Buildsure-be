@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Any
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 
 from app.models.project import Project, ProjectStatus
@@ -15,7 +15,12 @@ from app.schemas.project import ProjectReportResponse, SectionReportData, Projec
 from app.models.data_matrix import DataMatrix
 from app.models.project_data_matrix import ProjectDataMatrix, PDMStatus
 from app.repository.data_matrix import list_data_matrices
-from app.repository.project_data_matrix import create_project_data_matrix
+from app.repository.project import get_project_details_by_id
+from app.repository.project_data_matrix import (
+    create_project_data_matrix,
+    find_next_pending_pdm,
+    update_pdm_status
+)
 
 logger = logging.getLogger(__name__)
 
@@ -55,20 +60,16 @@ class ProjectService:
             # Pre-populate project data matrix
             await self._pre_populate_data_matrix(project.id, db)
 
-            # Build response
-            response_data = {
-                "id": project.id,
-                "name": project.name,
-                "description": project.description,
-                "status": project.status,
-                "organization_id": project.organization_id,
-                "user_id": project.user_id,
-                "created_at": project.created_at,
-                "updated_at": project.updated_at,
-            }
+            # Set the first section to ready to start
+            next_pdm = await find_next_pending_pdm(project.id, db)
+            if next_pdm:
+                await update_pdm_status(next_pdm, PDMStatus.READY_TO_START, db)
+            
+            # Fetch the fully detailed project response
+            project_details = await get_project_details_by_id(project_id, db)
 
             logger.info(f"Successfully started project {project_id}")
-            return ProjectDetailResponse(**response_data)
+            return project_details
 
         except Exception as e:
             logger.error(f"Error starting project {project_id}: {str(e)}")
@@ -201,7 +202,7 @@ class ProjectService:
     async def _pre_populate_data_matrix(
         self,
         project_id: str,
-        data_matrices :list[DataMatrix] = Depends(list_data_matrices)
+        db: AsyncSession
     ) -> None:
         """
         Copies all records from the `data_matrix` table to the `project_data_matrix` table
@@ -211,6 +212,7 @@ class ProjectService:
             project_id: The ID of the project to pre-populate data for.
             db: The database session.
         """
+        data_matrices = await list_data_matrices(session=db)
         for dm in data_matrices:
             pdm = ProjectDataMatrix(
                 project_id=project_id,
@@ -218,7 +220,7 @@ class ProjectService:
                 status=PDMStatus.PENDING,
                 output=None
             )
-            await create_project_data_matrix(pdm)
+            await create_project_data_matrix(pdm, session=db)
 
     async def health_check(self) -> Dict[str, Any]:
         """

@@ -1,4 +1,3 @@
-
 from typing import List, Optional
 from uuid import UUID
 from fastapi import Depends, HTTPException, status
@@ -11,6 +10,41 @@ from app.models.project_data_matrix import PDMStatus, ProjectDataMatrix
 from app.schemas.project import ProjectDetailsResponse
 from app.schemas.section import SectionResponse
 
+
+def _create_project_details_response(project: Project) -> ProjectDetailsResponse:
+    """Helper function to create a ProjectDetailsResponse from a Project object."""
+    total_sections = len(project.project_data_matrices)
+    completed_sections = sum(1 for pdm in project.project_data_matrices if pdm.status == PDMStatus.COMPLETED)
+
+    # Convert ProjectDataMatrix objects to SectionResponse objects
+    sections_response = [
+        SectionResponse(
+            id=str(pdm.id),
+            project_id=str(pdm.project_id),
+            form_section_number=pdm.data_matrix.number if pdm.data_matrix else "",
+            status=pdm.status,
+            final_output=pdm.output,
+            created_at=pdm.created_at,
+            updated_at=pdm.updated_at
+        ) for pdm in project.project_data_matrices
+    ]
+
+    return ProjectDetailsResponse(
+        id=str(project.id),
+        organization_id=str(project.organization_id),
+        user_id=str(project.user_id),
+        name=project.name,
+        description=project.description,
+        status=project.status,
+        created_at=project.created_at,
+        updated_at=project.updated_at,
+        due_date=project.due_date,
+        total_sections=total_sections,
+        completed_sections=completed_sections,
+        sections=sections_response
+    )
+
+
 async def create_project(project: Project, session: AsyncSession = Depends(get_db)) -> Project:
     session.add(project)
     await session.commit()
@@ -18,13 +52,20 @@ async def create_project(project: Project, session: AsyncSession = Depends(get_d
     return project
 
 async def get_project_by_id(project_id: str, session: AsyncSession = Depends(get_db)) -> Project:
-    statement = select(Project).options(joinedload(Project.project_data_matrices)).where(Project.id == project_id)
+    statement = select(Project).options(
+        joinedload(Project.project_data_matrices).joinedload(ProjectDataMatrix.data_matrix)
+    ).where(Project.id == project_id)
     result = await session.execute(statement)
     project = result.unique().scalar_one_or_none()
     if not project:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
 
     return project
+
+async def get_project_details_by_id(project_id: str, session: AsyncSession = Depends(get_db)) -> ProjectDetailsResponse:
+    project = await get_project_by_id(project_id, session)
+    return _create_project_details_response(project)
+
 
 async def list_projects(session: AsyncSession = Depends(get_db), organization_id: Optional[str] = None, user_id: Optional[str] = None, offset: int = 0, limit: int = 100) -> List[ProjectDetailsResponse]:
     statement = select(Project).options(joinedload(Project.project_data_matrices).joinedload(ProjectDataMatrix.data_matrix))
@@ -36,41 +77,8 @@ async def list_projects(session: AsyncSession = Depends(get_db), organization_id
     result = await session.execute(statement)
     projects_from_db = list(result.scalars().unique().all())
 
-    project_responses: List[ProjectDetailsResponse] = []
-    for project in projects_from_db:
-        total_sections = len(project.project_data_matrices)
-        completed_sections = sum(1 for pdm in project.project_data_matrices if pdm.status == PDMStatus.COMPLETED)
-        
-        # Convert ProjectDataMatrix objects to SectionResponse objects
-        sections_response = [
-            SectionResponse(
-                id=str(pdm.id),
-                project_id=str(pdm.project_id),
-                form_section_number=pdm.data_matrix.number,
-                status=pdm.status,
-                final_output=pdm.output,
-                created_at=pdm.created_at,
-                updated_at=pdm.updated_at
-            ) for pdm in project.project_data_matrices
-        ]
+    return [_create_project_details_response(project) for project in projects_from_db]
 
-        project_responses.append(
-            ProjectDetailsResponse(
-                id=str(project.id),
-                organization_id=str(project.organization_id),
-                user_id=str(project.user_id),
-                name=project.name,
-                description=project.description,
-                status=project.status,
-                created_at=project.created_at,
-                updated_at=project.updated_at,
-                due_date=project.due_date,
-                total_sections=total_sections,
-                completed_sections=completed_sections,
-                sections=sections_response
-            )
-        )
-    return project_responses
 async def update_project(project_id: str, project_data: dict, session: AsyncSession = Depends(get_db)) -> Optional[Project]:
     project = await get_project_by_id(project_id, session)
     if project:

@@ -20,13 +20,13 @@ async def get_current_user(
 ) -> Dict[str, str]:
     """
     FastAPI Dependency: Validate JWT token and return user claims
-    
+
     This dependency:
     1. Extracts JWT from Authorization header
     2. Validates token signature using Cognito public keys
     3. Verifies token expiration, issuer, and audience
     4. Returns decoded claims (sub, email, name, etc.)
-    
+
     Usage in routes:
         @router.get("/protected")
         async def protected_route(
@@ -35,10 +35,10 @@ async def get_current_user(
             user_id = current_user["sub"]
             email = current_user["email"]
             ...
-    
+
     Raises:
         HTTPException: 401 if token is invalid, expired, or malformed
-    
+
     Returns:
         dict: Decoded JWT claims containing:
             - sub: Unique user ID (UUID) from Cognito
@@ -51,7 +51,7 @@ async def get_current_user(
     try:
         # Extract token from "Bearer <token>"
         token = credentials.credentials
-        
+
         # Verify and decode JWT using cognitojwt
         # This internally:
         # - Fetches Cognito's public keys (JWKs) from AWS
@@ -64,9 +64,9 @@ async def get_current_user(
             userpool_id=settings.cognito_user_pool_id,
             app_client_id=settings.cognito_app_client_id
         )
-        
+
         return claims
-        
+
     except Exception as e:
         # Token is invalid, expired, or malformed
         raise HTTPException(
@@ -81,13 +81,13 @@ async def get_optional_user(
 ) -> Optional[Dict[str, str]]:
     """
     Optional authentication: Returns user claims if token is valid, None if missing/invalid
-    
+
     Useful for routes that work with or without authentication.
     For example:
     - Public listings with optional filtering by user
     - Content that shows differently for authenticated users
     - Features available to both guests and users
-    
+
     Usage in routes:
         @router.get("/public-content")
         async def public_content(
@@ -99,13 +99,13 @@ async def get_optional_user(
             else:
                 # Guest - show public content only
                 pass
-    
+
     Returns:
         dict | None: User claims if authenticated, None otherwise
     """
     if not credentials:
         return None
-        
+
     try:
         token = credentials.credentials
         claims = cognito_jwt_decode(
@@ -125,12 +125,12 @@ async def get_current_user_and_org(
 ) -> Dict[str, Any]:
     """
     FastAPI Dependency: Validate JWT token and retrieve user with organization ID
-    
+
     This dependency combines JWT validation with database lookup to provide:
     1. JWT token validation (via get_current_user)
     2. User record from database
     3. Organization ID the user belongs to
-    
+
     Usage in routes:
         @router.get("/protected")
         async def protected_route(
@@ -141,12 +141,12 @@ async def get_current_user_and_org(
             user_email = user_and_org["user"].email
             user_name = user_and_org["user"].name
             ...
-    
+
     Raises:
-        HTTPException: 
+        HTTPException:
             - 401 if token is invalid, expired, or malformed
             - 404 if user doesn't exist in database
-    
+
     Returns:
         dict: Dictionary containing:
             - user_claims: Dict with JWT claims (sub, email, email_verified, etc.)
@@ -156,24 +156,24 @@ async def get_current_user_and_org(
     try:
         # Extract user ID from JWT claims
         user_id = current_user.get("sub")
-        
+
         if not user_id:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token: missing user ID",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        
+
         # Fetch user from database
         user = await get_user_by_id(user_id, session)
-        
+
         # Return combined data
         return {
             "user_claims": current_user,
             "organization_id": user.organization_id,
             "user": user
         }
-        
+
     except HTTPException:
         # Re-raise HTTP exceptions (from get_user_by_id or above)
         raise

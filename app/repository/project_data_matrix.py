@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from sqlmodel import Session, select
 from app.database import get_db
-from app.models.project_data_matrix import ProjectDataMatrix
+from app.models.project_data_matrix import ProjectDataMatrix, PDMStatus
 from app.models.data_matrix import DataMatrix
 
 async def create_project_data_matrix(project_data_matrix: ProjectDataMatrix, session: AsyncSession = Depends(get_db)) -> ProjectDataMatrix:
@@ -49,3 +49,27 @@ async def delete_project_data_matrix(pdm_id: str, session: AsyncSession = Depend
         await session.commit()
         return True
     return False
+
+async def find_next_pending_pdm(project_id: str, session: AsyncSession) -> Optional[ProjectDataMatrix]:
+    """
+    Finds the next pending project data matrix for a project, ordered by the data_matrix number.
+    """
+    statement = (
+        select(ProjectDataMatrix)
+        .join(DataMatrix)
+        .where(ProjectDataMatrix.project_id == project_id)
+        .where(ProjectDataMatrix.status == PDMStatus.PENDING)
+        .order_by(DataMatrix.number)
+    )
+    result = await session.execute(statement)
+    return result.scalars().first()
+
+async def update_pdm_status(pdm: ProjectDataMatrix, status: PDMStatus, session: AsyncSession) -> ProjectDataMatrix:
+    """
+    Updates the status of a given ProjectDataMatrix object.
+    """
+    pdm.status = status
+    session.add(pdm)
+    await session.commit()
+    await session.refresh(pdm)
+    return pdm
