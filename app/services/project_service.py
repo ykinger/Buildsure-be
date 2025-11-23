@@ -66,7 +66,19 @@ class ProjectService:
                 await update_pdm_status(next_pdm, PDMStatus.READY_TO_START, db)
 
             # Fetch the fully detailed project response
-            project_details = await get_project_details_by_id(project_id, db)
+            project = await get_project_details_by_id(project_id, db)
+
+            # Build response
+            response_data = {
+                "id": project.id,
+                "name": project.name,
+                "description": project.description,
+                "status": project.status,
+                "organization_id": project.organization_id,
+                "user_id": project.user_id,
+                "created_at": project.created_at,
+                "updated_at": project.updated_at,
+            }
 
             logger.info(f"Successfully started project {project_id}")
             return ProjectStartResponse(**response_data)
